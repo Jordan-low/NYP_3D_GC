@@ -30,6 +30,10 @@
     <ClCompile Include="Source\Scene2D\Player2D.cpp" />
     <ClCompile Include="Source\Scene2D\Scene2D.cpp" />
     <ClCompile Include="Source\Scene3D\Camera.cpp" />
+    <ClCompile Include="Source\Scene3D\Entities\Player3D.cpp" />
+    <ClCompile Include="Source\Scene3D\Entities\SolidObject.cpp" />
+    <ClCompile Include="Source\Scene3D\Entities\SolidObjectManager.cpp" />
+    <ClCompile Include="Source\Scene3D\Physics3D.cpp" />
     <ClCompile Include="Source\Scene3D\Scene3D.cpp" />
     <ClCompile Include="Source\Scene3D\SkyBox\SkyBox.cpp" />
     <ClCompile Include="Source\Scene3D\Terrain\Terrain.cpp" />
@@ -58,6 +62,10 @@
     <ClInclude Include="Source\Scene2D\Player2D.h" />
     <ClInclude Include="Source\Scene2D\Scene2D.h" />
     <ClInclude Include="Source\Scene3D\Camera.h" />
+    <ClInclude Include="Source\Scene3D\Entities\Player3D.h" />
+    <ClInclude Include="Source\Scene3D\Entities\SolidObject.h" />
+    <ClInclude Include="Source\Scene3D\Entities\SolidObjectManager.h" />
+    <ClInclude Include="Source\Scene3D\Physics3D.h" />
     <ClInclude Include="Source\Scene3D\Scene3D.h" />
     <ClInclude Include="Source\Scene3D\SkyBox\SkyBox.h" />
     <ClInclude Include="Source\Scene3D\Terrain\Terrain.h" />

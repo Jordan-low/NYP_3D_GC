@@ -128,6 +128,18 @@
     <ClCompile Include="Source\Scene3D\SkyBox\SkyBox.cpp">
       <Filter>Scene3D\SkyBox</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene3D\Entities\Player3D.cpp">
+      <Filter>Scene3D\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\Entities\SolidObject.cpp">
+      <Filter>Scene3D\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\Entities\SolidObjectManager.cpp">
+      <Filter>Scene3D\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\Physics3D.cpp">
+      <Filter>Scene3D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -207,6 +219,18 @@
     </ClInclude>
     <ClInclude Include="Source\Scene3D\SkyBox\SkyBox.h">
       <Filter>Scene3D\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\Entities\Player3D.h">
+      <Filter>Scene3D\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\Entities\SolidObject.h">
+      <Filter>Scene3D\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\Entities\SolidObjectManager.h">
+      <Filter>Scene3D\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\Physics3D.h">
+      <Filter>Scene3D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
