@@ -33,6 +33,12 @@
 // Include Terrain
 #include "Terrain/Terrain.h"
 
+// Include CSolidObjectManager
+#include "Entities/SolidObjectManager.h"
+
+// Include CPlayer3D
+#include "Entities/Player3D.h"
+
 class CSettings;
 
 class CScene3D : public CSingletonTemplate<CScene3D>
@@ -81,6 +87,12 @@ protected:
 
 	// Handler to the skybox class
 	CTerrain* cTerrain;
+
+	// Handler to the CSolidObjectManager class
+	CSolidObjectManager* cSolidObjectManager;
+
+	// Handler to the Player3D class
+	CPlayer3D* cPlayer3D;
 
 	// Constructor
 	CScene3D(void);

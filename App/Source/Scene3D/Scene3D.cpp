@@ -36,6 +36,8 @@ CScene3D::CScene3D(void)
 	, cCamera(NULL)
 	, cSkybox(NULL)
 	, cTerrain(NULL)
+	, cSolidObjectManager(NULL)
+	, cPlayer3D(NULL)
 {
 }
 
@@ -70,6 +72,21 @@ CScene3D::~CScene3D(void)
 	{
 		cTerrain->Destroy();
 		cTerrain = NULL;
+	}	
+
+	// Destroy the terrain
+	if (cPlayer3D)
+	{
+		cSolidObjectManager->Erase(cPlayer3D);
+		cPlayer3D->Destroy();
+		cPlayer3D = NULL;
+	}
+
+	// Destroy the terrain
+	if (cSolidObjectManager)
+	{
+		cSolidObjectManager->Destroy();
+		cSolidObjectManager = NULL;
 	}
 
 	// We won't delete this since it was created elsewhere
@@ -122,6 +139,22 @@ bool CScene3D::Init(void)
 	// Set the size of the terrain
 	cTerrain->SetRenderSize(100.f, 5.0f, 100.f);
 
+	// Load the movable Entities
+	// Init the CSolidObjectManager
+	cSolidObjectManager = CSolidObjectManager::GetInstance();
+	cSolidObjectManager->Init();
+
+	// Init the cPlayer3D
+	cPlayer3D = CPlayer3D::GetInstance();
+	cPlayer3D->SetPosition(glm::vec3(0.0f, 0.5f, 0.0f));
+	cPlayer3D->SetShader("Shader3D");
+	cPlayer3D->Init();
+	cPlayer3D->InitCollider("Shader3D_Line", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	cPlayer3D->AttachCamera(cCamera);
+
+	// Add the cPlayer3D to the cSolidObjectManager
+	cSolidObjectManager->Add(cPlayer3D);
+
 	// Load the sounds into CSoundController
 	cSoundController = CSoundController::GetInstance();
 	cSoundController->Init();
@@ -139,21 +172,65 @@ bool CScene3D::Init(void)
 */
 bool CScene3D::Update(const double dElapsedTime)
 {
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_I))
-		cCamera->ProcessKeyboard(CCamera::CAMERAMOVEMENT::FORWARD, (float)dElapsedTime);
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_K))
-		cCamera->ProcessKeyboard(CCamera::CAMERAMOVEMENT::BACKWARD, (float)dElapsedTime);
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_J))
-		cCamera->ProcessKeyboard(CCamera::CAMERAMOVEMENT::LEFT, (float)dElapsedTime);
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_L))
-		cCamera->ProcessKeyboard(CCamera::CAMERAMOVEMENT::RIGHT, (float)dElapsedTime);
+	// Store the current position, if rollback is needed
+	cPlayer3D->StorePositionForRollback();
 
-	// Get mouse updates
-	cCamera->ProcessMouseMovement((float)cMouseController->GetMouseDeltaX(), (float)cMouseController->GetMouseDeltaY());
-	cCamera->ProcessMouseScroll((float)cMouseController->GetMouseScrollStatus(CMouseController::SCROLL_TYPE::SCROLL_TYPE_YOFFSET));
+	// Get keyboard updates for cPlayer3D
+
+	//Player Movement
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_W))
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, (float)dElapsedTime);
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_A))
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::LEFT, (float)dElapsedTime);
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_S))
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::BACKWARD, (float)dElapsedTime);
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_D))
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::RIGHT, (float)dElapsedTime);
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_SPACE))
+		cPlayer3D->SetToJump();
+
+	// Get keyboard and mouse updates for camera
+	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_0))
+	{
+		if (cPlayer3D->IsCameraAttached())
+			cPlayer3D->AttachCamera();
+		else
+			cPlayer3D->AttachCamera(cCamera);
+
+		// Reset the key so that it will not repeat until the key is released and pressed again
+		CKeyboardController::GetInstance()->ResetKey(GLFW_KEY_0);
+	}
+
+	if (!cPlayer3D->IsCameraAttached())
+	{
+		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_I))
+			cCamera->ProcessKeyboard(CCamera::CAMERAMOVEMENT::FORWARD, (float)dElapsedTime);
+		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_K))
+			cCamera->ProcessKeyboard(CCamera::CAMERAMOVEMENT::BACKWARD, (float)dElapsedTime);
+		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_J))
+			cCamera->ProcessKeyboard(CCamera::CAMERAMOVEMENT::LEFT, (float)dElapsedTime);
+		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_L))
+			cCamera->ProcessKeyboard(CCamera::CAMERAMOVEMENT::RIGHT, (float)dElapsedTime);
+		// Get mouse updates
+		cCamera->ProcessMouseMovement((float)cMouseController->GetMouseDeltaX(),
+			(float)cMouseController->GetMouseDeltaY());
+		cCamera->ProcessMouseScroll((float)cMouseController->GetMouseScrollStatus(CMouseController
+			::SCROLL_TYPE::SCROLL_TYPE_YOFFSET));
+	}
+	else
+	{
+		// Get mouse updates
+		cPlayer3D->ProcessRotate((float)cMouseController->GetMouseDeltaX(),
+			(float)cMouseController->GetMouseDeltaY());
+		cCamera->ProcessMouseScroll((float)cMouseController->GetMouseScrollStatus(CMouseController
+			::SCROLL_TYPE::SCROLL_TYPE_YOFFSET));
+	}
 
 	// Post Update the mouse controller
 	cMouseController->PostUpdate();
+
+	// Update the Solid Objects
+	cSolidObjectManager->Update(dElapsedTime);
 
 	return true;
 }
@@ -200,6 +277,11 @@ void CScene3D::Render(void)
 	cTerrain->PreRender();
 	cTerrain->Render();
 	cTerrain->PostRender();
+
+	//Render the solid objects
+	cSolidObjectManager->SetView(view);
+	cSolidObjectManager->SetProjection(projection);
+	cSolidObjectManager->Render();
 
 	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 
