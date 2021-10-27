@@ -290,8 +290,25 @@ void CPlayer3D::SetToJump(void)
  @param direction A const Player_Movement variable which contains the movement direction of the camera
  @param deltaTime A const float variable which contains the delta time for the realtime loop
  */
-void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float deltaTime)
+void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const PLAYER_SPEED speed, const float deltaTime)
 {
+	std::cout << fMovementSpeed << std::endl;
+	switch (speed)
+	{
+	case PLAYER_SPEED::WALK:
+		fMovementSpeed = fWalkSpeed;
+		break;
+	case PLAYER_SPEED::SPRINT:
+		fMovementSpeed = fSprintSpeed;
+		break;
+	case PLAYER_SPEED::CROUCH:
+		fMovementSpeed = fCrouchSpeed;
+		break;
+	default:
+		fMovementSpeed = fWalkSpeed;
+		break;
+	}
+
 	float velocity = fMovementSpeed * deltaTime;
 	if (direction == PLAYERMOVEMENT::FORWARD)
 		vec3Position += vec3Front * velocity;

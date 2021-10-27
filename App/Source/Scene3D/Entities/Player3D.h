@@ -47,6 +47,14 @@ public:
 		NUM_MOVEMENTS
 	};
 
+	enum PLAYER_SPEED
+	{
+		WALK = 0,
+		SPRINT,
+		CROUCH,
+		NUM_SPEED
+	};
+
 	// Player Attributes
 	glm::vec3 vec3Up;
 	glm::vec3 vec3Right;
@@ -92,7 +100,7 @@ public:
 
     // Processes input received from any keyboard-like input system as player movements. 
 	// Accepts input parameter in the form of Player defined ENUM (to abstract it from windowing systems)
-	void ProcessMovement(const PLAYERMOVEMENT direction, const float fDeltaTime);
+	void ProcessMovement(const PLAYERMOVEMENT direction, const PLAYER_SPEED speed, const float fDeltaTime);
 
     // Processes input received from a mouse input system as player rotation. 
 	// Expects the offset value in both the x and y direction.

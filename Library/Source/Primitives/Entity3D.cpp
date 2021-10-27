@@ -34,6 +34,9 @@ CEntity3D::CEntity3D()
 	, vec3RotationAxis(1.0f)
 	, vec4Colour(1.0f)
 	, fMovementSpeed(2.5f)
+	, fWalkSpeed(fMovementSpeed)
+	, fSprintSpeed(fMovementSpeed * 1.5f)
+	, fCrouchSpeed(fMovementSpeed * 0.5f)
 	, bStatus(false)
 	, bToDelete(false)
 {
@@ -131,7 +134,7 @@ void CEntity3D::SetColour(const glm::vec4 vec4Colour)
 }
 void CEntity3D::SetMovementSpeed(const float fMovementSpeed)
 {
-	this->fMovementSpeed = fMovementSpeed;
+	this->fWalkSpeed = fMovementSpeed;
 }
 void CEntity3D::SetStatus(const bool bStatus)
 {

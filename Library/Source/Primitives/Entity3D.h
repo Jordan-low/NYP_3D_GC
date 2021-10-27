@@ -140,6 +140,9 @@ protected:
 	glm::vec4 vec4Colour;
 	// Movement speed
 	float fMovementSpeed;
+	float fWalkSpeed;
+	float fSprintSpeed;
+	float fCrouchSpeed;
 	// Height of this entity above the CTerrain
 	float fHeightOffset = 0.5f; 
 

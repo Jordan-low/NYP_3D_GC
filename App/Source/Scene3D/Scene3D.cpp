@@ -179,16 +179,21 @@ bool CScene3D::Update(const double dElapsedTime)
 
 	//Player Movement
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_W))
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, (float)dElapsedTime);
+	{
+		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT))
+			cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, CPlayer3D::PLAYER_SPEED::SPRINT, (float)dElapsedTime);
+		else
+			cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, CPlayer3D::PLAYER_SPEED::WALK, (float)dElapsedTime);
+	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_A))
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::LEFT, (float)dElapsedTime);
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::LEFT, CPlayer3D::PLAYER_SPEED::WALK, (float)dElapsedTime);
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_S))
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::BACKWARD, (float)dElapsedTime);
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::BACKWARD, CPlayer3D::PLAYER_SPEED::WALK, (float)dElapsedTime);
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_D))
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::RIGHT, (float)dElapsedTime);
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::RIGHT, CPlayer3D::PLAYER_SPEED::WALK, (float)dElapsedTime);
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_SPACE))
 		cPlayer3D->SetToJump();
-
+	
 	// Get keyboard and mouse updates for camera
 	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_0))
 	{
@@ -231,7 +236,6 @@ bool CScene3D::Update(const double dElapsedTime)
 
 	// Update the Solid Objects
 	cSolidObjectManager->Update(dElapsedTime);
-
 	return true;
 }
 
@@ -257,6 +261,7 @@ void CScene3D::Render(void)
 
 							 // Part 2: Render the entire scene as per normal
 	// Get the camera view and projection
+
 	glm::mat4 view = CCamera::GetInstance()->GetViewMatrix();;
 	glm::mat4 projection = glm::perspective(	glm::radians(CCamera::GetInstance()->fZoom),
 												(float)cSettings->iWindowWidth / (float)cSettings->iWindowHeight,
@@ -280,6 +285,7 @@ void CScene3D::Render(void)
 
 	//Render the solid objects
 	cSolidObjectManager->SetView(view);
+
 	cSolidObjectManager->SetProjection(projection);
 	cSolidObjectManager->Render();
 
