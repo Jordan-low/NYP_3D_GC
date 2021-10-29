@@ -39,6 +39,10 @@
     <ClCompile Include="Source\Scene3D\Terrain\Terrain.cpp" />
     <ClCompile Include="Source\Scene3D\Terrain\Texture.cpp" />
     <ClCompile Include="Source\Scene3D\Terrain\vertexBufferObject.cpp" />
+    <ClCompile Include="Source\Scene3D\WeaponInfo\Pistol.cpp" />
+    <ClCompile Include="Source\Scene3D\WeaponInfo\Projectile.cpp" />
+    <ClCompile Include="Source\Scene3D\WeaponInfo\ProjectileManager.cpp" />
+    <ClCompile Include="Source\Scene3D\WeaponInfo\WeaponInfo.cpp" />
     <ClCompile Include="Source\SoundController\SoundController.cpp" />
     <ClCompile Include="Source\SoundController\SoundInfo.cpp" />
   </ItemGroup>
@@ -71,6 +75,10 @@
     <ClInclude Include="Source\Scene3D\Terrain\Terrain.h" />
     <ClInclude Include="Source\Scene3D\Terrain\Texture.h" />
     <ClInclude Include="Source\Scene3D\Terrain\vertexBufferObject.h" />
+    <ClInclude Include="Source\Scene3D\WeaponInfo\Pistol.h" />
+    <ClInclude Include="Source\Scene3D\WeaponInfo\Projectile.h" />
+    <ClInclude Include="Source\Scene3D\WeaponInfo\ProjectileManager.h" />
+    <ClInclude Include="Source\Scene3D\WeaponInfo\WeaponInfo.h" />
     <ClInclude Include="Source\SoundController\SoundController.h" />
     <ClInclude Include="Source\SoundController\SoundInfo.h" />
   </ItemGroup>

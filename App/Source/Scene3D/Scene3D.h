@@ -39,6 +39,10 @@
 // Include CPlayer3D
 #include "Entities/Player3D.h"
 
+// Include CProjectileManager
+#include "WeaponInfo/ProjectileManager.h"
+#include "WeaponInfo/Pistol.h"
+
 class CSettings;
 
 class CScene3D : public CSingletonTemplate<CScene3D>
@@ -93,6 +97,9 @@ protected:
 
 	// Handler to the Player3D class
 	CPlayer3D* cPlayer3D;
+
+	// Handler to the CProjectileManager class
+	CProjectileManager* cProjectileManager;
 
 	// Constructor
 	CScene3D(void);

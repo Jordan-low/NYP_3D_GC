@@ -23,7 +23,7 @@
 #include "../Terrain/Terrain.h"
 
 // Include WeaponInfo
-//#include "../WeaponInfo/WeaponInfo.h"
+#include "../WeaponInfo/WeaponInfo.h"
 
 // Include Physics3D
 #include "../Physics3D.h"
@@ -47,12 +47,12 @@ public:
 		NUM_MOVEMENTS
 	};
 
-	enum PLAYER_SPEED
+	enum PLAYER_STATE
 	{
 		WALK = 0,
 		SPRINT,
 		CROUCH,
-		NUM_SPEED
+		NUM_STATES
 	};
 
 	// Player Attributes
@@ -64,6 +64,9 @@ public:
 	float fPitch;
 	// Player options
 	float fMouseSensitivity;
+
+	//Player State
+	PLAYER_STATE activeState;
 
 	// Initialise this class instance
 	bool Init(void);
@@ -84,10 +87,10 @@ public:
 	bool IsCameraAttached(void);
 
 	// Set Weapon to this class instance
-	//void SetWeapon(const int iSlot, CWeaponInfo* cWeaponInfo = NULL);
+	void SetWeapon(const int iSlot, CWeaponInfo* cWeaponInfo = NULL);
 
 	// Get current weapon of this class instance
-	//CWeaponInfo* GetWeapon(void) const;
+	CWeaponInfo* GetWeapon(void) const;
 
 	// Set current weapon
 	void SetCurrentWeapon(const int iSlot);
@@ -100,7 +103,7 @@ public:
 
     // Processes input received from any keyboard-like input system as player movements. 
 	// Accepts input parameter in the form of Player defined ENUM (to abstract it from windowing systems)
-	void ProcessMovement(const PLAYERMOVEMENT direction, const PLAYER_SPEED speed, const float fDeltaTime);
+	void ProcessMovement(const PLAYERMOVEMENT direction, const float fDeltaTime);
 
     // Processes input received from a mouse input system as player rotation. 
 	// Expects the offset value in both the x and y direction.
@@ -127,18 +130,9 @@ protected:
 	CTerrain* cTerrain;
 
 	// The handle to the CWeaponInfo class instance
-	//CWeaponInfo* cPrimaryWeapon;
-	//CWeaponInfo* cSecondaryWeapon;
+	CWeaponInfo* cPrimaryWeapon;
+	CWeaponInfo* cSecondaryWeapon;
 	int iCurrentWeapon;
-
-	// Player/Camera Sway
-	float fCameraSwayAngle; 
-	float fCameraSwayDeltaAngle; 
-	// The limits for left and right sway 
-	const float fCameraSwayAngle_LeftLimit = -2.0f, fCameraSwayAngle_RightLimit = 2.0f;
-	bool bCameraSwayDirection; // false = left, true = right
-	bool bCameraSwayActive;
-	bool bUpdateCameraSway;
 
 	// Physics
 	CPhysics3D cPhysics3D;

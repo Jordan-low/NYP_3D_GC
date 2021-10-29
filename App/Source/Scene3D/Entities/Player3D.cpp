@@ -29,13 +29,9 @@ CPlayer3D::CPlayer3D(void)
 	, fMouseSensitivity(0.1f)
 	, cCamera(NULL)
 	, cTerrain(NULL)
-	//, cPrimaryWeapon(NULL)
-	//, cSecondaryWeapon(NULL)
+	, cPrimaryWeapon(NULL)
+	, cSecondaryWeapon(NULL)
 	, iCurrentWeapon(0)
-	, fCameraSwayAngle(0.0f)
-	, fCameraSwayDeltaAngle(0.25f)
-	, bCameraSwayDirection(false)	// false = left, true = right
-	, bCameraSwayActive(true)
 {
 	// Set the default position so it is above the ground
 	vec3Position = glm::vec3(0.0f, 0.5f, 0.0f);
@@ -63,13 +59,9 @@ CPlayer3D::CPlayer3D(	const glm::vec3 vec3Position,
 	, fMouseSensitivity(0.1f)
 	, cCamera(NULL)
 	, cTerrain(NULL)
-	//, cPrimaryWeapon(NULL)
-	//, cSecondaryWeapon(NULL)
+	, cPrimaryWeapon(NULL)
+	, cSecondaryWeapon(NULL)
 	, iCurrentWeapon(0)
-	, fCameraSwayAngle(0.0f)
-	, fCameraSwayDeltaAngle(0.5f)
-	, bCameraSwayDirection(false)	// false = left, true = right
-	, bCameraSwayActive(true)
 {
 	mesh = NULL;
 
@@ -87,7 +79,7 @@ CPlayer3D::CPlayer3D(	const glm::vec3 vec3Position,
  */
 CPlayer3D::~CPlayer3D(void)
 {
-	/*if (cSecondaryWeapon)
+	if (cSecondaryWeapon)
 	{
 		delete cSecondaryWeapon;
 		cSecondaryWeapon = NULL;
@@ -97,7 +89,7 @@ CPlayer3D::~CPlayer3D(void)
 	{
 		delete cPrimaryWeapon;
 		cPrimaryWeapon = NULL;
-	}*/
+	}
 
 	if (cTerrain)
 	{
@@ -219,32 +211,32 @@ bool CPlayer3D::IsCameraAttached(void)
 	return false;
 }
 
-///**
-// @brief Set Weapon to this class instance
-// @param iSlot A const int variable which contains the weapon info to check for. 0 == Primary, 1 == Secondary
-// @param cWeaponInfo A CWeaponInfo* variable which contains the weapon info
-// */
-//void CPlayer3D::SetWeapon(const int iSlot, CWeaponInfo* cWeaponInfo)
-//{
-//	if (iSlot == 0)
-//		cPrimaryWeapon = cWeaponInfo;
-//	else if (iSlot == 1)
-//		cSecondaryWeapon = cWeaponInfo;
-//}
-//
-///**
-// @brief Get Weapon of this class instance
-// @param iSlot A const int variable which contains the weapon info to check for. 0 == Primary, 1 == Secondary
-// */
-//CWeaponInfo* CPlayer3D::GetWeapon(void) const
-//{
-//	if (iCurrentWeapon == 0)
-//		return cPrimaryWeapon;
-//	else if (iCurrentWeapon == 1)
-//		return cSecondaryWeapon;
-//
-//	return NULL;
-//}
+/**
+ @brief Set Weapon to this class instance
+ @param iSlot A const int variable which contains the weapon info to check for. 0 == Primary, 1 == Secondary
+ @param cWeaponInfo A CWeaponInfo* variable which contains the weapon info
+ */
+void CPlayer3D::SetWeapon(const int iSlot, CWeaponInfo* cWeaponInfo)
+{
+	if (iSlot == 0)
+		cPrimaryWeapon = cWeaponInfo;
+	else if (iSlot == 1)
+		cSecondaryWeapon = cWeaponInfo;
+}
+
+ /**
+ @brief Get Weapon of this class instance
+ @param iSlot A const int variable which contains the weapon info to check for. 0 == Primary, 1 == Secondary
+ */
+CWeaponInfo* CPlayer3D::GetWeapon(void) const
+{
+	if (iCurrentWeapon == 0)
+		return cPrimaryWeapon;
+	else if (iCurrentWeapon == 1)
+		return cSecondaryWeapon;
+
+	return NULL;
+}
 
 /**
  @brief Set current weapon
@@ -262,14 +254,14 @@ void CPlayer3D::SetCurrentWeapon(const int iSlot)
  */
 bool CPlayer3D::DischargeWeapon(void) const
 {
-	/*if ((iCurrentWeapon == 0) && (cPrimaryWeapon))
+	if ((iCurrentWeapon == 0) && (cPrimaryWeapon))
 	{
 		return cPrimaryWeapon->Discharge(vec3Position, vec3Front, (CSolidObject*)this);
 	}
 	else if ((iCurrentWeapon == 1) && (cSecondaryWeapon))
 	{
 		return cSecondaryWeapon->Discharge(vec3Position, vec3Front, (CSolidObject*)this);
-	}*/
+	}
 	return NULL;
 }
 
@@ -290,24 +282,25 @@ void CPlayer3D::SetToJump(void)
  @param direction A const Player_Movement variable which contains the movement direction of the camera
  @param deltaTime A const float variable which contains the delta time for the realtime loop
  */
-void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const PLAYER_SPEED speed, const float deltaTime)
+void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float deltaTime)
 {
-	std::cout << fMovementSpeed << std::endl;
-	switch (speed)
+	switch (activeState)
 	{
-	case PLAYER_SPEED::WALK:
+	case PLAYER_STATE::WALK:
 		fMovementSpeed = fWalkSpeed;
 		break;
-	case PLAYER_SPEED::SPRINT:
+	case PLAYER_STATE::SPRINT:
 		fMovementSpeed = fSprintSpeed;
 		break;
-	case PLAYER_SPEED::CROUCH:
+	case PLAYER_STATE::CROUCH:
 		fMovementSpeed = fCrouchSpeed;
 		break;
 	default:
 		fMovementSpeed = fWalkSpeed;
 		break;
 	}
+
+	std::cout << fMovementSpeed << std::endl;
 
 	float velocity = fMovementSpeed * deltaTime;
 	if (direction == PLAYERMOVEMENT::FORWARD)
@@ -318,10 +311,6 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const PLAYER_SPE
 		vec3Position -= vec3Right * velocity;
 	if (direction == PLAYERMOVEMENT::RIGHT)
 		vec3Position += vec3Right * velocity;
-
-	// Indicate that camera sway is to be updated
-	if (bCameraSwayActive)
-		bUpdateCameraSway = true;
 }
 
 /**
@@ -358,10 +347,10 @@ void CPlayer3D::ProcessRotate(float fXOffset, float fYOffset, const bool constra
  */
 bool CPlayer3D::Update(const double dElapsedTime)
 {
-	/*if (cPrimaryWeapon)
+	if (cPrimaryWeapon)
 		cPrimaryWeapon->Update(dElapsedTime);
 	if (cSecondaryWeapon)
-		cSecondaryWeapon->Update(dElapsedTime);*/
+		cSecondaryWeapon->Update(dElapsedTime);
 
 	// Update the Jump/Fall
 	UpdateJumpFall(dElapsedTime);
@@ -380,35 +369,17 @@ bool CPlayer3D::Update(const double dElapsedTime)
 	// Constraint the player's position
 	Constraint();
 
-	// Implement player/camera sway
-	if ((bUpdateCameraSway) && (bCameraSwayActive))
-	{
-		glm::mat4 rotationMat(1); // Creates a identity matrix
-		rotationMat = glm::rotate(rotationMat, glm::radians(fCameraSwayAngle), vec3Front);
-		vec3Up = glm::vec3(rotationMat * glm::vec4(vec3WorldUp, 1.0f));
-
-		if (bCameraSwayDirection == false)	// Sway to left
-		{
-			fCameraSwayAngle -= fCameraSwayDeltaAngle;
-			if (fCameraSwayAngle < fCameraSwayAngle_LeftLimit)
-			{
-				fCameraSwayAngle = fCameraSwayAngle_LeftLimit;
-				bCameraSwayDirection = !bCameraSwayDirection;
-			}
-		}
-		else if (bCameraSwayDirection == true)	// Sway to right
-		{
-			fCameraSwayAngle += fCameraSwayDeltaAngle;
-			if (fCameraSwayAngle > fCameraSwayAngle_RightLimit)
-			{
-				fCameraSwayAngle = fCameraSwayAngle_RightLimit;
-				bCameraSwayDirection = !bCameraSwayDirection;
-			}
-		}
-		bUpdateCameraSway = false;
-	}
-
 	CSolidObject::Update(dElapsedTime);
+
+
+	switch (activeState)
+	{
+	case PLAYER_STATE::CROUCH:
+		vec3Position.y -= 0.1f;
+		break;
+	default:
+		break;
+	}
 
 	return true;
 }
@@ -456,8 +427,7 @@ void CPlayer3D::UpdatePlayerVectors(void)
 	// Normalize the vectors, because their length gets closer to 0 the more 
 	// you look up or down which results in slower movement.
 	vec3Right = glm::normalize(glm::cross(vec3Front, vec3WorldUp));  
-	if (!bCameraSwayActive)
-		vec3Up = glm::normalize(glm::cross(vec3Right, vec3Front));
+	vec3Up = glm::normalize(glm::cross(vec3Right, vec3Front));
 
 	// If the camera is attached to this player, then update the camera
 	if (cCamera)

@@ -38,6 +38,7 @@ CScene3D::CScene3D(void)
 	, cTerrain(NULL)
 	, cSolidObjectManager(NULL)
 	, cPlayer3D(NULL)
+	, cProjectileManager(NULL)
 {
 }
 
@@ -87,6 +88,13 @@ CScene3D::~CScene3D(void)
 	{
 		cSolidObjectManager->Destroy();
 		cSolidObjectManager = NULL;
+	}
+
+	// Destroy the projectile manager
+	if (cProjectileManager)
+	{
+		cProjectileManager->Destroy();
+		cProjectileManager = NULL;
 	}
 
 	// We won't delete this since it was created elsewhere
@@ -155,6 +163,22 @@ bool CScene3D::Init(void)
 	// Add the cPlayer3D to the cSolidObjectManager
 	cSolidObjectManager->Add(cPlayer3D);
 
+	// Initialise the projectile manager
+	cProjectileManager = CProjectileManager::GetInstance();
+	cProjectileManager->Init();
+	cProjectileManager->SetShader("Shader3D");
+
+	// Assign a cPistol to the cPlayer3D
+	CPistol* cPistol = new CPistol();
+	// Set the pos, rot, scale of this weapon
+	cPistol->SetPosition(glm::vec3(0.05f, -0.075f, -0.3f));
+	cPistol->SetRotation(3.14159f, glm::vec3(0.0f, 1.0f, 0.0f));
+	cPistol->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
+	//Initialise the instance
+	cPistol->Init();
+	cPistol->SetShader("Shader3D_Model");
+	cPlayer3D->SetWeapon(0, cPistol);
+
 	// Load the sounds into CSoundController
 	cSoundController = CSoundController::GetInstance();
 	cSoundController->Init();
@@ -175,25 +199,31 @@ bool CScene3D::Update(const double dElapsedTime)
 	// Store the current position, if rollback is needed
 	cPlayer3D->StorePositionForRollback();
 
+	// Update the projectiles
+	cProjectileManager->Update(dElapsedTime);
+
 	// Get keyboard updates for cPlayer3D
 
 	//Player Movement
+	cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_CONTROL))
+		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
+
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_W))
 	{
-		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT))
-			cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, CPlayer3D::PLAYER_SPEED::SPRINT, (float)dElapsedTime);
-		else
-			cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, CPlayer3D::PLAYER_SPEED::WALK, (float)dElapsedTime);
+		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT) && cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
+			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::SPRINT;
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, (float)dElapsedTime);
 	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_A))
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::LEFT, CPlayer3D::PLAYER_SPEED::WALK, (float)dElapsedTime);
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::LEFT, (float)dElapsedTime);
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_S))
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::BACKWARD, CPlayer3D::PLAYER_SPEED::WALK, (float)dElapsedTime);
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::BACKWARD, (float)dElapsedTime);
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_D))
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::RIGHT, CPlayer3D::PLAYER_SPEED::WALK, (float)dElapsedTime);
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::RIGHT, (float)dElapsedTime);
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_SPACE))
 		cPlayer3D->SetToJump();
-	
+
 	// Get keyboard and mouse updates for camera
 	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_0))
 	{
@@ -229,6 +259,24 @@ bool CScene3D::Update(const double dElapsedTime)
 			(float)cMouseController->GetMouseDeltaY());
 		cCamera->ProcessMouseScroll((float)cMouseController->GetMouseScrollStatus(CMouseController
 			::SCROLL_TYPE::SCROLL_TYPE_YOFFSET));
+	}
+
+	//Update for weapons
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_1))
+	{
+		cPlayer3D->SetCurrentWeapon(0);
+	}
+	else if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_2))
+	{
+		cPlayer3D->SetCurrentWeapon(1);
+	}
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_R))
+	{
+		cPlayer3D->GetWeapon()->Reload();
+	}
+	if (cMouseController->IsButtonReleased(CMouseController::BUTTON_TYPE::LMB))
+	{
+		cPlayer3D->DischargeWeapon();
 	}
 
 	// Post Update the mouse controller
@@ -285,9 +333,15 @@ void CScene3D::Render(void)
 
 	//Render the solid objects
 	cSolidObjectManager->SetView(view);
-
 	cSolidObjectManager->SetProjection(projection);
 	cSolidObjectManager->Render();
+
+	//Render the projectiles
+	cProjectileManager->SetView(view);
+	cProjectileManager->SetProjection(projection);
+	cProjectileManager->PreRender();
+	cProjectileManager->Render();
+	cProjectileManager->PostRender();
 
 	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 

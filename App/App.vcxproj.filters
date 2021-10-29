@@ -140,6 +140,18 @@
     <ClCompile Include="Source\Scene3D\Physics3D.cpp">
       <Filter>Scene3D</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene3D\WeaponInfo\Pistol.cpp">
+      <Filter>Scene3D\WeaponInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\WeaponInfo\Projectile.cpp">
+      <Filter>Scene3D\WeaponInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\WeaponInfo\ProjectileManager.cpp">
+      <Filter>Scene3D\WeaponInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\WeaponInfo\WeaponInfo.cpp">
+      <Filter>Scene3D\WeaponInfo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -231,6 +243,18 @@
     </ClInclude>
     <ClInclude Include="Source\Scene3D\Physics3D.h">
       <Filter>Scene3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\WeaponInfo\Pistol.h">
+      <Filter>Scene3D\WeaponInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\WeaponInfo\Projectile.h">
+      <Filter>Scene3D\WeaponInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\WeaponInfo\ProjectileManager.h">
+      <Filter>Scene3D\WeaponInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\WeaponInfo\WeaponInfo.h">
+      <Filter>Scene3D\WeaponInfo</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
