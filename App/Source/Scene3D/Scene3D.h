@@ -43,6 +43,7 @@
 #include "WeaponInfo/ProjectileManager.h"
 #include "WeaponInfo/Pistol.h"
 #include "WeaponInfo/AssaultRifle.h"
+#include "WeaponInfo/SubmachineGun.h"
 
 class CSettings;
 

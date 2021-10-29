@@ -1,9 +1,9 @@
 /**
- CAssaultRifle
+ CSubmachineGun
  By: Jordan Low
  Date: Oct 2021
  */
-#include "AssaultRifle.h"
+#include "SubmachineGun.h"
 
  // Include LoadOBJ
 #include "System/LoadOBJ.h"
@@ -17,38 +17,38 @@ using namespace std;
 /**
 @brief Default Constructor
 */
-CAssaultRifle::CAssaultRifle(void)
+CSubmachineGun::CSubmachineGun(void)
 {
 }
 
 /**
 @brief Default Destructor
 */
-CAssaultRifle::~CAssaultRifle(void)
+CSubmachineGun::~CSubmachineGun(void)
 {
 }
 
 /**
  @brief Initialise this instance to default values
  */
-bool CAssaultRifle::Init(void)
+bool CSubmachineGun::Init(void)
 {
 	// Call the parent's Init method
 	CWeaponInfo::Init();
 
 	// The number of ammunition in a magazine for this weapon
-	iMagRounds = 30;
+	iMagRounds = 50;
 	// The maximum number of ammunition for this magazine for this weapon
-	iMaxMagRounds = 30;
+	iMaxMagRounds = 50;
 	// The current total number of rounds currently carried by this player
 	iTotalRounds = 100;
 	// The max total number of rounds currently carried by this player
 	iMaxTotalRounds = 100;
 
 	// The time between shots
-	dTimeBetweenShots = 0.02;
+	dTimeBetweenShots = 0.01;
 	// The time to reload
-	dMaxReloadTime = 3.f;
+	dMaxReloadTime = 2.5f;
 	// The elapsed time (between shots)
 	dElapsedTime = 0.0;
 	// Boolean flag to indicate if weapon can fire now

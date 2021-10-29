@@ -43,6 +43,7 @@
     <ClCompile Include="Source\Scene3D\WeaponInfo\Pistol.cpp" />
     <ClCompile Include="Source\Scene3D\WeaponInfo\Projectile.cpp" />
     <ClCompile Include="Source\Scene3D\WeaponInfo\ProjectileManager.cpp" />
+    <ClCompile Include="Source\Scene3D\WeaponInfo\SubmachineGun.cpp" />
     <ClCompile Include="Source\Scene3D\WeaponInfo\WeaponInfo.cpp" />
     <ClCompile Include="Source\SoundController\SoundController.cpp" />
     <ClCompile Include="Source\SoundController\SoundInfo.cpp" />
@@ -80,6 +81,7 @@
     <ClInclude Include="Source\Scene3D\WeaponInfo\Pistol.h" />
     <ClInclude Include="Source\Scene3D\WeaponInfo\Projectile.h" />
     <ClInclude Include="Source\Scene3D\WeaponInfo\ProjectileManager.h" />
+    <ClInclude Include="Source\Scene3D\WeaponInfo\SubmachineGun.h" />
     <ClInclude Include="Source\Scene3D\WeaponInfo\WeaponInfo.h" />
     <ClInclude Include="Source\SoundController\SoundController.h" />
     <ClInclude Include="Source\SoundController\SoundInfo.h" />
