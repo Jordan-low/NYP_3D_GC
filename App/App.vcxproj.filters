@@ -152,6 +152,9 @@
     <ClCompile Include="Source\Scene3D\WeaponInfo\WeaponInfo.cpp">
       <Filter>Scene3D\WeaponInfo</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene3D\WeaponInfo\AssaultRifle.cpp">
+      <Filter>Scene3D\WeaponInfo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -254,6 +257,9 @@
       <Filter>Scene3D\WeaponInfo</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene3D\WeaponInfo\WeaponInfo.h">
+      <Filter>Scene3D\WeaponInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\WeaponInfo\AssaultRifle.h">
       <Filter>Scene3D\WeaponInfo</Filter>
     </ClInclude>
   </ItemGroup>

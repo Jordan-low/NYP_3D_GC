@@ -58,6 +58,8 @@ public:
 	virtual int GetFiringRate(void) const;
 	// Get the firing flag
 	virtual bool GetCanFire(void) const;
+	// Get the full auto flag
+	virtual bool GetAutoFire(void) const;
 
 	// Initialise this instance to default values
 	virtual bool Init(void);
@@ -107,6 +109,8 @@ protected:
 	double dMaxReloadTime;
 	// Boolean flag to indicate if weapon can fire now
 	bool bFire;
+	// Boolean flag to indicate if weapon is full auto
+	bool bAuto;
 
 	// For Renderings
 	unsigned int iIndicesSize;

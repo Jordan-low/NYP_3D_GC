@@ -15,7 +15,7 @@ CProjectileManager::CProjectileManager(void)
 	: model(glm::mat4(1.0f))
 	, view(glm::mat4(1.0f))
 	, projection(glm::mat4(1.0f))
-	, uiTotalElements(2)
+	, uiTotalElements(100)
 	, uiIndexLast(0)
 {
 }

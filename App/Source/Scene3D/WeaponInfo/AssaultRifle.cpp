@@ -1,9 +1,9 @@
 /**
- CPistol
- By: Toh Da Jun
- Date: Sep 2020
+ CAssaultRifle
+ By: Jordan Low
+ Date: Oct 2021
  */
-#include "Pistol.h"
+#include "AssaultRifle.h"
 
  // Include LoadOBJ
 #include "System/LoadOBJ.h"
@@ -17,44 +17,44 @@ using namespace std;
 /**
 @brief Default Constructor
 */
-CPistol::CPistol(void)
+CAssaultRifle::CAssaultRifle(void)
 {
 }
 
 /**
 @brief Default Destructor
 */
-CPistol::~CPistol(void)
+CAssaultRifle::~CAssaultRifle(void)
 {
 }
 
 /**
  @brief Initialise this instance to default values
  */
-bool CPistol::Init(void)
+bool CAssaultRifle::Init(void)
 {
 	// Call the parent's Init method
 	CWeaponInfo::Init();
 
 	// The number of ammunition in a magazine for this weapon
-	iMagRounds = 8;
+	iMagRounds = 30;
 	// The maximum number of ammunition for this magazine for this weapon
-	iMaxMagRounds = 8;
+	iMaxMagRounds = 30;
 	// The current total number of rounds currently carried by this player
-	iTotalRounds = 40;
+	iTotalRounds = 100;
 	// The max total number of rounds currently carried by this player
-	iMaxTotalRounds = 40;
+	iMaxTotalRounds = 100;
 
 	// The time between shots
-	dTimeBetweenShots = 0.025;
+	dTimeBetweenShots = 0.01;
 	// The time to reload
-	dMaxReloadTime = 1.f;
+	dMaxReloadTime = 3.f;
 	// The elapsed time (between shots)
 	dElapsedTime = 0.0;
 	// Boolean flag to indicate if weapon can fire now
 	bFire = true;
 	// Boolean flag to indicate if weapon is full auto
-	bAuto = false;
+	bAuto = true;
 
 	// Call the parent's Init()
 	CEntity3D::Init();

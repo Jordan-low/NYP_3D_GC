@@ -42,6 +42,7 @@
 // Include CProjectileManager
 #include "WeaponInfo/ProjectileManager.h"
 #include "WeaponInfo/Pistol.h"
+#include "WeaponInfo/AssaultRifle.h"
 
 class CSettings;
 

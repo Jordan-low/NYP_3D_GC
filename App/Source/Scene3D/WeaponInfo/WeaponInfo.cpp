@@ -30,6 +30,7 @@ CWeaponInfo::CWeaponInfo()
 	, dReloadTime(0.0f)
 	, dMaxReloadTime(5.0f)
 	, bFire(true)
+	, bAuto(true)
 {
 }
 
@@ -165,6 +166,15 @@ int CWeaponInfo::GetFiringRate(void) const
 bool CWeaponInfo::GetCanFire(void) const
 {
 	return bFire;
+}
+
+/**
+ @brief Get the auto flag
+ @return A bool variable
+ */
+bool CWeaponInfo::GetAutoFire(void) const
+{
+	return bAuto;
 }
 
 /**
