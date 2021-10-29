@@ -278,7 +278,7 @@ bool CScene3D::Update(const double dElapsedTime)
 	{
 		cPlayer3D->DischargeWeapon();
 	}
-
+	cPlayer3D->GetWeapon()->PrintSelf();
 	// Post Update the mouse controller
 	cMouseController->PostUpdate();
 
