@@ -14,6 +14,8 @@
 //For allowing creating of Mesh 
 #include "Primitives/MeshBuilder.h"
 
+#include "../../MyMath.h"
+
 #include <iostream>
 using namespace std;
 
@@ -32,6 +34,18 @@ CPlayer3D::CPlayer3D(void)
 	, cPrimaryWeapon(NULL)
 	, cSecondaryWeapon(NULL)
 	, iCurrentWeapon(0)
+	, slideTimer(1.f)
+	, velocity(0.f)
+	, minSpeed(0.f)
+	, maxSpeed(.1f)
+	, addSprintSpeed(0.f)
+	, addSprintVelocity(0.f)
+	, addCrouchSpeed(0.f)
+	, addCrouchVelocity(0.f)
+	, addSlideSpeed(0.f)
+	, addSlideVelocity(0.f)
+	, addCounterSlideSpeed(0.f)
+	, totalVelocity(0.f)
 {
 	// Set the default position so it is above the ground
 	vec3Position = glm::vec3(0.0f, 0.5f, 0.0f);
@@ -62,6 +76,18 @@ CPlayer3D::CPlayer3D(	const glm::vec3 vec3Position,
 	, cPrimaryWeapon(NULL)
 	, cSecondaryWeapon(NULL)
 	, iCurrentWeapon(0)
+	, slideTimer(1.f)
+	, velocity(0.f)
+	, minSpeed(0.f)
+	, maxSpeed(.1f)
+	, addSprintSpeed(0.f)
+	, addSprintVelocity(0.f)
+	, addCrouchSpeed(0.f)
+	, addCrouchVelocity(0.f) 
+	, addSlideSpeed(0.f)
+	, addSlideVelocity(0.f)
+	, addCounterSlideSpeed(0.f)
+	, totalVelocity(0.f)
 {
 	mesh = NULL;
 
@@ -140,6 +166,7 @@ bool CPlayer3D::Init(void)
 	// Set the Physics to fall status by default
 	cPhysics3D.SetStatus(CPhysics3D::STATUS::FALL);
 
+	fMovementSpeed = 10.f;
 	return true;
 }
 
@@ -277,6 +304,11 @@ void CPlayer3D::SetToJump(void)
 	}
 }
 
+float CPlayer3D::GetTotalVelocity()
+{
+	return totalVelocity;
+}
+
 /**
  @brief Processes input received from any keyboard-like input system as player movements. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
  @param direction A const Player_Movement variable which contains the movement direction of the camera
@@ -287,30 +319,63 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 	switch (activeState)
 	{
 	case PLAYER_STATE::WALK:
-		fMovementSpeed = fWalkSpeed;
+		if (addSprintVelocity > 0)
+			addSprintSpeed = -50.f;
+		if (addCrouchVelocity < 0)
+			addCrouchSpeed = 50.f;
+		if (addSlideVelocity < 0)
+			addSlideSpeed = -50.f;
 		break;
 	case PLAYER_STATE::SPRINT:
-		fMovementSpeed = fSprintSpeed;
+		addSprintSpeed = 50.f;
 		break;
 	case PLAYER_STATE::CROUCH:
-		fMovementSpeed = fCrouchSpeed;
+		addCrouchSpeed = -50.f;
 		break;
-	default:
-		fMovementSpeed = fWalkSpeed;
+	case PLAYER_STATE::SLIDE:
+		if (addSlideVelocity > 0)
+			addSlideSpeed = addCounterSlideSpeed;
+		addSlideSpeed = 50.f;
+		addCounterSlideSpeed = addSlideSpeed * 0.75f;
 		break;
+	//case PLAYER_STATE::SLIDE:
+	//	slideTimer += deltaTime;
+	//	if (slideTimer > 2)
+	//	{
+	//		activeState = PLAYER_STATE::WALK;
+	//		slideTimer = 1;
+	//	}
+	//	fMovementSpeed = fSprintSpeed * slideTimer;
+	//	break;
 	}
 
-	std::cout << fMovementSpeed << std::endl;
+	float accel = fMovementSpeed * deltaTime;
+	velocity += accel * deltaTime;
+	velocity = Math::Clamp(velocity, -maxSpeed, maxSpeed);
 
-	float velocity = fMovementSpeed * deltaTime;
+	float addedSprintAccel = addSprintSpeed * deltaTime;
+	addSprintVelocity += addedSprintAccel * deltaTime;
+	addSprintVelocity = Math::Clamp(addSprintVelocity, 0.f, .1f);
+
+	float addedCrouchAccel = addCrouchSpeed * deltaTime;
+	addCrouchVelocity += addedCrouchAccel * deltaTime;
+	addCrouchVelocity = Math::Clamp(addCrouchVelocity, -.05f, 0.f);
+
+	float addedSlideAccel = addSlideSpeed* deltaTime;
+	addSlideVelocity += addedSlideAccel * deltaTime;
+	addSlideVelocity = Math::Clamp(addSlideVelocity, 0.f, .05f);
+
+	totalVelocity = velocity + addSprintVelocity + addCrouchVelocity + addSlideVelocity;
+	std::cout << "FINAL VEL: " << totalVelocity << std::endl;
+
 	if (direction == PLAYERMOVEMENT::FORWARD)
-		vec3Position += vec3Front * velocity;
+		vec3Position += vec3Front * totalVelocity;
 	if (direction == PLAYERMOVEMENT::BACKWARD)
-		vec3Position -= vec3Front * velocity;
+		vec3Position -= vec3Front * totalVelocity;
 	if (direction == PLAYERMOVEMENT::LEFT)
-		vec3Position -= vec3Right * velocity;
+		vec3Position -= vec3Right * totalVelocity;
 	if (direction == PLAYERMOVEMENT::RIGHT)
-		vec3Position += vec3Right * velocity;
+		vec3Position += vec3Right * totalVelocity;
 }
 
 /**
@@ -371,9 +436,11 @@ bool CPlayer3D::Update(const double dElapsedTime)
 
 	CSolidObject::Update(dElapsedTime);
 
-
 	switch (activeState)
 	{
+	case PLAYER_STATE::REST:
+		velocity = 0.f;
+		break;
 	case PLAYER_STATE::CROUCH:
 		vec3Position.y -= 0.1f;
 		break;

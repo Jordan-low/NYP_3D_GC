@@ -49,9 +49,11 @@ public:
 
 	enum PLAYER_STATE
 	{
-		WALK = 0,
+		REST = 0,
+		WALK,
 		SPRINT,
 		CROUCH,
+		SLIDE,
 		NUM_STATES
 	};
 
@@ -64,7 +66,6 @@ public:
 	float fPitch;
 	// Player options
 	float fMouseSensitivity;
-
 	//Player State
 	PLAYER_STATE activeState;
 
@@ -101,6 +102,9 @@ public:
 	// Set to Jump
 	void SetToJump(void);
 
+	// Get Total Velocity
+	float GetTotalVelocity();
+
     // Processes input received from any keyboard-like input system as player movements. 
 	// Accepts input parameter in the form of Player defined ENUM (to abstract it from windowing systems)
 	void ProcessMovement(const PLAYERMOVEMENT direction, const float fDeltaTime);
@@ -133,6 +137,23 @@ protected:
 	CWeaponInfo* cPrimaryWeapon;
 	CWeaponInfo* cSecondaryWeapon;
 	int iCurrentWeapon;
+
+	// Slide movement
+	float slideTimer;
+	float velocity;
+	float minSpeed;
+	float maxSpeed;
+	float totalVelocity;
+
+	float addSprintSpeed;
+	float addSprintVelocity;
+
+	float addCrouchSpeed;
+	float addCrouchVelocity;
+
+	float addSlideSpeed;
+	float addCounterSlideSpeed;
+	float addSlideVelocity;
 
 	// Physics
 	CPhysics3D cPhysics3D;

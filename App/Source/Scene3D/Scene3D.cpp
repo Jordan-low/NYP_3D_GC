@@ -227,22 +227,37 @@ bool CScene3D::Update(const double dElapsedTime)
 	// Get keyboard updates for cPlayer3D
 
 	//Player Movement
-	cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
+	cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::REST;
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_CONTROL))
 		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
 
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_W))
 	{
-		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT) && cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
+		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
+			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
+		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT))
+		{
 			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::SPRINT;
+			if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_CONTROL) && cPlayer3D->GetTotalVelocity() >= .2f)
+				cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::SLIDE;
+		}
 		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, (float)dElapsedTime);
 	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_A))
+	{
+		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
 		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::LEFT, (float)dElapsedTime);
+	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_S))
+	{
+		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
 		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::BACKWARD, (float)dElapsedTime);
+	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_D))
+	{
+		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
 		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::RIGHT, (float)dElapsedTime);
+	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_SPACE))
 		cPlayer3D->SetToJump();
 
@@ -311,7 +326,6 @@ bool CScene3D::Update(const double dElapsedTime)
 		}
 	}
 
-	cPlayer3D->GetWeapon()->PrintSelf();
 	// Post Update the mouse controller
 	cMouseController->PostUpdate();
 

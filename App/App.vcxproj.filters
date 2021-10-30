@@ -268,5 +268,8 @@
     <ClInclude Include="Source\Scene3D\WeaponInfo\SubmachineGun.h">
       <Filter>Scene3D\WeaponInfo</Filter>
     </ClInclude>
+    <ClInclude Include="Source\MyMath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
