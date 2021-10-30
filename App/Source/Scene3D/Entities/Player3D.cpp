@@ -323,20 +323,22 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 			addSprintSpeed = -50.f;
 		if (addCrouchVelocity < 0)
 			addCrouchSpeed = 50.f;
-		if (addSlideVelocity < 0)
+		if (addSlideVelocity > 0)
 			addSlideSpeed = -50.f;
 		break;
 	case PLAYER_STATE::SPRINT:
 		addSprintSpeed = 50.f;
+		if (addSlideVelocity > 0)
+			addSlideSpeed = -50.f;
 		break;
 	case PLAYER_STATE::CROUCH:
 		addCrouchSpeed = -50.f;
 		break;
 	case PLAYER_STATE::SLIDE:
 		if (addSlideVelocity > 0)
-			addSlideSpeed = addCounterSlideSpeed;
+			addSlideSpeed -= addCounterSlideSpeed;
 		addSlideSpeed = 50.f;
-		addCounterSlideSpeed = addSlideSpeed * 0.75f;
+		addCounterSlideSpeed = -10.f;
 		break;
 	//case PLAYER_STATE::SLIDE:
 	//	slideTimer += deltaTime;
