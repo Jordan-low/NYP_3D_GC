@@ -1,9 +1,9 @@
 /**
- CPistol
- By: Toh Da Jun
- Date: Sep 2020
+ CBurstAssaultRifle
+ By: Jordan Low
+ Date: Nov 2021
  */
-#include "Pistol.h"
+#include "BurstAssaultRifle.h"
 
  // Include LoadOBJ
 #include "System/LoadOBJ.h"
@@ -17,53 +17,53 @@ using namespace std;
 /**
 @brief Default Constructor
 */
-CPistol::CPistol(void)
+CBurstAssaultRifle::CBurstAssaultRifle(void)
 {
 }
 
 /**
 @brief Default Destructor
 */
-CPistol::~CPistol(void)
+CBurstAssaultRifle::~CBurstAssaultRifle(void)
 {
 }
 
 /**
  @brief Initialise this instance to default values
  */
-bool CPistol::Init(void)
+bool CBurstAssaultRifle::Init(void)
 {
 	// Call the parent's Init method
 	CWeaponInfo::Init();
 
 	// The name of the weapon
-	name = "Pistol";
+	name = "Burst Assault Rifle";
 	// The number of ammunition in a magazine for this weapon
-	iMagRounds = 8;
+	iMagRounds = 30;
 	// The maximum number of ammunition for this magazine for this weapon
-	iMaxMagRounds = 8;
+	iMaxMagRounds = 30;
 	// The current total number of rounds currently carried by this player
-	iTotalRounds = 40;
+	iTotalRounds = 100;
 	// The max total number of rounds currently carried by this player
-	iMaxTotalRounds = 40;
+	iMaxTotalRounds = 100;
 	// The number of bullets per click
-	iBulletsPerClick = 1;
+	iBulletsPerClick = 3;
 
 	// The time between shots
-	dTimeBetweenShots = 0.025;
+	dTimeBetweenShots = 0.4;
 	// The time to reload
-	dMaxReloadTime = 1.f;
+	dMaxReloadTime = 3.f;
 	// The elapsed time (between shots)
 	dElapsedTime = 0.0;
 	// Boolean flag to indicate if weapon can fire now
 	bFire = true;
 	// Boolean flag to indicate if weapon is full auto
-	bAuto = false;
+	bAuto = true;
 	// Bullet spread
-	bulletSpread = 0.01f;
+	bulletSpread = 0.02f;
 	// Recoil vectors
-	minRecoil = glm::vec2(-0.05f, 0.05f);
-	maxRecoil = glm::vec2(0.05f, 0.1f);
+	minRecoil = glm::vec2(-0.3f, 0.2f);
+	maxRecoil = glm::vec2(0.3f, 0.25f);
 
 	// Call the parent's Init()
 	CEntity3D::Init();

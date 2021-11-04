@@ -279,15 +279,25 @@ void CPlayer3D::SetCurrentWeapon(const int iSlot)
  @param iSlot A const int variable which contains the weapon info to check for. 0 == Primary, 1 == Secondary
  @return A bool variable
  */
-bool CPlayer3D::DischargeWeapon(void) const
+bool CPlayer3D::DischargeWeapon(void)
 {
 	if ((iCurrentWeapon == 0) && (cPrimaryWeapon))
 	{
-		return cPrimaryWeapon->Discharge(vec3Position, vec3Front, (CSolidObject*)this);
+		bool fired = cPrimaryWeapon->Discharge(vec3Position, vec3Front, (CSolidObject*)this);
+
+		if (fired) //if first bullet is fired, apply recoil
+			ApplyRecoil(cPrimaryWeapon->GetMinRecoil(), cPrimaryWeapon->GetMaxRecoil());
+
+		return fired;
 	}
 	else if ((iCurrentWeapon == 1) && (cSecondaryWeapon))
 	{
-		return cSecondaryWeapon->Discharge(vec3Position, vec3Front, (CSolidObject*)this);
+		bool fired = cSecondaryWeapon->Discharge(vec3Position, vec3Front, (CSolidObject*)this);
+		
+		if (fired)
+			ApplyRecoil(cSecondaryWeapon->GetMinRecoil(), cSecondaryWeapon->GetMaxRecoil());
+
+		return fired;
 	}
 	return NULL;
 }
@@ -588,6 +598,19 @@ void CPlayer3D::UpdateJumpFall(const double dElapsedTime)
 			cPhysics3D.SetStatus(CPhysics3D::STATUS::IDLE);
 		}
 	}
+}
+
+/**
+ @brief Apply Weapon Recoils
+ @param minRecoil A vec2 variable for minRecoil
+ @param maxRecoil A vec2 variable for maxRecoil
+ */
+void CPlayer3D::ApplyRecoil(glm::vec2 minRecoil, glm::vec2 maxRecoil)
+{
+	//Update the yaw and pitch based on the recoil
+	fYaw += Math::RandFloatMinMax(minRecoil.x, maxRecoil.x);
+	fPitch += Math::RandFloatMinMax(minRecoil.y, maxRecoil.y);
+	UpdatePlayerVectors();
 }
 
 /**

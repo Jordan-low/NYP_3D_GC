@@ -38,6 +38,8 @@ public:
 	virtual void SetTotalRound(const int iTotalRounds);
 	// The max total number of rounds currently carried by this player
 	virtual void SetMaxTotalRound(const int iMaxTotalRounds);
+	// The number of bullets per click
+	virtual void SetBulletsPerClick(const int iBulletsPerClick);
 
 	// Get the number of ammunition in the magazine for this player
 	virtual int GetMagRound(void) const;
@@ -47,6 +49,8 @@ public:
 	virtual int GetTotalRound(void) const;
 	// Get the max total number of rounds currently carried by this player
 	virtual int GetMaxTotalRound(void) const;
+	// Get the number of bullets per click
+	virtual int GetBulletsPerClick(void) const;
 
 	// Set the time between shots
 	virtual void SetTimeBetweenShots(const double dTimeBetweenShots);
@@ -64,6 +68,13 @@ public:
 	// Get the full auto flag
 	virtual bool GetAutoFire(void) const;
 
+	// Get the min recoil vector
+	virtual glm::vec2 GetMinRecoil(void) const;
+	// Get the max recoil vector
+	virtual glm::vec2 GetMaxRecoil(void) const;
+	// Get the bullet spread
+	virtual float GetBulletSpread(void) const;
+									   
 	// Initialise this instance to default values
 	virtual bool Init(void);
 	// Update the elapsed time
@@ -103,6 +114,8 @@ protected:
 	int iTotalRounds;
 	// The max total number of rounds currently carried by this player
 	int iMaxTotalRounds;
+	// The number of bullets per click
+	int iBulletsPerClick;
 
 	// The time between shots in milliseconds
 	double dTimeBetweenShots;
@@ -112,11 +125,19 @@ protected:
 	double dReloadTime;
 	// The maximum elapsed time for reloading of a magazine in milliseconds
 	double dMaxReloadTime;
+
 	// Boolean flag to indicate if weapon can fire now
 	bool bFire;
 	// Boolean flag to indicate if weapon is full auto
 	bool bAuto;
 
+	// The amount of bullet spread
+	float bulletSpread;
+
+	// Min Recoil
+	glm::vec2 minRecoil;
+	// Max Recoil
+	glm::vec2 maxRecoil;
 	// For Renderings
 	unsigned int iIndicesSize;
 };

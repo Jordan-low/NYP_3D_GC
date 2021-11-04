@@ -173,6 +173,9 @@
     <ClCompile Include="Source\Scene3D\Waypoint\WaypointManager.cpp">
       <Filter>Scene3D\WayPoint</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene3D\WeaponInfo\BurstAssaultRifle.cpp">
+      <Filter>Scene3D\WeaponInfo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -300,6 +303,9 @@
     </ClInclude>
     <ClInclude Include="Source\Scene3D\Waypoint\WaypointManager.h">
       <Filter>Scene3D\WayPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\WeaponInfo\BurstAssaultRifle.h">
+      <Filter>Scene3D\WeaponInfo</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

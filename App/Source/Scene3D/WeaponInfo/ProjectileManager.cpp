@@ -152,6 +152,7 @@ bool CProjectileManager::Deactivate(const unsigned int iIndex)
  */
 void CProjectileManager::Update(const double dElapsedTime)
 {
+	std::cout << uiIndexLast << std::endl;
 	uiIndexFirst = uiIndexLast + 1;
 	if (uiIndexFirst >= vProjectile.size())
 	{

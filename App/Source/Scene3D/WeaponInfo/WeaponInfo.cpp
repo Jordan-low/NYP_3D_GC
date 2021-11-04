@@ -15,6 +15,7 @@
 #include "ProjectileManager.h"
 
 #include <iostream>
+#include "../App/Source/MyMath.h"
 using namespace std;
 
 /**
@@ -25,12 +26,16 @@ CWeaponInfo::CWeaponInfo()
 	, iMaxMagRounds(1)
 	, iTotalRounds(8)
 	, iMaxTotalRounds(8)
+	, iBulletsPerClick(1)
 	, dTimeBetweenShots(0.5)
 	, dElapsedTime(0.0)
 	, dReloadTime(0.0f)
 	, dMaxReloadTime(5.0f)
 	, bFire(true)
 	, bAuto(true)
+	, bulletSpread(0.0f)
+	, minRecoil(glm::vec2(0.f))
+	, maxRecoil(glm::vec2(0.f))
 {
 }
 
@@ -82,6 +87,11 @@ void CWeaponInfo::SetMaxTotalRound(const int iMaxTotalRounds)
 	this->iMaxTotalRounds = iMaxTotalRounds;
 }
 
+void CWeaponInfo::SetBulletsPerClick(const int iBulletsPerClick)
+{
+	this->iBulletsPerClick = iBulletsPerClick;
+}
+
 
 /**
  @brief Get the number of ammunition in the magazine for this player
@@ -117,6 +127,11 @@ int CWeaponInfo::GetTotalRound(void) const
 int CWeaponInfo::GetMaxTotalRound(void) const
 {
 	return iMaxTotalRounds;
+}
+
+int CWeaponInfo::GetBulletsPerClick(void) const
+{
+	return iBulletsPerClick;
 }
 
 /**
@@ -180,6 +195,21 @@ bool CWeaponInfo::GetCanFire(void) const
 bool CWeaponInfo::GetAutoFire(void) const
 {
 	return bAuto;
+}
+
+glm::vec2 CWeaponInfo::GetMinRecoil(void) const
+{
+	return minRecoil;
+}
+
+glm::vec2 CWeaponInfo::GetMaxRecoil(void) const
+{
+	return maxRecoil;
+}
+
+float CWeaponInfo::GetBulletSpread(void) const
+{
+	return bulletSpread;
 }
 
 /**
@@ -267,35 +297,44 @@ bool CWeaponInfo::Update(const double dt)
  @return A bool variable
  */
 bool CWeaponInfo::Discharge(glm::vec3 vec3Position, 
-							glm::vec3 vec3Front, 
+							glm::vec3 vec3Front,
 							CSolidObject* pSource)
 {
 	if (bFire)
 	{
-		// If there is still ammo in the magazine, then fire
-		if (iMagRounds > 0)
+		bool firstBulletFired = false;
+		for (int i = 0; i < iBulletsPerClick; i++)
 		{
-			// Create a projectile. 
-			// Its position is slightly in front of the player to prevent collision
-			// Its direction is same as the player.
-			// It will last for 2.0 seconds and travel at 20 units per frame
-			CProjectileManager::GetInstance()->Activate(vec3Position + vec3Front * 0.75f, 
-														vec3Front,
-														2.0f, 20.0f, pSource);
-			
-			// Lock the weapon after this discharge
-			bFire = false;
-			// Reset the dElapsedTime to dTimeBetweenShots for the next shot
-			dElapsedTime = dTimeBetweenShots;
-			// Reduce the rounds by 1
-			iMagRounds--;
+			// If there is still ammo in the magazine, then fire
+			if (iMagRounds > 0)
+			{
+				if (i == 0)
+					firstBulletFired = true;
+				// Get Bullet Spread Amount
+				float randomSpreadX = Math::RandFloatMinMax(-bulletSpread, bulletSpread);
+				float randomSpreadY = Math::RandFloatMinMax(-bulletSpread, bulletSpread);
 
-			return true;
+				// Create a projectile. 
+				// Its position is slightly in front of the player to prevent collision
+				// Its direction is same as the player.
+				// It will last for 2.0 seconds and travel at 20 units per frame
+				CProjectileManager::GetInstance()->Activate(vec3Position + vec3Front * 0.75f,
+					vec3Front + glm::vec3(randomSpreadX, randomSpreadY, 0),
+					2.0f, 20.0f, pSource);
+
+				// Lock the weapon after this discharge
+				bFire = false;
+				// Reset the dElapsedTime to dTimeBetweenShots for the next shot
+				dElapsedTime = dTimeBetweenShots;
+				// Reduce the rounds by 1
+				iMagRounds--;
+			}
 		}
+		if (firstBulletFired)
+			return true;
 	}
 
 	//cout << "Unable to discharge weapon." << endl;
-
 	return false;
 }
 

@@ -46,6 +46,8 @@ bool CSubmachineGun::Init(void)
 	iTotalRounds = 100;
 	// The max total number of rounds currently carried by this player
 	iMaxTotalRounds = 100;
+	// The number of bullets per click
+	iBulletsPerClick = 1;
 
 	// The time between shots
 	dTimeBetweenShots = 0.01;
@@ -57,6 +59,11 @@ bool CSubmachineGun::Init(void)
 	bFire = true;
 	// Boolean flag to indicate if weapon is full auto
 	bAuto = true;
+	// Bullet spread
+	bulletSpread = 0.02f;
+	// Recoil vectors
+	minRecoil = glm::vec2(-0.2f, 0.1f);
+	maxRecoil = glm::vec2(0.2f, 0.2f);
 
 	// Call the parent's Init()
 	CEntity3D::Init();

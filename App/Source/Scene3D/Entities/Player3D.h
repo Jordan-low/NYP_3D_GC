@@ -97,7 +97,7 @@ public:
 	void SetCurrentWeapon(const int iSlot);
 
 	// Discharge current weapon
-	bool DischargeWeapon(void) const;
+	bool DischargeWeapon(void);
 
 	// Set to Jump
 	void SetToJump(void);
@@ -180,4 +180,7 @@ protected:
 
 	// Update Jump or Fall
 	void UpdateJumpFall(const double dElapsedTime);
+
+	// Apply Recoil
+	void ApplyRecoil(glm::vec2 minRecoil, glm::vec2 maxRecoil);
 };
