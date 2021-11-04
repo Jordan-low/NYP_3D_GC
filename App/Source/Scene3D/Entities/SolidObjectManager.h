@@ -7,7 +7,7 @@
 #include "SolidObject.h"
 
 // Include CProjectileManager
-//#include "../WeaponInfo/ProjectileManager.h"
+#include "../WeaponInfo/ProjectileManager.h"
 
 // Include GLM
 #include <includes/glm.hpp>
@@ -62,7 +62,7 @@ protected:
 	std::list<CSolidObject*> lSolidObject;
 
 	// Handler to the CProjectileManager
-	//CProjectileManager* cProjectileManager;
+	CProjectileManager* cProjectileManager;
 
 	// Default Constructor
 	CSolidObjectManager(void);

@@ -240,22 +240,20 @@ bool CWeaponInfo::Update(const double dt)
 	{
 		// Reduce the dReloadTime
 		dReloadTime -= dt;
+		// Return true since we have already updated the dReloadTime
+		return true;
+	}
+	// Update the elapsed time if there is no reload to countdown
+	else if (dElapsedTime > 0.0f)
+	{
+		dElapsedTime -= dt;
+		// Return true since we have already updated the dReloadTime
+		return true;
 	}
 	else
 	{
-		// Set reload time to 0.0f since reloading is completed
-		dReloadTime = 0.0f;
-
-		// Update the elapsed time
-		if (dElapsedTime > 0.0f)
-		{
-			dElapsedTime -= dt;
-		}
-		else
-		{
-			bFire = true;
-			return true;
-		}
+		// Set the weapon to fire ready since reloading is completed
+		bFire = true;
 	}
 
 	return false;
@@ -309,8 +307,7 @@ void CWeaponInfo::Reload(void)
 	// If the weapon is already reloading, then don't reload again
 	if (dReloadTime > 0.0f)
 		return;
-
-	// Check if there is enought bullets
+	// Check if there is enough bullets
 	if (iMagRounds < iMaxMagRounds)
 	{
 		if (iMaxMagRounds - iMagRounds <= iTotalRounds)
@@ -327,6 +324,8 @@ void CWeaponInfo::Reload(void)
 		dReloadTime = dMaxReloadTime;
 		// Disable the weapon's ability to discharge
 		bFire = false;
+		// No need to have countdown for between shots since we are reloading
+		dElapsedTime = dTimeBetweenShots;
 	}
 }
 

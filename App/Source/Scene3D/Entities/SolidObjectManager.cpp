@@ -9,6 +9,8 @@
 // Include CCollisionManager
 #include "Primitives/CollisionManager.h"
 
+#include "../Entities/Player3D.h"
+
 // Include CCameraEffectsManager
 //#include "../CameraEffects/CameraEffectsManager.h"
 
@@ -22,7 +24,7 @@ CSolidObjectManager::CSolidObjectManager(void)
 	: model(glm::mat4(1.0f))
 	, view(glm::mat4(1.0f))
 	, projection(glm::mat4(1.0f))
-	//, cProjectileManager(NULL)
+	, cProjectileManager(NULL)
 {
 }
 
@@ -32,7 +34,7 @@ CSolidObjectManager::CSolidObjectManager(void)
 CSolidObjectManager::~CSolidObjectManager(void)
 {
 	// We won't delete this since it was created elsewhere
-	//cProjectileManager = NULL;
+	cProjectileManager = NULL;
 
 	// Remove all CSolidObject
 	std::list<CSolidObject*>::iterator it = lSolidObject.begin(), end = lSolidObject.end();
@@ -52,7 +54,7 @@ bool CSolidObjectManager::Init(void)
 {
 	lSolidObject.clear();
 
-	//cProjectileManager = CProjectileManager::GetInstance();
+	cProjectileManager = CProjectileManager::GetInstance();
 
 	return true;
 }
@@ -179,6 +181,7 @@ bool CSolidObjectManager::Update(const double dElapsedTime)
 bool CSolidObjectManager::CheckForCollision(void)
 {
 	bool bResult = false;
+	bool isWallRun = false;
 
 	std::list<CSolidObject*>::iterator it, end;
 	std::list<CSolidObject*>::iterator it_other;
@@ -245,6 +248,16 @@ bool CSolidObjectManager::CheckForCollision(void)
 					(*it)->RollbackPosition();
 					if (((*it)->GetType() == CSolidObject::TYPE::PLAYER))
 						bResult = true;
+					float dotPdt = glm::dot((*it_other)->GetFront(), (*it)->GetFront()); //wall's front dot player's front
+					std::cout << "WALLFRONT: " << (*it_other)->GetFront().x << " " << (*it_other)->GetFront().y << " " << (*it_other)->GetFront().z <<
+						" PLAYERFRONT: " << (*it)->GetFront().x << " " << (*it)->GetFront().y << " " << (*it)->GetFront().z << std::endl;
+					std::cout << "DOT: " << dotPdt << std::endl;
+					if ((dotPdt > 0.8f || dotPdt < -0.8f)) //check if player is looking perpendicular to the wall's front
+					{
+						isWallRun = true; //tilt cam using this bool
+						std::cout << "Wall running" << std::endl;
+						(*it)->SetPosition((*it)->GetPosition() + glm::vec3((*it)->GetFront().x / 10, 0, (*it)->GetFront().z / 10)); //move the player towards the direction of the wall's front
+					}
 					cout << "** Collision between Entity and Structure ***" << endl;
 					break;
 				}
@@ -253,82 +266,82 @@ bool CSolidObjectManager::CheckForCollision(void)
 	}
 
 	// Check for collisions between entities and projectiles
-	//end = lSolidObject.end();
-	//for (it = lSolidObject.begin(); it != end; ++it)
-	//{
-	//	// If the entity is not active, then skip it
-	//	if ((*it)->GetStatus() == false)
-	//		continue;
+	end = lSolidObject.end();
+	for (it = lSolidObject.begin(); it != end; ++it)
+	{
+		// If the entity is not active, then skip it
+		if ((*it)->GetStatus() == false)
+			continue;
 
-	//	for (unsigned int i = 0; i < cProjectileManager->vProjectile.size(); i++)
-	//	{
-	//		// If the entity is not active, then skip it
-	//		if ((cProjectileManager->vProjectile[i])->GetStatus() == false)
-	//			continue;
+		for (unsigned int i = 0; i < cProjectileManager->vProjectile.size(); i++)
+		{
+			// If the entity is not active, then skip it
+			if ((cProjectileManager->vProjectile[i])->GetStatus() == false)
+				continue;
 
-	//		// Use ray tracing to check for collisions between the 2 entities
-	//		if (CCollisionManager::RayBoxCollision((*it)->GetPosition() + (*it)->boxMin,
-	//			(*it)->GetPosition() + (*it)->boxMax,
-	//			(cProjectileManager->vProjectile[i])->GetPreviousPosition(),
-	//			(cProjectileManager->vProjectile[i])->GetPosition()))
-	//		{
-	//			if ((*it)->GetType() == CSolidObject::TYPE::PLAYER)
-	//			{
-	//				// If this projectile is fired by the player, then skip it
-	//				if ((cProjectileManager->vProjectile[i])->GetSource() == (*it))
-	//					continue;
-	//				(cProjectileManager->vProjectile[i])->SetStatus(false);
-	//				cout << "** RayBoxCollision between Player and Projectile ***" << endl;
-	//				bResult = true;
-	//				break;
-	//			}
-	//			else if ((*it)->GetType() == CSolidObject::TYPE::NPC)
-	//			{
-	//				// If this projectile is fired by the NPC, then skip it
-	//				if ((cProjectileManager->vProjectile[i])->GetSource() == (*it))
-	//					continue;
-	//				(*it)->SetStatus(false);
-	//				(cProjectileManager->vProjectile[i])->SetStatus(false);
-	//				cout << "** RayBoxCollision between NPC and Projectile ***" << endl;
-	//				break;
-	//			}
-	//			else if ((*it)->GetType() == CSolidObject::TYPE::STRUCTURE)
-	//			{
-	//				(cProjectileManager->vProjectile[i])->SetStatus(false);
-	//				cout << "** RayBoxCollision between Structure and Projectile ***" << endl;
-	//				break;
-	//			}
-	//		}
+			// Use ray tracing to check for collisions between the 2 entities
+			if (CCollisionManager::RayBoxCollision((*it)->GetPosition() + (*it)->boxMin,
+				(*it)->GetPosition() + (*it)->boxMax,
+				(cProjectileManager->vProjectile[i])->GetPreviousPosition(),
+				(cProjectileManager->vProjectile[i])->GetPosition()))
+			{
+				if ((*it)->GetType() == CSolidObject::TYPE::PLAYER)
+				{
+					// If this projectile is fired by the player, then skip it
+					if ((cProjectileManager->vProjectile[i])->GetSource() == (*it))
+						continue;
+					(cProjectileManager->vProjectile[i])->SetStatus(false);
+					cout << "** RayBoxCollision between Player and Projectile ***" << endl;
+					bResult = true;
+					break;
+				}
+				else if ((*it)->GetType() == CSolidObject::TYPE::NPC)
+				{
+					// If this projectile is fired by the NPC, then skip it
+					if ((cProjectileManager->vProjectile[i])->GetSource() == (*it))
+						continue;
+					(*it)->SetStatus(false);
+					(cProjectileManager->vProjectile[i])->SetStatus(false);
+					cout << "** RayBoxCollision between NPC and Projectile ***" << endl;
+					break;
+				}
+				else if ((*it)->GetType() == CSolidObject::TYPE::STRUCTURE)
+				{
+					(cProjectileManager->vProjectile[i])->SetStatus(false);
+					cout << "** RayBoxCollision between Structure and Projectile ***" << endl;
+					break;
+				}
+			}
 
-	//		// Check for collisions between the 2 entities
-	//		if (CCollisionManager::BoxBoxCollision((*it)->GetPosition() + (*it)->boxMin,
-	//			(*it)->GetPosition() + (*it)->boxMax,
-	//			(cProjectileManager->vProjectile[i])->GetPosition() + (cProjectileManager->vProjectile[i])->boxMin,
-	//			(cProjectileManager->vProjectile[i])->GetPosition() + (cProjectileManager->vProjectile[i])->boxMax) == true)
-	//		{
-	//			if ((*it)->GetType() == CSolidObject::TYPE::PLAYER)
-	//			{
-	//				(cProjectileManager->vProjectile[i])->SetStatus(false);
-	//				cout << "** BoxBoxCollision between Player and Projectile ***" << endl;
-	//				bResult = true;
-	//				break;
-	//			}
-	//			else if ((*it)->GetType() == CSolidObject::TYPE::NPC)
-	//			{
-	//				(*it)->SetStatus(false);
-	//				(cProjectileManager->vProjectile[i])->SetStatus(false);
-	//				cout << "** BoxBoxCollision between NPC and Projectile ***" << endl;
-	//				break;
-	//			}
-	//			else if ((*it)->GetType() == CSolidObject::TYPE::STRUCTURE)
-	//			{
-	//				(cProjectileManager->vProjectile[i])->SetStatus(false);
-	//				cout << "** BoxBoxCollision between Structure and Projectile ***" << endl;
-	//				break;
-	//			}
-	//		}
-	//	}
-	//}
+			// Check for collisions between the 2 entities
+			if (CCollisionManager::BoxBoxCollision((*it)->GetPosition() + (*it)->boxMin,
+				(*it)->GetPosition() + (*it)->boxMax,
+				(cProjectileManager->vProjectile[i])->GetPosition() + (cProjectileManager->vProjectile[i])->boxMin,
+				(cProjectileManager->vProjectile[i])->GetPosition() + (cProjectileManager->vProjectile[i])->boxMax) == true)
+			{
+				if ((*it)->GetType() == CSolidObject::TYPE::PLAYER)
+				{
+					(cProjectileManager->vProjectile[i])->SetStatus(false);
+					cout << "** BoxBoxCollision between Player and Projectile ***" << endl;
+					bResult = true;
+					break;
+				}
+				else if ((*it)->GetType() == CSolidObject::TYPE::NPC)
+				{
+					(*it)->SetStatus(false);
+					(cProjectileManager->vProjectile[i])->SetStatus(false);
+					cout << "** BoxBoxCollision between NPC and Projectile ***" << endl;
+					break;
+				}
+				else if ((*it)->GetType() == CSolidObject::TYPE::STRUCTURE)
+				{
+					(cProjectileManager->vProjectile[i])->SetStatus(false);
+					cout << "** BoxBoxCollision between Structure and Projectile ***" << endl;
+					break;
+				}
+			}
+		}
+	}
 	
 	if (bResult == true)
 	{

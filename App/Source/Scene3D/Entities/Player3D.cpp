@@ -319,7 +319,6 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 	switch (activeState)
 	{
 	case PLAYER_STATE::WALK:
-		std::cout << "WALKING" << std::endl;
 
 		if (addSprintVelocity > 0)
 			addSprintSpeed = -50.f;
@@ -332,12 +331,10 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 		addSprintSpeed = 50.f;
 		if (addSlideVelocity > 0)
 			addSlideSpeed = -50.f;
-		std::cout << "SPRINTING" << std::endl;
 
 		break;
 	case PLAYER_STATE::CROUCH:
 		addCrouchSpeed = -50.f;
-		std::cout << "COUHCING" << std::endl;
 
 		break;
 	case PLAYER_STATE::SLIDE:
@@ -357,7 +354,6 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 			activeState = PLAYER_STATE::WALK;
 			addSlideSpeed = -500.f;
 		}
-		std::cout << "SLIDING" << std::endl;
 		//std::cout << "slide speed: " << addSlideSpeed << std::endl;
 		break;
 	}
@@ -378,9 +374,9 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 	addSlideVelocity += addedSlideAccel * deltaTime;
 	addSlideVelocity = Math::Clamp(addSlideVelocity, 0.f, .05f);
 
-	std::cout << velocity << " " << addSprintVelocity << " " << addCrouchVelocity << " " << addSlideVelocity << std::endl;
+	//std::cout << velocity << " " << addSprintVelocity << " " << addCrouchVelocity << " " << addSlideVelocity << std::endl;
 	totalVelocity = velocity + addSprintVelocity + addCrouchVelocity + addSlideVelocity;
-	std::cout << "FINAL VEL: " << totalVelocity << std::endl;
+	//std::cout << "FINAL VEL: " << totalVelocity << std::endl;
 
 	if (direction == PLAYERMOVEMENT::FORWARD)
 		vec3Position += vec3Front * totalVelocity;
@@ -463,7 +459,7 @@ bool CPlayer3D::Update(const double dElapsedTime)
 		break;
 	}
 
-	std::cout << "Current Weapon: " << GetWeapon()->GetName() << std::endl;
+	//std::cout << "Current Weapon: " << GetWeapon()->GetName() << std::endl;
 	return true;
 }
 

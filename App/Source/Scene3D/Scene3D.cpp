@@ -163,6 +163,34 @@ bool CScene3D::Init(void)
 	// Add the cPlayer3D to the cSolidObjectManager
 	cSolidObjectManager->Add(cPlayer3D);
 
+	// Initialise a CStructure3D
+	float fCheckHeight = cTerrain->GetHeight(2.0f, -2.0f);
+	CStructure3D* cStructure3D = new CStructure3D(glm::vec3(2.0f, fCheckHeight + .3f, -2.0f));
+	cStructure3D->SetShader("Shader3D");
+	cStructure3D->SetScale(glm::vec3(5, 1, 1));
+	cStructure3D->SetFront(glm::vec3(-1, 0, 0));
+	cStructure3D->Init();
+	cStructure3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 1.0f, 1.0f), glm::vec3(-2.5f, -0.5f, -0.5f), glm::vec3(2.5f, 0.5f, 0.5f));
+
+	// Initialise a CEnemy3D
+	fCheckHeight = cTerrain->GetHeight(0.0f, -10.0f);
+	CEnemy3D* cEnemy3D = new CEnemy3D(glm::vec3(0.0f, fCheckHeight, -10.0f));
+	cEnemy3D->SetShader("Shader3D");
+	cEnemy3D->Init();
+	cEnemy3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	// Assign a cPistol to the cEnemy3D
+	CPistol* cEnemyPistol = new CPistol();
+	// Set the scale of this weapon
+	cEnemyPistol->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
+	//Initialise the instance
+	cEnemyPistol->Init();
+	cEnemyPistol->SetShader("Shader3D_Model");
+	cEnemy3D->SetWeapon(0, cEnemyPistol);
+
+	// Add the cStructure3D to the cSolidObjectManager
+	cSolidObjectManager->Add(cStructure3D);
+	cSolidObjectManager->Add(cEnemy3D);
+
 	// Initialise the projectile manager
 	cProjectileManager = CProjectileManager::GetInstance();
 	cProjectileManager->Init();
@@ -333,8 +361,8 @@ bool CScene3D::Update(const double dElapsedTime)
 	// Update the Solid Objects
 	cSolidObjectManager->Update(dElapsedTime);
 
-	if (cPlayer3D->activeState == CPlayer3D::PLAYER_STATE::REST)
-		CKeyboardController::GetInstance()->Reset();
+	cSolidObjectManager->CheckForCollision();
+
 	return true;
 }
 

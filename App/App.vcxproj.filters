@@ -158,6 +158,21 @@
     <ClCompile Include="Source\Scene3D\WeaponInfo\SubmachineGun.cpp">
       <Filter>Scene3D\WeaponInfo</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene3D\Entities\Enemy3D.cpp">
+      <Filter>Scene3D\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\Entities\Structure3D.cpp">
+      <Filter>Scene3D\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\AI\FSM.cpp">
+      <Filter>Scene3D\FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\Waypoint\Waypoint.cpp">
+      <Filter>Scene3D\WayPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\Waypoint\WaypointManager.cpp">
+      <Filter>Scene3D\WayPoint</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -270,6 +285,21 @@
     </ClInclude>
     <ClInclude Include="Source\MyMath.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\Entities\Enemy3D.h">
+      <Filter>Scene3D\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\Entities\Structure3D.h">
+      <Filter>Scene3D\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\AI\FSM.h">
+      <Filter>Scene3D\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\Waypoint\Waypoint.h">
+      <Filter>Scene3D\WayPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\Waypoint\WaypointManager.h">
+      <Filter>Scene3D\WayPoint</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
