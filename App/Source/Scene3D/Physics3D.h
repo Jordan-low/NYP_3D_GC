@@ -17,6 +17,7 @@ public:
 		IDLE = 0,
 		JUMP,
 		FALL,
+		WALL_RUN,
 		NUM_STATUS
 	};
 

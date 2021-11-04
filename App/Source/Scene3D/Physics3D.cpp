@@ -192,7 +192,7 @@ bool CPhysics3D::Update(const double dElapsedTime)
 {
 	// If the player is in IDLE mode, 
 	// then we don't calculate further
-	if (sCurrentStatus == STATUS::IDLE)
+	if (sCurrentStatus == STATUS::IDLE || sCurrentStatus == STATUS::WALL_RUN)
 		return false;
 
 	// Store the previous displacement values

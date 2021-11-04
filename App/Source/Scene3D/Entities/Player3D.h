@@ -105,6 +105,8 @@ public:
 	// Get Total Velocity
 	float GetTotalVelocity();
 
+	CPhysics3D GetPhysics();
+
     // Processes input received from any keyboard-like input system as player movements. 
 	// Accepts input parameter in the form of Player defined ENUM (to abstract it from windowing systems)
 	void ProcessMovement(const PLAYERMOVEMENT direction, const float fDeltaTime);

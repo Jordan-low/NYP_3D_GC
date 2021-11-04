@@ -309,6 +309,11 @@ float CPlayer3D::GetTotalVelocity()
 	return totalVelocity;
 }
 
+CPhysics3D CPlayer3D::GetPhysics()
+{
+	return cPhysics3D;
+}
+
 /**
  @brief Processes input received from any keyboard-like input system as player movements. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
  @param direction A const Player_Movement variable which contains the movement direction of the camera
