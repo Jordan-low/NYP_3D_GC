@@ -228,7 +228,8 @@ bool CScene3D::Update(const double dElapsedTime)
 
 	//Player Movement
 	cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::REST;
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_CONTROL))
+
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C))
 		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
 
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_W))
@@ -238,7 +239,7 @@ bool CScene3D::Update(const double dElapsedTime)
 		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT))
 		{
 			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::SPRINT;
-			if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_CONTROL) && cPlayer3D->GetTotalVelocity() >= .2f)
+			if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C) && cPlayer3D->GetTotalVelocity() >= 0.19f)
 				cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::SLIDE;
 		}
 		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, (float)dElapsedTime);
@@ -331,6 +332,9 @@ bool CScene3D::Update(const double dElapsedTime)
 
 	// Update the Solid Objects
 	cSolidObjectManager->Update(dElapsedTime);
+
+	if (cPlayer3D->activeState == CPlayer3D::PLAYER_STATE::REST)
+		CKeyboardController::GetInstance()->Reset();
 	return true;
 }
 

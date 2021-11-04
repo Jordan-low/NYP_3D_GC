@@ -36,6 +36,8 @@ bool CSubmachineGun::Init(void)
 	// Call the parent's Init method
 	CWeaponInfo::Init();
 
+	// The name of the weapon
+	name = "Submachine Gun";
 	// The number of ammunition in a magazine for this weapon
 	iMagRounds = 50;
 	// The maximum number of ammunition for this magazine for this weapon

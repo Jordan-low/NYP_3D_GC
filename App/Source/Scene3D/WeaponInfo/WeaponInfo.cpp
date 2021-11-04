@@ -41,6 +41,11 @@ CWeaponInfo::~CWeaponInfo()
 {
 }
 
+string CWeaponInfo::GetName(void) const
+{
+	return name;
+}
+
 /**
  @brief Set the number of ammunition in the magazine for this player
  @param iMagRounds A const int variable containing the new number of ammunition

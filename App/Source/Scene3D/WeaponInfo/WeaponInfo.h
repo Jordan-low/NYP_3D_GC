@@ -27,6 +27,9 @@ public:
 	// Destructor
 	virtual ~CWeaponInfo(void);
 
+	//Get the name of the weapon in string
+	virtual string GetName(void) const;
+
 	// Set the number of ammunition in the magazine for this player
 	virtual void SetMagRound(const int iMagRounds);
 	// Set the maximum number of ammunition in the magazine for this weapon
@@ -90,6 +93,8 @@ public:
 	virtual void PrintSelf(void);
 
 protected:
+	// The name of the weapon in string
+	string name;
 	// The number of ammunition in a magazine for this weapon
 	int iMagRounds;
 	// The maximum number of ammunition for this magazine for this weapon

@@ -44,7 +44,7 @@ CPlayer3D::CPlayer3D(void)
 	, addCrouchVelocity(0.f)
 	, addSlideSpeed(0.f)
 	, addSlideVelocity(0.f)
-	, addCounterSlideSpeed(0.f)
+	, addCounterSlideSpeed(-10.f)
 	, totalVelocity(0.f)
 {
 	// Set the default position so it is above the ground
@@ -86,7 +86,7 @@ CPlayer3D::CPlayer3D(	const glm::vec3 vec3Position,
 	, addCrouchVelocity(0.f) 
 	, addSlideSpeed(0.f)
 	, addSlideVelocity(0.f)
-	, addCounterSlideSpeed(0.f)
+	, addCounterSlideSpeed(-10.f)
 	, totalVelocity(0.f)
 {
 	mesh = NULL;
@@ -319,6 +319,8 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 	switch (activeState)
 	{
 	case PLAYER_STATE::WALK:
+		std::cout << "WALKING" << std::endl;
+
 		if (addSprintVelocity > 0)
 			addSprintSpeed = -50.f;
 		if (addCrouchVelocity < 0)
@@ -330,25 +332,34 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 		addSprintSpeed = 50.f;
 		if (addSlideVelocity > 0)
 			addSlideSpeed = -50.f;
+		std::cout << "SPRINTING" << std::endl;
+
 		break;
 	case PLAYER_STATE::CROUCH:
 		addCrouchSpeed = -50.f;
+		std::cout << "COUHCING" << std::endl;
+
 		break;
 	case PLAYER_STATE::SLIDE:
-		if (addSlideVelocity > 0)
-			addSlideSpeed -= addCounterSlideSpeed;
+		//std::cout << "slide vel: " << addSlideVelocity << std::endl;
+		//if (addSlideVelocity > 0.04f)
+		//	addSlideSpeed += -10.f;
+		//else if (addSlideVelocity < -0.01f)
+		//{
+		//	activeState = PLAYER_STATE::CROUCH;
+		//	addSlideVelocity = 0;
+		//	addSlideSpeed = 0;
+		//}
+		//else if (addSlideVelocity == 0.0f)
 		addSlideSpeed = 50.f;
-		addCounterSlideSpeed = -10.f;
+		if (addSlideVelocity >= 0.05f)
+		{
+			activeState = PLAYER_STATE::WALK;
+			addSlideSpeed = -500.f;
+		}
+		std::cout << "SLIDING" << std::endl;
+		//std::cout << "slide speed: " << addSlideSpeed << std::endl;
 		break;
-	//case PLAYER_STATE::SLIDE:
-	//	slideTimer += deltaTime;
-	//	if (slideTimer > 2)
-	//	{
-	//		activeState = PLAYER_STATE::WALK;
-	//		slideTimer = 1;
-	//	}
-	//	fMovementSpeed = fSprintSpeed * slideTimer;
-	//	break;
 	}
 
 	float accel = fMovementSpeed * deltaTime;
@@ -363,10 +374,11 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 	addCrouchVelocity += addedCrouchAccel * deltaTime;
 	addCrouchVelocity = Math::Clamp(addCrouchVelocity, -.05f, 0.f);
 
-	float addedSlideAccel = addSlideSpeed* deltaTime;
+	float addedSlideAccel = addSlideSpeed * deltaTime;
 	addSlideVelocity += addedSlideAccel * deltaTime;
 	addSlideVelocity = Math::Clamp(addSlideVelocity, 0.f, .05f);
 
+	std::cout << velocity << " " << addSprintVelocity << " " << addCrouchVelocity << " " << addSlideVelocity << std::endl;
 	totalVelocity = velocity + addSprintVelocity + addCrouchVelocity + addSlideVelocity;
 	std::cout << "FINAL VEL: " << totalVelocity << std::endl;
 
@@ -443,6 +455,7 @@ bool CPlayer3D::Update(const double dElapsedTime)
 	case PLAYER_STATE::REST:
 		velocity = 0.f;
 		break;
+	case PLAYER_STATE::SLIDE:
 	case PLAYER_STATE::CROUCH:
 		vec3Position.y -= 0.1f;
 		break;
@@ -450,6 +463,7 @@ bool CPlayer3D::Update(const double dElapsedTime)
 		break;
 	}
 
+	std::cout << "Current Weapon: " << GetWeapon()->GetName() << std::endl;
 	return true;
 }
 

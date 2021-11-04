@@ -36,6 +36,8 @@ bool CAssaultRifle::Init(void)
 	// Call the parent's Init method
 	CWeaponInfo::Init();
 
+	// The name of the weapon
+	name = "Assault Rifle";
 	// The number of ammunition in a magazine for this weapon
 	iMagRounds = 30;
 	// The maximum number of ammunition for this magazine for this weapon
