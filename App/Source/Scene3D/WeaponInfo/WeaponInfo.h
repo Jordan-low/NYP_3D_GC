@@ -136,7 +136,7 @@ protected:
 	// The amount of bullet spread
 	float bulletSpread;
 
-	float animateRotateAngle = 0.f;
+	float animateRotateAngle;
 
 	// Min Recoil
 	glm::vec2 minRecoil;
