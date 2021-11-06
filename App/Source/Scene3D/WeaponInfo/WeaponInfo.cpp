@@ -30,8 +30,11 @@ CWeaponInfo::CWeaponInfo()
 	, dTimeBetweenShots(0.5)
 	, dElapsedTime(0.0)
 	, dReloadTime(0.0f)
+	, dEquipTime(0.0f)
+	, dMaxEquipTime(0.0f)
 	, dMaxReloadTime(5.0f)
-	, animateRotateAngle(0.f)
+	, animateReloadAngle(0.f)
+	, animateEquipAngle(90.f)
 	, bFire(true)
 	, bAuto(true)
 	, bulletSpread(0.0f)
@@ -240,6 +243,9 @@ bool CWeaponInfo::Init(void)
 	bFire = true;
 
 	// Update the model matrix
+	initialZPos = vec3Position.z;
+	vec3Position.z += 0.1f;
+	finalZPos = vec3Position.z;
 	model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 	model = glm::translate(model, glm::vec3(vec3Position.x, vec3Position.y, vec3Position.z));
 	model = glm::rotate(model, fRotationAngle, vec3RotationAxis);
@@ -256,13 +262,15 @@ bool CWeaponInfo::Init(void)
  */
 bool CWeaponInfo::Update(const double dt)
 {
+
 	// Update the model matrix
 	model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 	model = glm::translate(model, glm::vec3(vec3Position.x, vec3Position.y, vec3Position.z));
 	model = glm::scale(model, vec3Scale);
 	model = glm::rotate(model, fRotationAngle, vec3RotationAxis);
-	model = glm::rotate(model, glm::radians(animateRotateAngle), glm::vec3(1, 0, 0));
-	std::cout << vec3RotationAxis.x << " " << vec3RotationAxis.y << " " << vec3RotationAxis.z << " " << animateRotateAngle << std::endl;
+	model = glm::rotate(model, glm::radians(animateReloadAngle), glm::vec3(1, 0, 0));
+	model = glm::rotate(model, glm::radians(animateEquipAngle), glm::vec3(1, 0, 0));
+
 	// If the weapon can fire, then just fire and return
 	if (bFire)
 		return false;
@@ -281,6 +289,12 @@ bool CWeaponInfo::Update(const double dt)
 	{
 		dElapsedTime -= dt;
 		// Return true since we have already updated the dReloadTime
+		return true;
+	}
+	else if (dEquipTime > 0.0f)
+	{
+		AnimateEquip(dt);
+		dEquipTime -= dt;
 		return true;
 	}
 	else
@@ -379,11 +393,38 @@ void CWeaponInfo::Reload(void)
 void CWeaponInfo::AnimateReload(const double dt)
 {
 	//Rotate a full 360 degree during its reload time
-	animateRotateAngle += 360.f / dMaxReloadTime * dt;
+	animateReloadAngle += 360.f / dMaxReloadTime * dt;
 
 	//once it rotates a full 360, reset the angle back to 0
-	if (animateRotateAngle >= 360.f)
-		animateRotateAngle = 0.f;
+	if (animateReloadAngle >= 360.f)
+		animateReloadAngle = 0.f;
+}
+
+void CWeaponInfo::AnimateEquip(const double dt)
+{
+	//Rotate 90 degree upwards during its equip time
+	animateEquipAngle -= 90.f / dMaxEquipTime * dt;
+
+	if (animateEquipAngle <= 0.f)
+		animateEquipAngle = 0.f;
+
+	//Pull out the weapon slightly from the back to the front
+	vec3Position.z -= 0.1f / dMaxEquipTime * dt;
+
+	if (vec3Position.z <= initialZPos)
+		vec3Position.z = initialZPos;
+}
+
+void CWeaponInfo::SetEquip()
+{
+	bFire = false;
+	dEquipTime = dMaxEquipTime;
+}
+
+void CWeaponInfo::SetUnequip()
+{
+	animateEquipAngle = 90;
+	vec3Position.z = finalZPos;
 }
 
 /**
@@ -478,6 +519,7 @@ void CWeaponInfo::PrintSelf(void)
 	cout << "iTotalRounds\t\t:\t" << iTotalRounds << endl;
 	cout << "iMaxTotalRounds\t\t:\t" << iMaxTotalRounds << endl;
 	cout << "dReloadTime\t\t:\t" << dReloadTime << endl;
+	cout << "dEquipTime\t\t:\t" << dEquipTime << endl;
 	cout << "dTimeBetweenShots\t:\t" << dTimeBetweenShots << endl;
 	cout << "dElapsedTime\t\t:\t" << dElapsedTime << endl;
 	cout << "bFire\t\t:\t" << bFire << endl;

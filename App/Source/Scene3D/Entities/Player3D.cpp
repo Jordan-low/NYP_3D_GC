@@ -271,6 +271,8 @@ CWeaponInfo* CPlayer3D::GetWeapon(void) const
  */
 void CPlayer3D::SetCurrentWeapon(const int iSlot)
 {
+	GetWeapon()->SetEquip();
+	GetWeapon()->SetUnequip();
 	iCurrentWeapon = iSlot;
 }
 

@@ -238,6 +238,7 @@ bool CScene3D::Init(void)
 
 	cPlayer3D->SetWeapon(0, cBurstAssaultRifle);
 	cPlayer3D->SetWeapon(1, cSubmachineGun);
+	cPlayer3D->SetCurrentWeapon(0);
 
 	// Load the sounds into CSoundController
 	cSoundController = CSoundController::GetInstance();
@@ -300,7 +301,8 @@ bool CScene3D::Update(const double dElapsedTime)
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_SPACE))
 		cPlayer3D->SetToJump();
 
-	std::cout << "ACTIVESTATE: " << cPlayer3D->activeState << std::endl;
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_G))
+		cPlayer3D->GetWeapon()->AnimateEquip(dElapsedTime);
 
 	// Get keyboard and mouse updates for camera
 	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_0))
@@ -365,6 +367,7 @@ bool CScene3D::Update(const double dElapsedTime)
 			cPlayer3D->DischargeWeapon();
 		}
 	}
+	cPlayer3D->GetWeapon()->PrintSelf();
 
 	// Post Update the mouse controller
 	cMouseController->PostUpdate();

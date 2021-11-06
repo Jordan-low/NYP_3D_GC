@@ -85,6 +85,10 @@ public:
 	virtual void Reload(void);
 	// Animate this reload weapon
 	virtual void AnimateReload(const double dt);
+	// Animate unequip weapon
+	virtual void AnimateEquip(const double dt);
+	virtual void SetEquip();
+	virtual void SetUnequip();
 	// Add rounds
 	virtual void AddRounds(const int iNewRounds);
 
@@ -127,6 +131,10 @@ protected:
 	double dReloadTime;
 	// The maximum elapsed time for reloading of a magazine in milliseconds
 	double dMaxReloadTime;
+	// The elapsed time for reloading of a magazine in milliseconds
+	double dEquipTime;
+	// The maximum elapsed time for reloading of a magazine in milliseconds
+	double dMaxEquipTime;
 
 	// Boolean flag to indicate if weapon can fire now
 	bool bFire;
@@ -136,7 +144,14 @@ protected:
 	// The amount of bullet spread
 	float bulletSpread;
 
-	float animateRotateAngle;
+	// Float for reload rotate angle
+	float animateReloadAngle;
+	// Float for equip rotate angle
+	float animateEquipAngle;
+	// Float for initial weapon z position
+	float initialZPos;
+	// Float for final weapon z position
+	float finalZPos;
 
 	// Min Recoil
 	glm::vec2 minRecoil;
