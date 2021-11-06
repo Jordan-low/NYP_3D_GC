@@ -270,18 +270,6 @@ bool CScene3D::Update(const double dElapsedTime)
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C))
 		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
 
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_W))
-	{
-		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
-			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
-		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT))
-		{
-			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::SPRINT;
-			if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C) && cPlayer3D->GetTotalVelocity() >= 0.19f)
-				cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::SLIDE;
-		}
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, (float)dElapsedTime);
-	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_A))
 	{
 		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
@@ -297,8 +285,22 @@ bool CScene3D::Update(const double dElapsedTime)
 		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
 		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::RIGHT, (float)dElapsedTime);
 	}
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_W))
+	{
+		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
+			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
+		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT))
+		{
+			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::SPRINT;
+			if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C))
+				cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
+		}
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, (float)dElapsedTime);
+	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_SPACE))
 		cPlayer3D->SetToJump();
+
+	std::cout << "ACTIVESTATE: " << cPlayer3D->activeState << std::endl;
 
 	// Get keyboard and mouse updates for camera
 	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_0))

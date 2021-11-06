@@ -334,42 +334,30 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 	switch (activeState)
 	{
 	case PLAYER_STATE::WALK:
-
-		if (addSprintVelocity > 0)
-			addSprintSpeed = -50.f;
-		if (addCrouchVelocity < 0)
-			addCrouchSpeed = 50.f;
-		if (addSlideVelocity > 0)
-			addSlideSpeed = -50.f;
+		addSprintSpeed = -50.f;
+		ResetMovementValues(PLAYER_STATE::CROUCH);
 		break;
 	case PLAYER_STATE::SPRINT:
 		addSprintSpeed = 50.f;
-		if (addSlideVelocity > 0)
-			addSlideSpeed = -50.f;
-
+		ResetMovementValues(PLAYER_STATE::CROUCH);
 		break;
 	case PLAYER_STATE::CROUCH:
-		addCrouchSpeed = -50.f;
-
-		break;
-	case PLAYER_STATE::SLIDE:
-		//std::cout << "slide vel: " << addSlideVelocity << std::endl;
-		//if (addSlideVelocity > 0.04f)
-		//	addSlideSpeed += -10.f;
-		//else if (addSlideVelocity < -0.01f)
-		//{
-		//	activeState = PLAYER_STATE::CROUCH;
-		//	addSlideVelocity = 0;
-		//	addSlideSpeed = 0;
-		//}
-		//else if (addSlideVelocity == 0.0f)
-		addSlideSpeed = 50.f;
-		if (addSlideVelocity >= 0.05f)
+		//if crouch vel to the max, then stop sliding
+		if (addCrouchVelocity >= 0.1f && enableSliding)
 		{
-			activeState = PLAYER_STATE::WALK;
-			addSlideSpeed = -500.f;
+			enableSliding = false;
 		}
-		//std::cout << "slide speed: " << addSlideSpeed << std::endl;
+		else
+		{
+			//if total vel allows sliding and 
+			if (totalVelocity >= 0.2f && enableSliding)
+				addCrouchSpeed = 50.f;
+			else
+			{
+				addSprintSpeed = -10.f;
+				addCrouchSpeed = -10.f;
+			}
+		}
 		break;
 	}
 
@@ -383,15 +371,10 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 
 	float addedCrouchAccel = addCrouchSpeed * deltaTime;
 	addCrouchVelocity += addedCrouchAccel * deltaTime;
-	addCrouchVelocity = Math::Clamp(addCrouchVelocity, -.05f, 0.f);
+	addCrouchVelocity = Math::Clamp(addCrouchVelocity, -.05f, .1f);
 
-	float addedSlideAccel = addSlideSpeed * deltaTime;
-	addSlideVelocity += addedSlideAccel * deltaTime;
-	addSlideVelocity = Math::Clamp(addSlideVelocity, 0.f, .05f);
-
-	//std::cout << velocity << " " << addSprintVelocity << " " << addCrouchVelocity << " " << addSlideVelocity << std::endl;
-	totalVelocity = velocity + addSprintVelocity + addCrouchVelocity + addSlideVelocity;
-	//std::cout << "FINAL VEL: " << totalVelocity << std::endl;
+	totalVelocity = velocity + addSprintVelocity + addCrouchVelocity;
+	std::cout << "FINAL VEL: " << totalVelocity << std::endl;
 
 	if (direction == PLAYERMOVEMENT::FORWARD)
 		vec3Position += vec3Front * totalVelocity;
@@ -466,7 +449,6 @@ bool CPlayer3D::Update(const double dElapsedTime)
 	case PLAYER_STATE::REST:
 		velocity = 0.f;
 		break;
-	case PLAYER_STATE::SLIDE:
 	case PLAYER_STATE::CROUCH:
 		vec3Position.y -= 0.1f;
 		break;
@@ -611,6 +593,26 @@ void CPlayer3D::ApplyRecoil(glm::vec2 minRecoil, glm::vec2 maxRecoil)
 	fYaw += Math::RandFloatMinMax(minRecoil.x, maxRecoil.x);
 	fPitch += Math::RandFloatMinMax(minRecoil.y, maxRecoil.y);
 	UpdatePlayerVectors();
+}
+
+/**
+ @brief Reset Movement Values
+ @param state A PLAYER_STATE enum for which state to reset movement values
+ */
+void CPlayer3D::ResetMovementValues(PLAYER_STATE state)
+{
+	switch (state)
+	{
+	case PLAYER_STATE::SPRINT:
+		addSprintSpeed = 0;
+		addSprintVelocity = 0;
+		break;
+	case PLAYER_STATE::CROUCH:
+		addCrouchSpeed = 0;
+		addCrouchVelocity = 0;
+		enableSliding = true;
+		break;
+	}
 }
 
 /**

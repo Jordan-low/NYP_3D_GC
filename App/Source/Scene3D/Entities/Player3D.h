@@ -53,7 +53,6 @@ public:
 		WALK,
 		SPRINT,
 		CROUCH,
-		SLIDE,
 		NUM_STATES
 	};
 
@@ -156,6 +155,7 @@ protected:
 	float addSlideSpeed;
 	float addCounterSlideSpeed;
 	float addSlideVelocity;
+	bool enableSliding = true;
 
 	// Physics
 	CPhysics3D cPhysics3D;
@@ -183,4 +183,7 @@ protected:
 
 	// Apply Recoil
 	void ApplyRecoil(glm::vec2 minRecoil, glm::vec2 maxRecoil);
+
+	//Reset Movement Values
+	void ResetMovementValues(PLAYER_STATE state);
 };
