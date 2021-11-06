@@ -83,6 +83,8 @@ public:
 	virtual bool Discharge(glm::vec3 vec3Position, glm::vec3 vec3Front, CSolidObject* pSource = NULL);
 	// Reload this weapon
 	virtual void Reload(void);
+	// Animate this reload weapon
+	virtual void AnimateReload(const double dt);
 	// Add rounds
 	virtual void AddRounds(const int iNewRounds);
 
@@ -133,6 +135,8 @@ protected:
 
 	// The amount of bullet spread
 	float bulletSpread;
+
+	float animateRotateAngle = 0.f;
 
 	// Min Recoil
 	glm::vec2 minRecoil;

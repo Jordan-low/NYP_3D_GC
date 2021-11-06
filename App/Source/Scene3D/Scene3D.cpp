@@ -338,7 +338,6 @@ bool CScene3D::Update(const double dElapsedTime)
 		cCamera->ProcessMouseScroll((float)cMouseController->GetMouseScrollStatus(CMouseController
 			::SCROLL_TYPE::SCROLL_TYPE_YOFFSET));
 	}
-
 	//Update for weapons
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_1))
 	{
@@ -433,6 +432,11 @@ void CScene3D::Render(void)
 	cProjectileManager->PreRender();
 	cProjectileManager->Render();
 	cProjectileManager->PostRender();
+
+	cPlayer3D->GetWeapon()->SetProjection(projection);
+	cPlayer3D->GetWeapon()->PreRender();
+	cPlayer3D->GetWeapon()->Render();
+	cPlayer3D->GetWeapon()->PostRender();
 
 	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 

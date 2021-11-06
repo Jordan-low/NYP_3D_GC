@@ -232,7 +232,7 @@ bool CWeaponInfo::Init(void)
 	// The elapsed time (between shots)
 	dElapsedTime = dTimeBetweenShots;
 	// The elapsed time for reloading of a magazine in milliseconds
-	dReloadTime = 0.0f;
+	dReloadTime = -1.0f;
 	// The maximum elapsed time for reloading of a magazine in milliseconds
 	dMaxReloadTime = 5.0f;
 	// Boolean flag to indicate if weapon can fire now
@@ -260,7 +260,8 @@ bool CWeaponInfo::Update(const double dt)
 	model = glm::translate(model, glm::vec3(vec3Position.x, vec3Position.y, vec3Position.z));
 	model = glm::scale(model, vec3Scale);
 	model = glm::rotate(model, fRotationAngle, vec3RotationAxis);
-
+	model = glm::rotate(model, glm::radians(animateRotateAngle), glm::vec3(1, 0, 0));
+	std::cout << vec3RotationAxis.x << " " << vec3RotationAxis.y << " " << vec3RotationAxis.z << " " << animateRotateAngle << std::endl;
 	// If the weapon can fire, then just fire and return
 	if (bFire)
 		return false;
@@ -268,6 +269,7 @@ bool CWeaponInfo::Update(const double dt)
 	// Update the dReloadTime
 	if (dReloadTime >= 0.0f)
 	{
+		AnimateReload(dt);
 		// Reduce the dReloadTime
 		dReloadTime -= dt;
 		// Return true since we have already updated the dReloadTime
@@ -346,6 +348,7 @@ void CWeaponInfo::Reload(void)
 	// If the weapon is already reloading, then don't reload again
 	if (dReloadTime > 0.0f)
 		return;
+
 	// Check if there is enough bullets
 	if (iMagRounds < iMaxMagRounds)
 	{
@@ -366,6 +369,20 @@ void CWeaponInfo::Reload(void)
 		// No need to have countdown for between shots since we are reloading
 		dElapsedTime = dTimeBetweenShots;
 	}
+}
+
+/**
+ @brief Animate Reload
+ @param dt A const double variable containing the elapsed time since the last frame
+ */
+void CWeaponInfo::AnimateReload(const double dt)
+{
+	//Rotate a full 360 degree during its reload time
+	animateRotateAngle += 360.f / dMaxReloadTime * dt;
+
+	//once it rotates a full 360, reset the angle back to 0
+	if (animateRotateAngle >= 360.f)
+		animateRotateAngle = 0.f;
 }
 
 /**
@@ -459,6 +476,7 @@ void CWeaponInfo::PrintSelf(void)
 	cout << "iMaxMagRounds\t\t:\t" << iMaxMagRounds << endl;
 	cout << "iTotalRounds\t\t:\t" << iTotalRounds << endl;
 	cout << "iMaxTotalRounds\t\t:\t" << iMaxTotalRounds << endl;
+	cout << "dReloadTime\t\t:\t" << dReloadTime << endl;
 	cout << "dTimeBetweenShots\t:\t" << dTimeBetweenShots << endl;
 	cout << "dElapsedTime\t\t:\t" << dElapsedTime << endl;
 	cout << "bFire\t\t:\t" << bFire << endl;
