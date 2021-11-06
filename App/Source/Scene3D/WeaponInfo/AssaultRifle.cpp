@@ -53,6 +53,8 @@ bool CAssaultRifle::Init(void)
 	dTimeBetweenShots = 0.02;
 	// The time to reload
 	dMaxReloadTime = 3.f;
+	// The time to equip
+	dMaxEquipTime = 0.5f;
 	// The elapsed time (between shots)
 	dElapsedTime = 0.0;
 	// Boolean flag to indicate if weapon can fire now

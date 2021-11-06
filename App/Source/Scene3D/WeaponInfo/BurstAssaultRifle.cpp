@@ -54,7 +54,7 @@ bool CBurstAssaultRifle::Init(void)
 	// The time to reload
 	dMaxReloadTime = 3.f;
 	// The time to equip
-	dMaxEquipTime = 2.f;
+	dMaxEquipTime = 0.5f;
 	// The elapsed time (between shots)
 	dElapsedTime = 0.0;
 	// Boolean flag to indicate if weapon can fire now
