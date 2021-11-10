@@ -376,16 +376,24 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 	addCrouchVelocity = Math::Clamp(addCrouchVelocity, -.05f, .1f);
 
 	totalVelocity = velocity + addSprintVelocity + addCrouchVelocity;
-	std::cout << "FINAL VEL: " << totalVelocity << std::endl;
 
+	glm::vec3 predictedPos = vec3Position;
 	if (direction == PLAYERMOVEMENT::FORWARD)
-		vec3Position += vec3Front * totalVelocity;
+		predictedPos += vec3Front * totalVelocity;
 	if (direction == PLAYERMOVEMENT::BACKWARD)
-		vec3Position -= vec3Front * totalVelocity;
+		predictedPos -= vec3Front * totalVelocity;
 	if (direction == PLAYERMOVEMENT::LEFT)
-		vec3Position -= vec3Right * totalVelocity;
+		predictedPos -= vec3Right * totalVelocity;
 	if (direction == PLAYERMOVEMENT::RIGHT)
-		vec3Position += vec3Right * totalVelocity;
+		predictedPos += vec3Right * totalVelocity;
+	
+	std::cout << "dot pdt: " << glm::dot(glm::normalize(vec3Position), glm::normalize(predictedPos)) << std::endl;
+	if (glm::dot(vec3Position, predictedPos) < 300)
+	{
+
+	}
+	vec3Position = predictedPos;
+
 }
 
 /**
