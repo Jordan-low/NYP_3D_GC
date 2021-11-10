@@ -193,7 +193,7 @@ bool CSolidObjectManager::CheckForCollision(void)
 		if ((*it)->GetStatus() == false)
 			continue;
 
-		for (it_other = it; it_other != end; ++it_other)
+		for (it_other = lSolidObject.begin(); it_other != end; ++it_other)
 		{
 			// If the entity is not active, then skip it
 			if ((*it_other)->GetStatus() == false)
