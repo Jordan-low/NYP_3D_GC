@@ -377,23 +377,40 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 
 	totalVelocity = velocity + addSprintVelocity + addCrouchVelocity;
 
+	//get predicted pos
 	glm::vec3 predictedPos = vec3Position;
 	if (direction == PLAYERMOVEMENT::FORWARD)
 		predictedPos += vec3Front * totalVelocity;
 	if (direction == PLAYERMOVEMENT::BACKWARD)
-		predictedPos -= vec3Front * totalVelocity;
+		predictedPos -= vec3Front * velocity;
 	if (direction == PLAYERMOVEMENT::LEFT)
-		predictedPos -= vec3Right * totalVelocity;
+		predictedPos -= vec3Right * velocity;
 	if (direction == PLAYERMOVEMENT::RIGHT)
-		predictedPos += vec3Right * totalVelocity;
-	
-	std::cout << "dot pdt: " << glm::dot(glm::normalize(vec3Position), glm::normalize(predictedPos)) << std::endl;
-	if (glm::dot(vec3Position, predictedPos) < 300)
-	{
+		predictedPos += vec3Right * velocity;
 
-	}
-	vec3Position = predictedPos;
+	//get new pos height
+	float fCheckHeight = cTerrain->GetHeight(predictedPos.x, predictedPos.z) + fHeightOffset - vec3Position.y;
+	//get the length of xz axis
+	float xzAxis = glm::length(glm::vec2(vec3Position.x, vec3Position.z) - glm::vec2(predictedPos.x, predictedPos.z));
+	//get the angle based on toa cah soh
+	float angle = glm::degrees(atan2f(fCheckHeight, xzAxis));
+	//if angle < 65 degree, move the player. else, the player not able to move upwards
+	if (angle < 65.f)
+		vec3Position = predictedPos;
+	std::cout << "ANGLE: " << angle << std::endl;
 
+	/*glm::vec3 n = glm::normalize(vec3Position);
+	glm::vec3 d = glm::normalize(predictedPos);
+	std::cout << n.x << " " << n.y << " " << n.z << " " << glm::length(n) << std::endl;
+	std::cout << vec3Position.x << " " << vec3Position.y << " " << vec3Position.z << " " << glm::length(vec3Position) << std::endl;
+	std::cout << predictedPos.x << " " << predictedPos.y << " " << predictedPos.z << std::endl;
+	float dotPdt = glm::dot(n, d);
+	float magnitudes = glm::length(n) * glm::length(d);
+	float result = dotPdt / magnitudes;
+	float radian = glm::acos(result);
+	float degree = abs(glm::degrees(radian));
+	std::cout << "res: " << result << std::endl;
+	std::cout << "angle: " << degree << std::endl;*/
 }
 
 /**
