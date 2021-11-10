@@ -333,17 +333,21 @@ CPhysics3D CPlayer3D::GetPhysics()
  */
 void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float deltaTime)
 {
+	float drag = 0;
 	switch (activeState)
 	{
 	case PLAYER_STATE::WALK:
+		drag = totalVelocity;
 		addSprintSpeed = -50.f;
 		ResetMovementValues(PLAYER_STATE::CROUCH);
 		break;
 	case PLAYER_STATE::SPRINT:
+		drag = totalVelocity;
 		addSprintSpeed = 50.f;
 		ResetMovementValues(PLAYER_STATE::CROUCH);
 		break;
 	case PLAYER_STATE::CROUCH:
+		drag = addSprintVelocity;
 		//if crouch vel to the max, then stop sliding
 		if (addCrouchVelocity >= 0.1f && enableSliding)
 		{
@@ -352,7 +356,7 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 		else
 		{
 			//if total vel allows sliding and 
-			if (totalVelocity >= 0.2f && enableSliding)
+			if (totalVelocity >= 0.1f && enableSliding)
 				addCrouchSpeed = 50.f;
 			else
 			{
@@ -394,11 +398,20 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 	float xzAxis = glm::length(glm::vec2(vec3Position.x, vec3Position.z) - glm::vec2(predictedPos.x, predictedPos.z));
 	//get the angle based on toa cah soh
 	float angle = glm::degrees(atan2f(fCheckHeight, xzAxis));
+	//get the scale using the drag and the angle
+	float scale = drag * -(angle * 0.03f);
+
 	//if angle < 65 degree, move the player. else, the player not able to move upwards
 	if (angle < 65.f)
-		vec3Position = predictedPos;
-	std::cout << "ANGLE: " << angle << std::endl;
+	{
+		//if moving forward, add the scale multiplier
+		if (direction == PLAYERMOVEMENT::FORWARD)
+			predictedPos += vec3Front * scale;
 
+		//set player pos to the new pos
+		vec3Position = predictedPos;
+	}
+	//std::cout << "ANGLE: " << angle << std::endl;
 	/*glm::vec3 n = glm::normalize(vec3Position);
 	glm::vec3 d = glm::normalize(predictedPos);
 	std::cout << n.x << " " << n.y << " " << n.z << " " << glm::length(n) << std::endl;
