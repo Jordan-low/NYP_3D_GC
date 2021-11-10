@@ -193,7 +193,7 @@ bool CSolidObjectManager::CheckForCollision(void)
 		if ((*it)->GetStatus() == false)
 			continue;
 
-		for (it_other = it; it_other != end; ++it_other)
+		for (it_other = lSolidObject.begin(); it_other != end; ++it_other)
 		{
 			// If the entity is not active, then skip it
 			if ((*it_other)->GetStatus() == false)
@@ -247,18 +247,18 @@ bool CSolidObjectManager::CheckForCollision(void)
 					(*it)->RollbackPosition();
 					if (((*it)->GetType() == CSolidObject::TYPE::PLAYER))
 						bResult = true;
-					float dotPdt = glm::dot((*it_other)->GetFront(), (*it)->GetFront()); //wall's front dot player's front
-					std::cout << "WALLFRONT: " << (*it_other)->GetFront().x << " " << (*it_other)->GetFront().y << " " << (*it_other)->GetFront().z <<
-						" PLAYERFRONT: " << (*it)->GetFront().x << " " << (*it)->GetFront().y << " " << (*it)->GetFront().z << std::endl;
-					std::cout << "DOT: " << dotPdt << std::endl;
-					CPlayer3D* cPlayer3D = dynamic_cast<CPlayer3D*>(*it);
-					if ((dotPdt > 0.8f || dotPdt < -0.8f) && cPlayer3D->GetPhysics().GetStatus() != CPhysics3D::STATUS::IDLE) //check if player is looking perpendicular to the wall's front
-					{
-						isWallRun = true; //tilt cam using this bool
-						std::cout << "Wall running" << std::endl;
-						cPlayer3D->GetPhysics().SetStatus(CPhysics3D::STATUS::WALL_RUN);
-						(*it)->SetPosition((*it)->GetPosition() + glm::vec3((*it)->GetFront().x / 10, 0, (*it)->GetFront().z / 10)); //move the player towards the direction of the wall's front
-					}
+					//float dotPdt = glm::dot((*it_other)->GetFront(), (*it)->GetFront()); //wall's front dot player's front
+					//std::cout << "WALLFRONT: " << (*it_other)->GetFront().x << " " << (*it_other)->GetFront().y << " " << (*it_other)->GetFront().z <<
+					//	" PLAYERFRONT: " << (*it)->GetFront().x << " " << (*it)->GetFront().y << " " << (*it)->GetFront().z << std::endl;
+					//std::cout << "DOT: " << dotPdt << std::endl;
+					//CPlayer3D* cPlayer3D = dynamic_cast<CPlayer3D*>(*it);
+					//if ((dotPdt > 0.8f || dotPdt < -0.8f) && cPlayer3D->GetPhysics().GetStatus() != CPhysics3D::STATUS::IDLE) //check if player is looking perpendicular to the wall's front
+					//{
+					//	isWallRun = true; //tilt cam using this bool
+					//	std::cout << "Wall running" << std::endl;
+					//	cPlayer3D->GetPhysics().SetStatus(CPhysics3D::STATUS::WALL_RUN);
+					//	(*it)->SetPosition((*it)->GetPosition() + glm::vec3((*it)->GetFront().x / 10, 0, (*it)->GetFront().z / 10)); //move the player towards the direction of the wall's front
+					//}
 					cout << "** Collision between Entity and Structure ***" << endl;
 					break;
 				}

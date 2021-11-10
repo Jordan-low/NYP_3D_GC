@@ -165,12 +165,10 @@ bool CScene3D::Init(void)
 
 	// Initialise a CStructure3D
 	float fCheckHeight = cTerrain->GetHeight(2.0f, -2.0f);
-	CStructure3D* cStructure3D = new CStructure3D(glm::vec3(2.0f, fCheckHeight + .3f, -2.0f));
+	CStructure3D* cStructure3D = new CStructure3D(glm::vec3(2.0f, fCheckHeight, -2.0f));
 	cStructure3D->SetShader("Shader3D");
-	cStructure3D->SetScale(glm::vec3(5, 1, 1));
-	cStructure3D->SetFront(glm::vec3(-1, 0, 0));
 	cStructure3D->Init();
-	cStructure3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 1.0f, 1.0f), glm::vec3(-2.5f, -0.5f, -0.5f), glm::vec3(2.5f, 0.5f, 0.5f));
+	cStructure3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 1.0f, 1.0f), glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
 
 	// Initialise a CEnemy3D
 	fCheckHeight = cTerrain->GetHeight(0.0f, -10.0f);
@@ -206,25 +204,25 @@ bool CScene3D::Init(void)
 	//cPistol->Init();
 	//cPistol->SetShader("Shader3D_Model");
 
-	//// Assign a cAssaultRifle to the cPlayer3D
-	//CAssaultRifle* cAssaultRifle = new CAssaultRifle();
-	//// Set the pos, rot, scale of this weapon
-	//cAssaultRifle->SetPosition(glm::vec3(0.05f, -0.075f, -0.3f));
-	//cAssaultRifle->SetRotation(3.14159f, glm::vec3(0.0f, 1.0f, 0.0f));
-	//cAssaultRifle->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
-	////Initialise the instance
-	//cAssaultRifle->Init();
-	//cAssaultRifle->SetShader("Shader3D_Model");
-
 	// Assign a cAssaultRifle to the cPlayer3D
-	CBurstAssaultRifle* cBurstAssaultRifle = new CBurstAssaultRifle();
+	CAssaultRifle* cAssaultRifle = new CAssaultRifle();
 	// Set the pos, rot, scale of this weapon
-	cBurstAssaultRifle->SetPosition(glm::vec3(0.05f, -0.075f, -0.3f));
-	cBurstAssaultRifle->SetRotation(3.14159f, glm::vec3(0.0f, 1.0f, 0.0f));
-	cBurstAssaultRifle->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
+	cAssaultRifle->SetPosition(glm::vec3(0.05f, -0.075f, -0.3f));
+	cAssaultRifle->SetRotation(3.14159f, glm::vec3(0.0f, 1.0f, 0.0f));
+	cAssaultRifle->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
 	//Initialise the instance
-	cBurstAssaultRifle->Init();
-	cBurstAssaultRifle->SetShader("Shader3D_Model");
+	cAssaultRifle->Init();
+	cAssaultRifle->SetShader("Shader3D_Model");
+
+	//// Assign a cAssaultRifle to the cPlayer3D
+	//CBurstAssaultRifle* cBurstAssaultRifle = new CBurstAssaultRifle();
+	//// Set the pos, rot, scale of this weapon
+	//cBurstAssaultRifle->SetPosition(glm::vec3(0.05f, -0.075f, -0.3f));
+	//cBurstAssaultRifle->SetRotation(3.14159f, glm::vec3(0.0f, 1.0f, 0.0f));
+	//cBurstAssaultRifle->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
+	////Initialise the instance
+	//cBurstAssaultRifle->Init();
+	//cBurstAssaultRifle->SetShader("Shader3D_Model");
 
 	// Assign a cSubmachineGun to the cPlayer3D
 	CSubmachineGun* cSubmachineGun = new CSubmachineGun();
@@ -236,7 +234,7 @@ bool CScene3D::Init(void)
 	cSubmachineGun->Init();
 	cSubmachineGun->SetShader("Shader3D_Model");
 
-	cPlayer3D->SetWeapon(0, cBurstAssaultRifle);
+	cPlayer3D->SetWeapon(0, cAssaultRifle);
 	cPlayer3D->SetWeapon(1, cSubmachineGun);
 	cPlayer3D->SetCurrentWeapon(0);
 

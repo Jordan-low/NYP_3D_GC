@@ -52,9 +52,9 @@ bool CSubmachineGun::Init(void)
 	// The time between shots
 	dTimeBetweenShots = 0.01;
 	// The time to reload
-	dMaxReloadTime = 2.5f;
+	dMaxReloadTime = 1.5f;
 	// The time to equip
-	dMaxEquipTime = 0.3f;
+	dMaxEquipTime = 0.2f;
 	// The elapsed time (between shots)
 	dElapsedTime = 0.0;
 	// Boolean flag to indicate if weapon can fire now

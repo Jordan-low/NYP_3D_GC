@@ -157,6 +157,7 @@ void CEntity2D::Render(void)
 
 	// Get the texture to be rendered
 	glBindTexture(GL_TEXTURE_2D, iTextureID);
+	glActiveTexture(GL_TEXTURE0);
 
 	glBindVertexArray(VAO);
 
