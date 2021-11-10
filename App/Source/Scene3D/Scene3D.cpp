@@ -165,12 +165,10 @@ bool CScene3D::Init(void)
 
 	// Initialise a CStructure3D
 	float fCheckHeight = cTerrain->GetHeight(2.0f, -2.0f);
-	CStructure3D* cStructure3D = new CStructure3D(glm::vec3(2.0f, fCheckHeight + .3f, -2.0f));
+	CStructure3D* cStructure3D = new CStructure3D(glm::vec3(2.0f, fCheckHeight, -2.0f));
 	cStructure3D->SetShader("Shader3D");
-	cStructure3D->SetScale(glm::vec3(5, 1, 1));
-	cStructure3D->SetFront(glm::vec3(-1, 0, 0));
 	cStructure3D->Init();
-	cStructure3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 1.0f, 1.0f), glm::vec3(-2.5f, -0.5f, -0.5f), glm::vec3(2.5f, 0.5f, 0.5f));
+	cStructure3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 1.0f, 1.0f), glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
 
 	// Initialise a CEnemy3D
 	fCheckHeight = cTerrain->GetHeight(0.0f, -10.0f);
