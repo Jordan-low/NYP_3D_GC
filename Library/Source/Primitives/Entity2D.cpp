@@ -156,8 +156,8 @@ void CEntity2D::Render(void)
 	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
 	// Get the texture to be rendered
-	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, iTextureID);
+	glActiveTexture(GL_TEXTURE0);
 
 	glBindVertexArray(VAO);
 
