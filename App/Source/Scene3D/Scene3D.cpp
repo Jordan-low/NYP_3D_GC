@@ -32,6 +32,7 @@ CScene3D::CScene3D(void)
 	, cKeyboardController(NULL)
 	, cMouseController(NULL)
 	, cFPSCounter(NULL)
+	, cGUI_Scene3D(NULL)
 	, cSoundController(NULL)
 	, cCamera(NULL)
 	, cSkybox(NULL)
@@ -95,6 +96,13 @@ CScene3D::~CScene3D(void)
 	{
 		cProjectileManager->Destroy();
 		cProjectileManager = NULL;
+	}
+
+	// Destroy the cSoundController
+	if (cGUI_Scene3D)
+	{
+		cGUI_Scene3D->Destroy();
+		cGUI_Scene3D = NULL;
 	}
 
 	// We won't delete this since it was created elsewhere
@@ -238,6 +246,12 @@ bool CScene3D::Init(void)
 	cPlayer3D->SetWeapon(1, cSubmachineGun);
 	cPlayer3D->SetCurrentWeapon(0);
 
+
+	// Load the GUI Entities
+	// Store the CGUI_Scene3D singleton instance here
+	cGUI_Scene3D = CGUI_Scene3D::GetInstance();
+	cGUI_Scene3D->Init();
+
 	// Load the sounds into CSoundController
 	cSoundController = CSoundController::GetInstance();
 	cSoundController->Init();
@@ -260,6 +274,9 @@ bool CScene3D::Update(const double dElapsedTime)
 
 	// Update the projectiles
 	cProjectileManager->Update(dElapsedTime);
+
+	// Call the CGUI_Scene3D's update method
+	cGUI_Scene3D->Update(dElapsedTime);
 
 	// Get keyboard updates for cPlayer3D
 
@@ -366,6 +383,35 @@ bool CScene3D::Update(const double dElapsedTime)
 		}
 	}
 
+	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_9))
+	{
+		bool bStatus = CCameraEffectsManager::GetInstance()->Get("CrossHair")->GetStatus();
+		CCameraEffectsManager::GetInstance()->Get("CrossHair")->SetStatus(!bStatus);
+
+		// Reset the key so that it will not repeat until the key is released and pressed again
+		CKeyboardController::GetInstance()->ResetKey(GLFW_KEY_9);
+	}
+	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_8))
+	{
+		bool bStatus = CCameraEffectsManager::GetInstance()->Get("CameraShake")->GetStatus();
+		CCameraEffectsManager::GetInstance()->Get("CameraShake")->SetStatus(!bStatus);
+
+		// Reset the key so that it will not repeat until the key is released and pressed again
+		CKeyboardController::GetInstance()->ResetKey(GLFW_KEY_8);
+	}
+
+	if (cMouseController->IsButtonPressed(CMouseController::BUTTON_TYPE::RMB))
+	{
+		// Switch on Scope mode and zoom in
+		cCamera->fZoom = 1.0f;
+		CCameraEffectsManager::GetInstance()->Get("ScopeScreen")->SetStatus(true);
+	}
+	else if (cMouseController->IsButtonReleased(CMouseController::BUTTON_TYPE::RMB))
+	{
+		// Switch off Scope mode and zoom out
+		cCamera->fZoom = 45.0f;
+		CCameraEffectsManager::GetInstance()->Get("ScopeScreen")->SetStatus(false);
+	}
 	// Post Update the mouse controller
 	cMouseController->PostUpdate();
 
@@ -437,6 +483,14 @@ void CScene3D::Render(void)
 	cPlayer3D->GetWeapon()->PreRender();
 	cPlayer3D->GetWeapon()->Render();
 	cPlayer3D->GetWeapon()->PostRender();
+
+	cGUI_Scene3D->SetProjection(projection);
+	// Call the CGUI_Scene3D's PreRender ()
+	cGUI_Scene3D->PreRender();
+	// Call the cGUI_Scene3D's Render()
+	cGUI_Scene3D->Render();
+	// Call the CGUI_Scene3D's PostRender()
+	cGUI_Scene3D->PostRender();
 
 	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 

@@ -45,6 +45,9 @@
 // Include CStructure3D
 #include "Entities/Structure3D.h"
 
+// Include CGUI_Scene3D
+#include "GUI_Scene3D.h"
+
 // Include CProjectileManager
 #include "WeaponInfo/ProjectileManager.h"
 #include "WeaponInfo/Pistol.h"
@@ -109,6 +112,9 @@ protected:
 
 	// Handler to the CProjectileManager class
 	CProjectileManager* cProjectileManager;
+
+	// GUI_Scene3D
+	CGUI_Scene3D* cGUI_Scene3D;
 
 	// Constructor
 	CScene3D(void);
