@@ -139,6 +139,8 @@ bool CPlayer3D::Init(void)
 	// Call the parent's Init()
 	CSolidObject::Init();
 
+	cCamera = CCamera::GetInstance();
+
 	// Set the type
 	SetType(CEntity3D::TYPE::PLAYER);
 
@@ -471,7 +473,7 @@ bool CPlayer3D::Update(const double dElapsedTime)
 	// If the camera is attached to this player, then update the camera
 	if (cCamera)
 	{
-		cCamera->vec3Position = vec3Position;
+		cCamera->vec3Position = vec3Position + cCamera->vec3Offset;
 		cCamera->vec3Front = vec3Front;
 		cCamera->vec3Up = vec3Up;
 		cCamera->vec3Right = vec3Right;

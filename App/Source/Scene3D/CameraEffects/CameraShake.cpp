@@ -98,10 +98,9 @@ bool CCameraShake::Update(const double dElapsedTime)
 	cCamera->vec3Offset = cCamera->vec3Right * (vec2Magnitude.x * cos(fAngle));
 	// Update the camera's position on the y axis
 	cCamera->vec3Offset.y = vec2Magnitude.y * sin(2 * fAngle) * 0.5f;
-
 	// Set to false since we have already updated camera shake
 	bToBeUpdated = false;
-
+	std::cout <<"B:"<< cCamera->vec3Offset.x << cCamera->vec3Offset.y << cCamera->vec3Offset.z << std::endl;
 	// If bPrepareToStop == true, then stop the camera shake when fAngle 
 	// is around 1.570797f. This will prevent sudden camera reset
 	if ((bPrepareToStop) && ((fAngle > 1.570f) && (fAngle < 1.571f)))

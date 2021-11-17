@@ -21,6 +21,7 @@
 // Include CShaderManager
 #include "RenderControl/ShaderManager.h"
 
+#include "CameraEffects/CameraShake.h"
 #include <iostream>
 using namespace std;
 
@@ -279,7 +280,6 @@ bool CScene3D::Update(const double dElapsedTime)
 	cGUI_Scene3D->Update(dElapsedTime);
 
 	// Get keyboard updates for cPlayer3D
-
 	//Player Movement
 	cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::REST;
 
@@ -293,6 +293,7 @@ bool CScene3D::Update(const double dElapsedTime)
 	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_S))
 	{
+		((CCameraShake*)CCameraEffectsManager::GetInstance()->Get("CameraShake"))->bToBeUpdated = true;
 		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
 		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::BACKWARD, (float)dElapsedTime);
 	}
@@ -303,6 +304,7 @@ bool CScene3D::Update(const double dElapsedTime)
 	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_W))
 	{
+		((CCameraShake*)CCameraEffectsManager::GetInstance()->Get("CameraShake"))->bToBeUpdated = true;
 		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
 			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
 		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT))
