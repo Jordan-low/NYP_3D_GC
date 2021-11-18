@@ -58,6 +58,8 @@ public:
 	virtual void SetFiringRate(const int iFiringRate);
 	// Set the firing flag
 	virtual void SetCanFire(const bool bFire);
+	// Set the gun recoil position vector
+	virtual void SetGunRecoilPos(glm::vec3 _gunRecoilPos);
 
 	// Get the time between shots
 	virtual double GetTimeBetweenShots(void) const;
@@ -72,6 +74,8 @@ public:
 	virtual glm::vec2 GetMinRecoil(void) const;
 	// Get the max recoil vector
 	virtual glm::vec2 GetMaxRecoil(void) const;
+	// Get the gun recoil position vector
+	virtual glm::vec3 GetGunRecoilPos(void) const;
 	// Get the bullet spread
 	virtual float GetBulletSpread(void) const;
 									   
@@ -146,6 +150,8 @@ protected:
 
 	// Float for reload rotate angle
 	float animateReloadAngle;
+	float animateReloadPosY;
+	float animateReloadPosZ;
 	// Float for equip rotate angle
 	float animateEquipAngle;
 	// Float for initial weapon z position
@@ -157,6 +163,9 @@ protected:
 	glm::vec2 minRecoil;
 	// Max Recoil
 	glm::vec2 maxRecoil;
+
+	// Gun Recoil Position
+	glm::vec3 gunRecoilPos;
 	// For Renderings
 	unsigned int iIndicesSize;
 };
