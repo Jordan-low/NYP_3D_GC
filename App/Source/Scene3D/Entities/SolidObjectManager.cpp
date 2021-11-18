@@ -11,6 +11,8 @@
 
 #include "../Entities/Player3D.h"
 
+#include "../CameraEffects/CameraEffectsManager.h"
+
 // Include CCameraEffectsManager
 //#include "../CameraEffects/CameraEffectsManager.h"
 
@@ -247,6 +249,9 @@ bool CSolidObjectManager::CheckForCollision(void)
 					(*it)->RollbackPosition();
 					if (((*it)->GetType() == CSolidObject::TYPE::PLAYER))
 						bResult = true;
+
+					if (bResult)
+						CCameraEffectsManager::GetInstance()->Get("BloodScreen")->SetStatus(true);
 					//float dotPdt = glm::dot((*it_other)->GetFront(), (*it)->GetFront()); //wall's front dot player's front
 					//std::cout << "WALLFRONT: " << (*it_other)->GetFront().x << " " << (*it_other)->GetFront().y << " " << (*it_other)->GetFront().z <<
 					//	" PLAYERFRONT: " << (*it)->GetFront().x << " " << (*it)->GetFront().y << " " << (*it)->GetFront().z << std::endl;

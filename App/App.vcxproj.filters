@@ -176,6 +176,30 @@
     <ClCompile Include="Source\Scene3D\WeaponInfo\BurstAssaultRifle.cpp">
       <Filter>Scene3D\WeaponInfo</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene3D\GUI_Scene3D.cpp">
+      <Filter>Scene3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\Minimap\Minimap.cpp">
+      <Filter>Scene3D\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\CameraEffects\BloodScreen.cpp">
+      <Filter>Scene3D\CameraEffects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\CameraEffects\CameraEffects.cpp">
+      <Filter>Scene3D\CameraEffects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\CameraEffects\CameraEffectsManager.cpp">
+      <Filter>Scene3D\CameraEffects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\CameraEffects\CameraShake.cpp">
+      <Filter>Scene3D\CameraEffects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\CameraEffects\CrossHair.cpp">
+      <Filter>Scene3D\CameraEffects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\CameraEffects\ScopeScreen.cpp">
+      <Filter>Scene3D\CameraEffects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -306,6 +330,30 @@
     </ClInclude>
     <ClInclude Include="Source\Scene3D\WeaponInfo\BurstAssaultRifle.h">
       <Filter>Scene3D\WeaponInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\GUI_Scene3D.h">
+      <Filter>Scene3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\Minimap\Minimap.h">
+      <Filter>Scene3D\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\CameraEffects\BloodScreen.h">
+      <Filter>Scene3D\CameraEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\CameraEffects\CameraEffects.h">
+      <Filter>Scene3D\CameraEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\CameraEffects\CameraEffectsManager.h">
+      <Filter>Scene3D\CameraEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\CameraEffects\CameraShake.h">
+      <Filter>Scene3D\CameraEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\CameraEffects\CrossHair.h">
+      <Filter>Scene3D\CameraEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\CameraEffects\ScopeScreen.h">
+      <Filter>Scene3D\CameraEffects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
