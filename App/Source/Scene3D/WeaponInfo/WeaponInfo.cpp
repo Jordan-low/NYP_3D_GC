@@ -257,7 +257,7 @@ bool CWeaponInfo::Init(void)
 
 	// Update the model matrix
 	initialZPos = vec3Position.z;
-	vec3Position.z += 0.1f;
+	vec3Position.z += 0.3f;
 	finalZPos = vec3Position.z;
 	model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 	model = glm::translate(model, glm::vec3(vec3Position.x, vec3Position.y, vec3Position.z));
@@ -429,7 +429,7 @@ void CWeaponInfo::AnimateEquip(const double dt)
 		animateEquipAngle = 0.f;
 
 	//Pull out the weapon slightly from the back to the front
-	vec3Position.z -= 0.1f / dMaxEquipTime * dt;
+	vec3Position.z -= 0.3f / dMaxEquipTime * dt;
 
 	if (vec3Position.z <= initialZPos)
 		vec3Position.z = initialZPos;
