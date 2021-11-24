@@ -174,6 +174,24 @@ namespace Math
 /******************************************************************************/
 /*!
 \brief
+Linear Interpolates value A to B within t
+
+\param a first value
+\param b second value
+\param t time value
+
+\exception None
+\return The square of the value
+*/
+/******************************************************************************/
+template<typename T>
+T Lerp(T a, T b, T t)
+{
+	return a * (1.0f - t) + b * t;
+}
+/******************************************************************************/
+/*!
+\brief
 Initialize Random Number Generator
 
 \param None

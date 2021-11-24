@@ -34,12 +34,15 @@ CWeaponInfo::CWeaponInfo()
 	, dMaxEquipTime(0.0f)
 	, dMaxReloadTime(5.0f)
 	, animateReloadAngle(0.f)
+	, animateReloadPosY(0.f)
+	, animateReloadPosZ(0.f)
 	, animateEquipAngle(90.f)
 	, bFire(true)
 	, bAuto(true)
 	, bulletSpread(0.0f)
 	, minRecoil(glm::vec2(0.f))
 	, maxRecoil(glm::vec2(0.f))
+	, gunRecoilPos(glm::vec3(0.f))
 {
 }
 
@@ -165,6 +168,11 @@ void CWeaponInfo::SetCanFire(const bool bFire)
 	this->bFire = bFire;
 }
 
+void CWeaponInfo::SetGunRecoilPos(glm::vec3 _gunRecoilPos)
+{
+	gunRecoilPos = _gunRecoilPos;
+}
+
 /**
  @brief Get the time between shots
  @return A double variable
@@ -211,6 +219,11 @@ glm::vec2 CWeaponInfo::GetMaxRecoil(void) const
 	return maxRecoil;
 }
 
+glm::vec3 CWeaponInfo::GetGunRecoilPos(void) const
+{
+	return gunRecoilPos;
+}
+
 float CWeaponInfo::GetBulletSpread(void) const
 {
 	return bulletSpread;
@@ -244,7 +257,7 @@ bool CWeaponInfo::Init(void)
 
 	// Update the model matrix
 	initialZPos = vec3Position.z;
-	vec3Position.z += 0.1f;
+	vec3Position.z += 0.3f;
 	finalZPos = vec3Position.z;
 	model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 	model = glm::translate(model, glm::vec3(vec3Position.x, vec3Position.y, vec3Position.z));
@@ -262,10 +275,12 @@ bool CWeaponInfo::Init(void)
  */
 bool CWeaponInfo::Update(const double dt)
 {
+	gunRecoilPos.y = Math::Lerp(gunRecoilPos.y, 0.f, (float)dt);
+	gunRecoilPos.z = Math::Lerp(gunRecoilPos.z, 0.f, (float)dt);
 
 	// Update the model matrix
 	model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-	model = glm::translate(model, glm::vec3(vec3Position.x, vec3Position.y, vec3Position.z));
+	model = glm::translate(model, glm::vec3(vec3Position.x, vec3Position.y, vec3Position.z) + gunRecoilPos + glm::vec3(0, animateReloadPosY, animateReloadPosZ));
 	model = glm::scale(model, vec3Scale);
 	model = glm::rotate(model, fRotationAngle, vec3RotationAxis);
 	model = glm::rotate(model, glm::radians(animateReloadAngle), glm::vec3(1, 0, 0));
@@ -392,12 +407,17 @@ void CWeaponInfo::Reload(void)
  */
 void CWeaponInfo::AnimateReload(const double dt)
 {
-	//Rotate a full 360 degree during its reload time
-	animateReloadAngle += 360.f / dMaxReloadTime * dt;
-
-	//once it rotates a full 360, reset the angle back to 0
-	if (animateReloadAngle >= 360.f)
-		animateReloadAngle = 0.f;
+	//animate weapon reloading
+	if (dReloadTime > dMaxReloadTime * 0.5f)
+	{
+		animateReloadPosY = Math::Lerp(animateReloadPosY, -0.2f, (float)dt * 5);
+		animateReloadPosZ = Math::Lerp(animateReloadPosZ, 0.2f, (float)dt * 10);
+	}
+	else if (dReloadTime < dMaxReloadTime * 0.5f)
+	{
+		animateReloadPosY = Math::Lerp(animateReloadPosY, 0.f, (float)dt * 5);
+		animateReloadPosZ = Math::Lerp(animateReloadPosZ, 0.f, (float)dt * 10);
+	}
 }
 
 void CWeaponInfo::AnimateEquip(const double dt)
@@ -409,7 +429,7 @@ void CWeaponInfo::AnimateEquip(const double dt)
 		animateEquipAngle = 0.f;
 
 	//Pull out the weapon slightly from the back to the front
-	vec3Position.z -= 0.1f / dMaxEquipTime * dt;
+	vec3Position.z -= 0.3f / dMaxEquipTime * dt;
 
 	if (vec3Position.z <= initialZPos)
 		vec3Position.z = initialZPos;

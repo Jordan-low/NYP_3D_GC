@@ -182,7 +182,7 @@ protected:
 	void UpdateJumpFall(const double dElapsedTime);
 
 	// Apply Recoil
-	void ApplyRecoil(glm::vec2 minRecoil, glm::vec2 maxRecoil);
+	void ApplyRecoil(CWeaponInfo* weapon);
 
 	//Reset Movement Values
 	void ResetMovementValues(PLAYER_STATE state);

@@ -290,7 +290,7 @@ bool CPlayer3D::DischargeWeapon(void)
 		bool fired = cPrimaryWeapon->Discharge(vec3Position, vec3Front, (CSolidObject*)this);
 
 		if (fired) //if first bullet is fired, apply recoil
-			ApplyRecoil(cPrimaryWeapon->GetMinRecoil(), cPrimaryWeapon->GetMaxRecoil());
+			ApplyRecoil(cPrimaryWeapon);
 
 		return fired;
 	}
@@ -299,7 +299,7 @@ bool CPlayer3D::DischargeWeapon(void)
 		bool fired = cSecondaryWeapon->Discharge(vec3Position, vec3Front, (CSolidObject*)this);
 		
 		if (fired)
-			ApplyRecoil(cSecondaryWeapon->GetMinRecoil(), cSecondaryWeapon->GetMaxRecoil());
+			ApplyRecoil(cSecondaryWeapon);
 
 		return fired;
 	}
@@ -629,11 +629,24 @@ void CPlayer3D::UpdateJumpFall(const double dElapsedTime)
  @param minRecoil A vec2 variable for minRecoil
  @param maxRecoil A vec2 variable for maxRecoil
  */
-void CPlayer3D::ApplyRecoil(glm::vec2 minRecoil, glm::vec2 maxRecoil)
+void CPlayer3D::ApplyRecoil(CWeaponInfo* weapon)
 {
+	//Get random recoil range
+	float horizontalRecoil = Math::RandFloatMinMax(weapon->GetMinRecoil().x, weapon->GetMaxRecoil().x);
+	float verticalRecoil = Math::RandFloatMinMax(weapon->GetMinRecoil().y, weapon->GetMaxRecoil().y);
+
 	//Update the yaw and pitch based on the recoil
-	fYaw += Math::RandFloatMinMax(minRecoil.x, maxRecoil.x);
-	fPitch += Math::RandFloatMinMax(minRecoil.y, maxRecoil.y);
+	fYaw += horizontalRecoil;
+	fPitch += verticalRecoil;
+
+	//Clamp the weapon recoil positions
+	float weaponRecoilPosY = Math::Clamp(verticalRecoil / 30, 0.0015f, 0.003f);
+	float weaponRecoilPosZ = Math::Clamp(horizontalRecoil / 15, -0.015f, 0.015f);
+
+	//Update the weapon recoil position based on the recoil
+	weapon->SetGunRecoilPos(glm::vec3(0, weaponRecoilPosY, -fabs(weaponRecoilPosZ)));
+
+	//Update the player's vector as the yaw and pitch has been updated
 	UpdatePlayerVectors();
 }
 
