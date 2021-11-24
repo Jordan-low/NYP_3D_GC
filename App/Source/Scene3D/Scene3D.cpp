@@ -286,6 +286,9 @@ bool CScene3D::Update(const double dElapsedTime)
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C))
 		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
 
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_V))
+		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::PRONE;
+
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_A))
 	{
 		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
@@ -305,7 +308,7 @@ bool CScene3D::Update(const double dElapsedTime)
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_W))
 	{
 		((CCameraShake*)CCameraEffectsManager::GetInstance()->Get("CameraShake"))->bToBeUpdated = true;
-		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
+		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH && cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::PRONE)
 			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
 		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT))
 		{

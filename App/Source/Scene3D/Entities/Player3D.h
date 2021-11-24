@@ -53,6 +53,7 @@ public:
 		WALK,
 		SPRINT,
 		CROUCH,
+		PRONE,
 		NUM_STATES
 	};
 
@@ -151,6 +152,9 @@ protected:
 
 	float addCrouchSpeed;
 	float addCrouchVelocity;
+
+	float addProneSpeed;
+	float addProneVelocity;
 
 	float addSlideSpeed;
 	float addCounterSlideSpeed;
