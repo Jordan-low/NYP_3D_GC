@@ -316,16 +316,16 @@ void CGUI_Scene3D::Render(void)
 	cCameraEffectsManager->Render();
 
 	//// Render the minimap
-	//cMinimap->PreRender();
-	//cMinimap->Render();
-	//cMinimap->PostRender();
+	cMinimap->PreRender();
+	cMinimap->Render();
+	cMinimap->PostRender();
 
-	//glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
-	//	cPlayer3D->GetWeapon()->SetProjection(projection);
-	//	cPlayer3D->GetWeapon()->PreRender();
-	//	cPlayer3D->GetWeapon()->Render();
-	//	cPlayer3D->GetWeapon()->PostRender();
-	//glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+	glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
+		cPlayer3D->GetWeapon()->SetProjection(projection);
+		cPlayer3D->GetWeapon()->PreRender();
+		cPlayer3D->GetWeapon()->Render();
+		cPlayer3D->GetWeapon()->PostRender();
+	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 
 	// Rendering
 	ImGui::Render();

@@ -481,11 +481,6 @@ void CScene3D::Render(void)
 	cProjectileManager->Render();
 	cProjectileManager->PostRender();
 
-	cPlayer3D->GetWeapon()->SetProjection(projection);
-	cPlayer3D->GetWeapon()->PreRender();
-	cPlayer3D->GetWeapon()->Render();
-	cPlayer3D->GetWeapon()->PostRender();
-
 	cGUI_Scene3D->SetProjection(projection);
 	// Call the CGUI_Scene3D's PreRender ()
 	cGUI_Scene3D->PreRender();
