@@ -19,6 +19,9 @@
 // Include Projectile
 #include "Projectile.h"
 
+#include "../CameraEffects/CameraEffectsManager.h"
+#include "../CameraEffects/CrossHair.h"
+
 class CWeaponInfo : public CEntity3D
 {
 public:
@@ -113,6 +116,7 @@ public:
 	// Print Self
 	virtual void PrintSelf(void);
 
+	CCrossHair::CROSSHAIR_TYPE crossHairType;
 protected:
 	// The name of the weapon in string
 	string name;

@@ -346,13 +346,13 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 		drag = totalVelocity;
 		addSprintSpeed = -50.f;
 		ResetMovementValues(PLAYER_STATE::CROUCH);
-		ResetMovementValues(PLAYER_STATE::PRONE);
+		//ResetMovementValues(PLAYER_STATE::PRONE);
 		break;
 	case PLAYER_STATE::SPRINT:
 		drag = totalVelocity;
 		addSprintSpeed = 50.f;
 		ResetMovementValues(PLAYER_STATE::CROUCH);
-		ResetMovementValues(PLAYER_STATE::PRONE);
+		//ResetMovementValues(PLAYER_STATE::PRONE);
 		break;
 	case PLAYER_STATE::CROUCH:
 		drag = addSprintVelocity;
@@ -372,12 +372,12 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 				addCrouchSpeed = -10.f;
 			}
 		}
-		ResetMovementValues(PLAYER_STATE::PRONE);
+		//ResetMovementValues(PLAYER_STATE::PRONE);
 		break;
 	case PLAYER_STATE::PRONE:
 		drag = addProneVelocity;
 		addProneSpeed = -50.f;
-		ResetMovementValues(PLAYER_STATE::CROUCH);
+		//ResetMovementValues(PLAYER_STATE::CROUCH);
 		break;
 	}
 
@@ -397,7 +397,7 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 	addProneVelocity += addedProneAccel * deltaTime;
 	addProneVelocity = Math::Clamp(addProneVelocity, -.05f, 0.f);
 
-	totalVelocity = velocity + addSprintVelocity + addCrouchVelocity + addProneVelocity;
+	totalVelocity = velocity + addSprintVelocity + addCrouchVelocity; // + addProneVelocity
 	std::cout << totalVelocity << std::endl;
 
 	//get predicted pos
@@ -405,11 +405,11 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 	if (direction == PLAYERMOVEMENT::FORWARD)
 		predictedPos += vec3Front * totalVelocity;
 	if (direction == PLAYERMOVEMENT::BACKWARD)
-		predictedPos -= vec3Front * velocity;
+		predictedPos -= vec3Front * totalVelocity;
 	if (direction == PLAYERMOVEMENT::LEFT)
-		predictedPos -= vec3Right * velocity;
+		predictedPos -= vec3Right * totalVelocity * 0.5f;
 	if (direction == PLAYERMOVEMENT::RIGHT)
-		predictedPos += vec3Right * velocity;
+		predictedPos += vec3Right * totalVelocity * 0.5f;
 
 	//get new pos height
 	float fCheckHeight = cTerrain->GetHeight(predictedPos.x, predictedPos.z) + fHeightOffset - vec3Position.y;
@@ -483,6 +483,9 @@ bool CPlayer3D::Update(const double dElapsedTime)
 		cPrimaryWeapon->Update(dElapsedTime);
 	if (cSecondaryWeapon)
 		cSecondaryWeapon->Update(dElapsedTime);
+
+	if (CCameraEffectsManager::GetInstance()->Get("CrossHair")->GetStatus())
+		((CCrossHair*)(CCameraEffectsManager::GetInstance()->Get("CrossHair")))->SetCrossHairType(GetWeapon()->crossHairType);
 
 	// Update the Jump/Fall
 	UpdateJumpFall(dElapsedTime);

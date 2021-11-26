@@ -67,6 +67,8 @@ bool CAssaultRifle::Init(void)
 	minRecoil = glm::vec2(-0.1f, 0.1f);
 	maxRecoil = glm::vec2(0.1f, 0.15f);
 
+	crossHairType = CCrossHair::CROSSHAIR_SPREAD;
+
 	// Call the parent's Init()
 	CEntity3D::Init();
 
