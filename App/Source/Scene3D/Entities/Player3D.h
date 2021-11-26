@@ -69,6 +69,8 @@ public:
 	//Player State
 	PLAYER_STATE activeState;
 
+	bool attachedAirplane;
+
 	// Initialise this class instance
 	bool Init(void);
 

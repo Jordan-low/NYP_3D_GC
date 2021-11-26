@@ -81,7 +81,7 @@ bool CAssaultRifle::Init(void)
 	std::vector<ModelVertex> vertex_buffer_data;
 	std::vector<GLuint> index_buffer_data;
 
-	std::string file_path = "Models/Pistol/gun_type64_01.obj";
+	std::string file_path = "Models/m4a1.obj";
 	bool success = CLoadOBJ::LoadOBJ(file_path.c_str(), vertices, uvs, normals, true);
 	if (!success)
 	{
@@ -108,7 +108,7 @@ bool CAssaultRifle::Init(void)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// load and create a texture 
-	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/Pistol/map_gunType64_01_AO.png", false);
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/M4A1-s.tga", false);
 	if (iTextureID == 0)
 	{
 		cout << "Unable to load Models/Pistol/map_gunType64_01_AO.png" << endl;

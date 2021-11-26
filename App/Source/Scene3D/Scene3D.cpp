@@ -119,6 +119,69 @@ CScene3D::~CScene3D(void)
 	cSettings = NULL;
 }
 
+void CScene3D::ProcessPlayerInputs(double dElapsedTime)
+{
+	// Get keyboard 1s for cPlayer3D
+	//Player Movement
+	cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::REST;
+
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C))
+		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
+
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_V))
+		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::PRONE;
+
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_A))
+	{
+		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
+			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::LEFT, (float)dElapsedTime);
+	}
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_S))
+	{
+		((CCameraShake*)CCameraEffectsManager::GetInstance()->Get("CameraShake"))->bToBeUpdated = true;
+		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
+			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::BACKWARD, (float)dElapsedTime);
+	}
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_D))
+	{
+		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
+			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::RIGHT, (float)dElapsedTime);
+	}
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_W))
+	{
+		((CCameraShake*)CCameraEffectsManager::GetInstance()->Get("CameraShake"))->bToBeUpdated = true;
+		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
+			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
+		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT))
+		{
+			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::SPRINT;
+			if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C))
+				cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
+		}
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, (float)dElapsedTime);
+	}
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_SPACE))
+		cPlayer3D->SetToJump();
+
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_G))
+		cPlayer3D->GetWeapon()->AnimateEquip(dElapsedTime);
+
+	// Get keyboard and mouse updates for camera
+	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_0))
+	{
+		if (cPlayer3D->IsCameraAttached())
+			cPlayer3D->AttachCamera();
+		else
+			cPlayer3D->AttachCamera(cCamera);
+
+		// Reset the key so that it will not repeat until the key is released and pressed again
+		CKeyboardController::GetInstance()->ResetKey(GLFW_KEY_0);
+	}
+}
+
 /**
  @brief Init Initialise this instance
  @return true if the initialisation is successful, else false
@@ -247,6 +310,14 @@ bool CScene3D::Init(void)
 	cPlayer3D->SetWeapon(1, cSubmachineGun);
 	cPlayer3D->SetCurrentWeapon(0);
 
+	CAirplane3D* airplane = new CAirplane3D(glm::vec3(10.f, 0.5f, 0.0f));
+	airplane->SetShader("Shader3D");
+	airplane->Init();
+	airplane->InitCollider("Shader3D_Line", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+
+	// Add the airplane to the cSolidObjectManager
+	cSolidObjectManager->Add(airplane);
+
 
 	// Load the GUI Entities
 	// Store the CGUI_Scene3D singleton instance here
@@ -279,65 +350,8 @@ bool CScene3D::Update(const double dElapsedTime)
 	// Call the CGUI_Scene3D's update method
 	cGUI_Scene3D->Update(dElapsedTime);
 
-	// Get keyboard updates for cPlayer3D
-	//Player Movement
-	cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::REST;
-
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C))
-		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
-
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_V))
-		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::PRONE;
-
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_A))
-	{
-		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
-			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::LEFT, (float)dElapsedTime);
-	}
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_S))
-	{
-		((CCameraShake*)CCameraEffectsManager::GetInstance()->Get("CameraShake"))->bToBeUpdated = true;
-		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
-			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::BACKWARD, (float)dElapsedTime);
-	}
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_D))
-	{
-		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
-			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::RIGHT, (float)dElapsedTime);
-	}
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_W))
-	{
-		((CCameraShake*)CCameraEffectsManager::GetInstance()->Get("CameraShake"))->bToBeUpdated = true;
-		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
-			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
-		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT))
-		{
-			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::SPRINT;
-			if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C))
-				cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
-		}
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, (float)dElapsedTime);
-	}
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_SPACE))
-		cPlayer3D->SetToJump();
-
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_G))
-		cPlayer3D->GetWeapon()->AnimateEquip(dElapsedTime);
-
-	// Get keyboard and mouse updates for camera
-	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_0))
-	{
-		if (cPlayer3D->IsCameraAttached())
-			cPlayer3D->AttachCamera();
-		else
-			cPlayer3D->AttachCamera(cCamera);
-
-		// Reset the key so that it will not repeat until the key is released and pressed again
-		CKeyboardController::GetInstance()->ResetKey(GLFW_KEY_0);
-	}
+	if (!cPlayer3D->attachedAirplane)
+		ProcessPlayerInputs(dElapsedTime);
 
 	if (!cPlayer3D->IsCameraAttached())
 	{

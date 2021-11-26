@@ -39,6 +39,9 @@
 // Include CPlayer3D
 #include "Entities/Player3D.h"
 
+// Include CAirplane3D
+#include "Entities/Airplane3D.h"
+
 // Include CEnemy3D
 #include "Entities/Enemy3D.h"
 
@@ -120,5 +123,8 @@ protected:
 	CScene3D(void);
 	// Destructor
 	virtual ~CScene3D(void);
+
+	void ProcessPlayerInputs(double dt);
+	void ProcessAirplaneInputs(double dt);
 };
 

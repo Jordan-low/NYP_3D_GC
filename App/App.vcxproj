@@ -37,6 +37,7 @@
     <ClCompile Include="Source\Scene3D\CameraEffects\CameraShake.cpp" />
     <ClCompile Include="Source\Scene3D\CameraEffects\CrossHair.cpp" />
     <ClCompile Include="Source\Scene3D\CameraEffects\ScopeScreen.cpp" />
+    <ClCompile Include="Source\Scene3D\Entities\Airplane3D.cpp" />
     <ClCompile Include="Source\Scene3D\Entities\Enemy3D.cpp" />
     <ClCompile Include="Source\Scene3D\Entities\Player3D.cpp" />
     <ClCompile Include="Source\Scene3D\Entities\SolidObject.cpp" />
@@ -90,6 +91,7 @@
     <ClInclude Include="Source\Scene3D\CameraEffects\CameraShake.h" />
     <ClInclude Include="Source\Scene3D\CameraEffects\CrossHair.h" />
     <ClInclude Include="Source\Scene3D\CameraEffects\ScopeScreen.h" />
+    <ClInclude Include="Source\Scene3D\Entities\Airplane3D.h" />
     <ClInclude Include="Source\Scene3D\Entities\Enemy3D.h" />
     <ClInclude Include="Source\Scene3D\Entities\Player3D.h" />
     <ClInclude Include="Source\Scene3D\Entities\SolidObject.h" />

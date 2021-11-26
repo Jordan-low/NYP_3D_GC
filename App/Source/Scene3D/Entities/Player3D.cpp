@@ -48,6 +48,7 @@ CPlayer3D::CPlayer3D(void)
 	, addProneVelocity(0.f)
 	, addCounterSlideSpeed(-10.f)
 	, totalVelocity(0.f)
+	, attachedAirplane(false)
 {
 	// Set the default position so it is above the ground
 	vec3Position = glm::vec3(0.0f, 0.5f, 0.0f);
@@ -92,6 +93,7 @@ CPlayer3D::CPlayer3D(	const glm::vec3 vec3Position,
 	, addProneVelocity(0.f)
 	, addCounterSlideSpeed(-10.f)
 	, totalVelocity(0.f)
+	, attachedAirplane(false)
 {
 	mesh = NULL;
 
