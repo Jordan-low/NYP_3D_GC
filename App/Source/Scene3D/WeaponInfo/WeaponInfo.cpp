@@ -43,6 +43,7 @@ CWeaponInfo::CWeaponInfo()
 	, minRecoil(glm::vec2(0.f))
 	, maxRecoil(glm::vec2(0.f))
 	, gunRecoilPos(glm::vec3(0.f))
+	, crossHairType(CCrossHair::CROSSHAIR_DOT)
 {
 }
 

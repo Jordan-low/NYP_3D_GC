@@ -31,6 +31,7 @@ public:
 	enum TYPE
 	{
 		PLAYER = 0,
+		AIRPLANE,
 		NPC,
 		OTHERS,		// Default value: Other entities such as ground and skybox
 		STRUCTURE,	// Buildings etc
