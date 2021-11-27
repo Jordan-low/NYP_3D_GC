@@ -310,13 +310,13 @@ bool CScene3D::Init(void)
 	cPlayer3D->SetWeapon(1, cSubmachineGun);
 	cPlayer3D->SetCurrentWeapon(0);
 
-	CAirplane3D* airplane = new CAirplane3D(glm::vec3(10.f, 0.5f, 0.0f));
-	airplane->SetShader("Shader3D");
-	airplane->Init();
-	airplane->InitCollider("Shader3D_Line", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	CCar3D* car = new CCar3D(glm::vec3(10.f, 0.5f, 0.0f));
+	car->SetShader("Shader3D");
+	car->Init();
+	car->InitCollider("Shader3D_Line", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
 	// Add the airplane to the cSolidObjectManager
-	cSolidObjectManager->Add(airplane);
+	cSolidObjectManager->Add(car);
 
 
 	// Load the GUI Entities

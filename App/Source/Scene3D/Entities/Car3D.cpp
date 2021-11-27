@@ -1,9 +1,9 @@
 /**
- CAirplane3D
+ CCar3D
  By: Jordan Low
  Date: Nov 2021
  */
-#include "Airplane3D.h"
+#include "Car3D.h"
 
  // Include ShaderManager
 #include "RenderControl/ShaderManager.h"
@@ -22,7 +22,7 @@ using namespace std;
 /**
  @brief Default Constructor
  */
-CAirplane3D::CAirplane3D(void)
+CCar3D::CCar3D(void)
 	: vec3Up(glm::vec3(0.0f, 1.0f, 0.0f))
 	, vec3Right(glm::vec3(1.0f, 1.0f, 0.0f))
 	, vec3WorldUp(glm::vec3(0.0f, 1.0f, 0.0f))
@@ -35,6 +35,9 @@ CAirplane3D::CAirplane3D(void)
 	, maxSpeed(4)
 	, accel(0)
 	, speed(0)
+	, torque(0)
+	, torqueSpeed(80)
+	, tiltAngle(0)
 {
 	// Set the default position so it is above the ground
 	vec3Position = glm::vec3(0.0f, 0.5f, 0.0f);
@@ -47,7 +50,7 @@ CAirplane3D::CAirplane3D(void)
  @param yaw A const float variable which contains the yaw of the camera
  @param pitch A const float variable which contains the pitch of the camera
  */
-CAirplane3D::CAirplane3D(	const glm::vec3 vec3Position,
+CCar3D::CCar3D(	const glm::vec3 vec3Position,
 						const glm::vec3 vec3Front,
 						const float fYaw,
 						const float fPitch)
@@ -63,6 +66,9 @@ CAirplane3D::CAirplane3D(	const glm::vec3 vec3Position,
 	, maxSpeed(4)
 	, accel(0)
 	, speed(0)
+	, torque(0)
+	, torqueSpeed(80)
+	, tiltAngle(0)
 {
 	mesh = NULL;
 
@@ -75,7 +81,7 @@ CAirplane3D::CAirplane3D(	const glm::vec3 vec3Position,
 /**
  @brief Destructor
  */
-CAirplane3D::~CAirplane3D(void)
+CCar3D::~CCar3D(void)
 {
 	if (cTerrain)
 	{
@@ -94,7 +100,7 @@ CAirplane3D::~CAirplane3D(void)
  @brief Initialise this class instance
  @return true is successfully initialised this class instance, else false
  */
-bool CAirplane3D::Init(void)
+bool CCar3D::Init(void)
 {
 	// Call the parent's Init()
 	CSolidObject::Init();
@@ -124,10 +130,10 @@ bool CAirplane3D::Init(void)
 	vec3Position.y = cTerrain->GetHeight(vec3Position.x, vec3Position.z);
 
 	// Set the Physics to fall status by default
-	cPhysics3D.SetStatus(CPhysics3D::STATUS::FALL);
+	cPhysics3D.SetStatus(CPhysics3D::STATUS::IDLE);
 	cPhysics3D.SetGravity(glm::vec3(0.f));
 
-	fMovementSpeed = 100.f;
+	fMovementSpeed = 3000.f;
 	return true;
 }
 
@@ -135,7 +141,7 @@ bool CAirplane3D::Init(void)
  @brief Set model
  @param model A const glm::mat4 variable containing the model for this class instance
  */
-void CAirplane3D::SetModel(const glm::mat4 model)
+void CCar3D::SetModel(const glm::mat4 model)
 {
 	this->model = model;
 }
@@ -144,7 +150,7 @@ void CAirplane3D::SetModel(const glm::mat4 model)
  @brief Set view
  @param view A const glm::mat4 variable containing the model for this class instance
  */
-void CAirplane3D::SetView(const glm::mat4 view)
+void CCar3D::SetView(const glm::mat4 view)
 {
 	this->view = view;
 }
@@ -153,7 +159,7 @@ void CAirplane3D::SetView(const glm::mat4 view)
  @brief Set projection
  @param projection A const glm::mat4 variable containing the model for this class instance
  */
-void CAirplane3D::SetProjection(const glm::mat4 projection)
+void CCar3D::SetProjection(const glm::mat4 projection)
 {
 	this->projection = projection;
 }
@@ -162,43 +168,68 @@ void CAirplane3D::SetProjection(const glm::mat4 projection)
 @brief Returns the view matrix calculated using Euler Angles and the LookAt Matrix
 @return A glm::mat4 variable which contains the view matrix
 */
-glm::mat4 CAirplane3D::GetViewMatrix(void) const
+glm::mat4 CCar3D::GetViewMatrix(void) const
 {
 	return glm::lookAt(vec3Position, vec3Position + vec3Front, vec3Up);
 }
 
-CPhysics3D CAirplane3D::GetPhysics()
+CPhysics3D CCar3D::GetPhysics()
 {
 	return cPhysics3D;
 }
 
-/**
- @brief Processes input received from any keyboard-like input system as player movements. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
- @param direction A const Player_Movement variable which contains the movement direction of the camera
- @param deltaTime A const float variable which contains the delta time for the realtime loop
- */
-void CAirplane3D::ProcessMovement(const AIRPLANE_MOVEMENT direction, const float deltaTime)
+void CCar3D::ProcessMovement(double dElapsedTime)
 {
-	if (cPlayer3D == NULL)
-		return;
+	//reset the accel to 0
+	accel = 0;
 
-	float accel = fMovementSpeed * deltaTime;
-	velocity += accel * deltaTime;
-	//velocity = Math::Clamp(velocity, -maxSpeed, maxSpeed);
+	//add friction to curr speed
+	float friction = speed * -1.f;
+	speed += friction * dElapsedTime;
 
-	if (direction == AIRPLANE_MOVEMENT::FORWARD)
-		vec3Position += vec3Front * velocity;
-	if (direction == AIRPLANE_MOVEMENT::BACKWARD)
-		vec3Position -= vec3Front * velocity;
-	if (direction == AIRPLANE_MOVEMENT::LEFT)
-		vec3Position -= vec3Right * velocity;
-	if (direction == AIRPLANE_MOVEMENT::RIGHT)
-		vec3Position += vec3Right * velocity;
+	//reset the torque to 0 if made 1 full round
+	//if (torque >= 360 || torque <= -360)
+	//	torque = 0;
 
-	cPlayer3D->SetPosition(vec3Position);
+	//find the rotation result
+	glm::mat4 rotationMatrix = glm::mat4(1.0f);
+	rotationMatrix = glm::rotate(rotationMatrix, glm::radians(torque), glm::vec3(0, 1, 0));
+	glm::vec4 rotationResult = rotationMatrix * glm::vec4(0, 0, -1, 0);
+
+	//calc the new front, right and up vector
+	vec3Front = glm::vec3(rotationResult.x, rotationResult.y, rotationResult.z);
+	vec3Right = glm::normalize(glm::cross(vec3Front, vec3WorldUp));
+	vec3Up = glm::normalize(glm::cross(vec3Right, vec3Front));
+
+	//set yaw and pitch to car's torque rotation
+	fYaw = -torque - 90;// +cPlayer3D->fYaw;
+	fPitch = cPlayer3D->fPitch;
+
+	//process for player inputs
+	ProcessAirplaneInputs(dElapsedTime);
+
+	speed += accel * dElapsedTime;
+	velocity = vec3Front * speed * (float)dElapsedTime;
+
+	std::cout << "ACCEL: " << accel << " SPEED: " << speed << " VEL: " << glm::length(velocity) << std::endl;
+	//max cap the velocity
+	if (glm::length(velocity) > 0.5f)
+		velocity = glm::normalize(velocity) * 0.5f;
+
+	//predict the next pos
+	glm::vec3 predictedPos = vec3Position;
+	predictedPos += velocity;
+
+	//Find the tilt angle for the car
+	float fCheckHeight = cTerrain->GetHeight(predictedPos.x, predictedPos.z) + fHeightOffset - vec3Position.y;
+	float xzAxis = glm::length(glm::vec2(vec3Position.x, vec3Position.z) - glm::vec2(predictedPos.x, predictedPos.z));
+	tiltAngle = glm::degrees(atan2f(fCheckHeight, xzAxis));
+
+	//set the current pos to the predicted pos
+	vec3Position = predictedPos;
 }
 
-CPlayer3D* CAirplane3D::GetPlayer3D()
+CPlayer3D* CCar3D::GetPlayer3D()
 {
 	return cPlayer3D;
 }
@@ -208,7 +239,7 @@ CPlayer3D* CAirplane3D::GetPlayer3D()
  @param dt A const double variable containing the elapsed time since the last frame
  @return A bool variable
  */
-bool CAirplane3D::Update(const double dElapsedTime)
+bool CCar3D::Update(const double dElapsedTime)
 {
 	if (!cPlayer3D)
 	{
@@ -224,31 +255,13 @@ bool CAirplane3D::Update(const double dElapsedTime)
 	}
 	else
 	{
-		accel = 0;
-		float friction = speed * -1.f;
-		speed += friction * dElapsedTime;
-		vec3Front = cPlayer3D->GetFront();
-		vec3Up = cPlayer3D->vec3Up;
-		vec3Right = cPlayer3D->vec3Right;
-		fYaw = cPlayer3D->fYaw;
-		fPitch = cPlayer3D->fPitch;
-
-		ProcessAirplaneInputs(dElapsedTime);
-
-		speed += accel * dElapsedTime;
-		velocity = vec3Front * speed * (float)dElapsedTime;
-
-		if (glm::length(velocity) > 0.5f)
-			velocity = glm::normalize(velocity) * 0.5f;
-
-		std::cout << "ACCEL: " << accel << " SPEED: " << speed << " VEL: " << glm::length(velocity) << std::endl;
-		vec3Position += velocity;
+		ProcessMovement(dElapsedTime);
 	}
 
 	// If the camera is attached to this player, then update the camera
 	if (cCamera)
 	{
-		cCamera->vec3Position = vec3Position + vec3Up * 2.f + vec3Front * -7.f;
+		cCamera->vec3Position = vec3Position + vec3Up * 2.f + vec3Front * -5.f;
 		cCamera->vec3Front = vec3Front;
 		cCamera->vec3Up = vec3Up;
 		cCamera->vec3Right = vec3Right;
@@ -267,7 +280,7 @@ bool CAirplane3D::Update(const double dElapsedTime)
 /**
  @brief PreRender Set up the OpenGL display environment before rendering
  */
-void CAirplane3D::PreRender(void)
+void CCar3D::PreRender(void)
 {
 	CSolidObject::PreRender();
 }
@@ -275,15 +288,17 @@ void CAirplane3D::PreRender(void)
 /**
  @brief Render Render this instance
  */
-void CAirplane3D::Render(void)
+void CCar3D::Render(void)
 {
+	model = glm::rotate(model, glm::radians(torque / 2), glm::vec3(0, 1, 0));
+	model = glm::rotate(model, glm::radians(tiltAngle), glm::vec3(1, 0, 0));
 	CSolidObject::Render();
 }
 
 /**
  @brief PostRender Set up the OpenGL display environment after rendering.
  */
-void CAirplane3D::PostRender(void)
+void CCar3D::PostRender(void)
 {
 	CSolidObject::PostRender();
 }
@@ -291,7 +306,7 @@ void CAirplane3D::PostRender(void)
 /**
  @brief Constraint the player's position
  */
-void CAirplane3D::Constraint(void)
+void CCar3D::Constraint(void)
 {
 	// If the player is not jumping nor falling, then we snap his position to the terrain
 	if (cPhysics3D.GetStatus() == CPhysics3D::STATUS::IDLE)
@@ -310,7 +325,7 @@ void CAirplane3D::Constraint(void)
 	}
 }
 
-void CAirplane3D::ProcessAirplaneInputs(double dElapsedTime)
+void CCar3D::ProcessAirplaneInputs(double dElapsedTime)
 {
 	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_E))
 	{
@@ -321,28 +336,34 @@ void CAirplane3D::ProcessAirplaneInputs(double dElapsedTime)
 	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_A))
 	{
-		//ProcessMovement(CAirplane3D::AIRPLANE_MOVEMENT::LEFT, (float)dElapsedTime);
+		float dir = 1;
+		if (speed < 0)
+			dir = -1;
+
+		torque += torqueSpeed * dir * dElapsedTime;
 	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_S))
 	{
-		accel = -fMovementSpeed;
-		//ProcessMovement(CAirplane3D::AIRPLANE_MOVEMENT::BACKWARD, (float)dElapsedTime);
+		accel = -fMovementSpeed * dElapsedTime;
 	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_D))
 	{
-		//ProcessMovement(CAirplane3D::AIRPLANE_MOVEMENT::RIGHT, (float)dElapsedTime);
+		float dir = 1;
+		if (speed < 0)
+			dir = -1;
+
+		torque -= torqueSpeed * dir * dElapsedTime;
 	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_W))
 	{
-		accel = fMovementSpeed;
-		//ProcessMovement(CAirplane3D::AIRPLANE_MOVEMENT::FORWARD, (float)dElapsedTime);
+		accel = fMovementSpeed * dElapsedTime;
 	}
 }
 
 /**
  @brief Print Self
  */
-void CAirplane3D::PrintSelf(void)
+void CCar3D::PrintSelf(void)
 {
 	cout << "CPlayer3D::PrintSelf()" << endl;
 	cout << "========================" << endl;
