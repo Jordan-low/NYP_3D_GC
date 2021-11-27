@@ -58,15 +58,28 @@ bool CCrossHair::Init(void)
 	glBindVertexArray(VAO);
 
 	// Generate the mesh
-	mesh = CMeshBuilder::GenerateQuad(glm::vec4(1, 1, 1, 1), 1.0f, fAspectRatio);
+	mesh = CMeshBuilder::GenerateQuad(glm::vec4(1, 1, 1, 1), .05, .05f);
 
-	// load and create a texture 
-	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/GUI/CameraEffects_CrossHair.tga", true);
-	if (iTextureID == 0)
+	// load and create textures for all types of crosshairs
+	iTextureIDArray[CROSSHAIR_DOT] = CImageLoader::GetInstance()->LoadTextureGetID("Image/Crosshair/dot.png", true);
+	iTextureIDArray[CROSSHAIR_SPREAD] = CImageLoader::GetInstance()->LoadTextureGetID("Image/Crosshair/spread.png", true);
+
+	//// load and create a texture 
+	//iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/Crosshair/dot.png", true);
+	if (iTextureIDArray[CROSSHAIR_DOT] == 0)
 	{
-		cout << "Unable to load Image/GUI/CameraEffects_CrossHair.tga" << endl;
+		cout << "Unable to load Image/Crosshair/dot.png" << endl;
 		return false;
 	}
+	else if (iTextureIDArray[CROSSHAIR_SPREAD] == 0)
+	{
+		cout << "Unable to load Image/Crosshair/spread.png" << endl;
+		return false;
+	}
+
+	//default crosshair type to dot
+	activeCrosshair = CROSSHAIR_DOT;
+	iTextureID = iTextureIDArray[activeCrosshair];
 
 	return true;
 }
@@ -78,5 +91,11 @@ bool CCrossHair::Init(void)
  */
 bool CCrossHair::Update(const double dElapsedTime)
 {
+	iTextureID = iTextureIDArray[activeCrosshair];
 	return true;
+}
+
+void CCrossHair::SetCrossHairType(CROSSHAIR_TYPE type)
+{
+	activeCrosshair = type;
 }

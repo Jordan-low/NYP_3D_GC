@@ -200,6 +200,9 @@
     <ClCompile Include="Source\Scene3D\CameraEffects\ScopeScreen.cpp">
       <Filter>Scene3D\CameraEffects</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene3D\Entities\Car3D.cpp">
+      <Filter>Scene3D\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -354,6 +357,9 @@
     </ClInclude>
     <ClInclude Include="Source\Scene3D\CameraEffects\ScopeScreen.h">
       <Filter>Scene3D\CameraEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\Entities\Car3D.h">
+      <Filter>Scene3D\Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

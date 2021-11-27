@@ -119,6 +119,69 @@ CScene3D::~CScene3D(void)
 	cSettings = NULL;
 }
 
+void CScene3D::ProcessPlayerInputs(double dElapsedTime)
+{
+	// Get keyboard 1s for cPlayer3D
+	//Player Movement
+	cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::REST;
+
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C))
+		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
+
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_V))
+		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::PRONE;
+
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_A))
+	{
+		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
+			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::LEFT, (float)dElapsedTime);
+	}
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_S))
+	{
+		((CCameraShake*)CCameraEffectsManager::GetInstance()->Get("CameraShake"))->bToBeUpdated = true;
+		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
+			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::BACKWARD, (float)dElapsedTime);
+	}
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_D))
+	{
+		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
+			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::RIGHT, (float)dElapsedTime);
+	}
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_W))
+	{
+		((CCameraShake*)CCameraEffectsManager::GetInstance()->Get("CameraShake"))->bToBeUpdated = true;
+		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
+			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
+		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT))
+		{
+			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::SPRINT;
+			if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C))
+				cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
+		}
+		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, (float)dElapsedTime);
+	}
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_SPACE))
+		cPlayer3D->SetToJump();
+
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_G))
+		cPlayer3D->GetWeapon()->AnimateEquip(dElapsedTime);
+
+	// Get keyboard and mouse updates for camera
+	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_0))
+	{
+		if (cPlayer3D->IsCameraAttached())
+			cPlayer3D->AttachCamera();
+		else
+			cPlayer3D->AttachCamera(cCamera);
+
+		// Reset the key so that it will not repeat until the key is released and pressed again
+		CKeyboardController::GetInstance()->ResetKey(GLFW_KEY_0);
+	}
+}
+
 /**
  @brief Init Initialise this instance
  @return true if the initialisation is successful, else false
@@ -247,6 +310,14 @@ bool CScene3D::Init(void)
 	cPlayer3D->SetWeapon(1, cSubmachineGun);
 	cPlayer3D->SetCurrentWeapon(0);
 
+	CCar3D* car = new CCar3D(glm::vec3(10.f, 0.5f, 0.0f));
+	car->SetShader("Shader3D");
+	car->Init();
+	car->InitCollider("Shader3D_Line", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+
+	// Add the airplane to the cSolidObjectManager
+	cSolidObjectManager->Add(car);
+
 
 	// Load the GUI Entities
 	// Store the CGUI_Scene3D singleton instance here
@@ -279,59 +350,8 @@ bool CScene3D::Update(const double dElapsedTime)
 	// Call the CGUI_Scene3D's update method
 	cGUI_Scene3D->Update(dElapsedTime);
 
-	// Get keyboard updates for cPlayer3D
-	//Player Movement
-	cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::REST;
-
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C))
-		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
-
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_A))
-	{
-		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::LEFT, (float)dElapsedTime);
-	}
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_S))
-	{
-		((CCameraShake*)CCameraEffectsManager::GetInstance()->Get("CameraShake"))->bToBeUpdated = true;
-		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::BACKWARD, (float)dElapsedTime);
-	}
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_D))
-	{
-		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::RIGHT, (float)dElapsedTime);
-	}
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_W))
-	{
-		((CCameraShake*)CCameraEffectsManager::GetInstance()->Get("CameraShake"))->bToBeUpdated = true;
-		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
-			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
-		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT))
-		{
-			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::SPRINT;
-			if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C))
-				cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
-		}
-		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, (float)dElapsedTime);
-	}
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_SPACE))
-		cPlayer3D->SetToJump();
-
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_G))
-		cPlayer3D->GetWeapon()->AnimateEquip(dElapsedTime);
-
-	// Get keyboard and mouse updates for camera
-	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_0))
-	{
-		if (cPlayer3D->IsCameraAttached())
-			cPlayer3D->AttachCamera();
-		else
-			cPlayer3D->AttachCamera(cCamera);
-
-		// Reset the key so that it will not repeat until the key is released and pressed again
-		CKeyboardController::GetInstance()->ResetKey(GLFW_KEY_0);
-	}
+	if (!cPlayer3D->attachedAirplane)
+		ProcessPlayerInputs(dElapsedTime);
 
 	if (!cPlayer3D->IsCameraAttached())
 	{
@@ -443,33 +463,84 @@ void CScene3D::PreRender(void)
  */
 void CScene3D::Render(void)
 {
+	// Part 1: Render for the minimap by binding to framebuffer and render to color texture
+		//         But the camera is move to top-view of the scene
+
+		// Backup some key settings for the camera and player
+	glm::vec3 storePlayerPosition = cPlayer3D->GetPosition();
+	float storeCameraYaw = cCamera->fYaw;
+	float storeCameraPitch = cCamera->fPitch;
+	glm::vec3 storeCameraPosition = cCamera->vec3Position;
+	// Adjust camera yaw and pitch so that it is looking from a top-view of the terrain
+	cCamera->fYaw += 180.0f;
+	cCamera->fPitch = -90.0f;
+	// We store the player's position into the camera as we want the minimap to focus on the player
+	cCamera->vec3Position = glm::vec3(storePlayerPosition.x, 10.0f, storePlayerPosition.z);
+	// Recalculate all the camera vectors. 
+	// We disable pitch constrains for this specific case as we want the camera to look straight down
+	cCamera->ProcessMouseMovement(0, 0, false);
+	// Generate the view and projection
+	glm::mat4 playerView = cCamera->GetViewMatrix();
+	glm::mat4 playerProjection = glm::perspective(glm::radians(45.0f),
+		(float)cSettings->iWindowWidth / (float)cSettings->iWindowHeight,
+		0.1f, 1000.0f);
+
+	// Set the camera parameters back to the previous values
+	cCamera->fYaw = storeCameraYaw;
+	cCamera->fPitch = storeCameraPitch;
+	cCamera->vec3Position = storeCameraPosition;
+	cCamera->ProcessMouseMovement(0, 0, true); // call this to make sure it updates its camera vectors, note that we disable pitch constrains for this specific case (otherwise we can't reverse camera's pitch values)
+
+	// Activate the minimap system
+	CMinimap::GetInstance()->Activate();
+	// Setup the rendering environment
+	CMinimap::GetInstance()->PreRender();
+
+
 	glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
 
 							 // Part 2: Render the entire scene as per normal
-	// Get the camera view and projection
+	// Render the Terrain
+	cTerrain->SetView(playerView);
+	cTerrain->SetProjection(playerProjection);
+	cTerrain->PreRender();
+	cTerrain->Render();
+	cTerrain->PostRender();
 
+	// Render the entities for the minimap
+	cSolidObjectManager->SetView(playerView);
+	cSolidObjectManager->SetProjection(playerProjection);
+	cSolidObjectManager->Render();
+
+	// Deactivate the cMinimap so that we can render as per normal
+	CMinimap::GetInstance()->Deactivate();
+
+	// Part 2: Render the entire scene as per normal
+	// Get the camera view and projection
 	glm::mat4 view = CCamera::GetInstance()->GetViewMatrix();;
-	glm::mat4 projection = glm::perspective(	glm::radians(CCamera::GetInstance()->fZoom),
-												(float)cSettings->iWindowWidth / (float)cSettings->iWindowHeight,
-												0.1f, 1000.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(CCamera::GetInstance()->fZoom),
+		(float)cSettings->iWindowWidth / (float)cSettings->iWindowHeight,
+		0.1f, 1000.0f);
+
+
 	glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//Render Skybox
+
 	cSkybox->SetView(view);
 	cSkybox->SetProjection(projection);
 	cSkybox->PreRender();
 	cSkybox->Render();
 	cSkybox->PostRender();
 
-	//Render Terrain
+	// Render the Terrain
 	cTerrain->SetView(view);
 	cTerrain->SetProjection(projection);
 	cTerrain->PreRender();
 	cTerrain->Render();
 	cTerrain->PostRender();
 
-	//Render the solid objects
+	// Render the entities for the minimap
 	cSolidObjectManager->SetView(view);
 	cSolidObjectManager->SetProjection(projection);
 	cSolidObjectManager->Render();
@@ -481,11 +552,6 @@ void CScene3D::Render(void)
 	cProjectileManager->Render();
 	cProjectileManager->PostRender();
 
-	cPlayer3D->GetWeapon()->SetProjection(projection);
-	cPlayer3D->GetWeapon()->PreRender();
-	cPlayer3D->GetWeapon()->Render();
-	cPlayer3D->GetWeapon()->PostRender();
-
 	cGUI_Scene3D->SetProjection(projection);
 	// Call the CGUI_Scene3D's PreRender ()
 	cGUI_Scene3D->PreRender();
@@ -493,6 +559,7 @@ void CScene3D::Render(void)
 	cGUI_Scene3D->Render();
 	// Call the CGUI_Scene3D's PostRender()
 	cGUI_Scene3D->PostRender();
+
 
 	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 

@@ -23,6 +23,9 @@
 #define GLEW_STATIC
 #endif
 
+// Include Minimap
+#include "Minimap/Minimap.h"
+
 // Include GLM
 #include <includes/glm.hpp>
 #include <includes/gtc/matrix_transform.hpp>

@@ -60,6 +60,8 @@ public:
 	// PrintSelf
 	void PrintSelf(void);
 
+	void SetGravity(glm::vec3 gravity);
+
 protected:
 	// Variables for SUVAT calculations
 	glm::vec3 v3InitialVelocity;	// Initial velocity
@@ -70,7 +72,7 @@ protected:
 	float fTotalTime;				// Total time since the motion was started
 	float fElapsedTime;				// Elapsed time between the previous and current update
 
-	const glm::vec3 v3Gravity = glm::vec3( 0.0f, -10.0f, 0.0f);		// Gravity constant
+	glm::vec3 v3Gravity = glm::vec3( 0.0f, -10.0f, 0.0f);		// Gravity constant
 
 	STATUS sCurrentStatus;
 };

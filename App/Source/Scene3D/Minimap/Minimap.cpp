@@ -4,7 +4,7 @@
  Date: Apr 2020
  */
 #include "Minimap.h"
-
+#include "../../MyMath.h"
 // Include ShaderManager
 #include "RenderControl/ShaderManager.h"
 
@@ -45,18 +45,64 @@ bool CMinimap::Init(void)
 
 	// Set screenTexture to 0 in the shader program
 	CShaderManager::GetInstance()->activeShader->setInt("screenTexture", 0);
+	
+	
 
-	float vertices[] = 
+	/*Vertex v;
+	std::vector<Vertex> vertex_buffer_data;
+	std::vector<unsigned> index_buffer_data;
+
+	float vert = 0;
+	float hor = 0;
+	float radius = 1;
+
+	for (int theta = 0; theta <= 360; theta += 10)
 	{
-		// positions	// texCoords
-		0.5f, 1.0f,		0.0f, 1.0f,
-		0.5f, 0.5f,		0.0f, 0.0f,
-		1.0f, 0.5f,		1.0f, 0.0f,
+		v.position = glm::vec3(radius * cos(Math::DegreeToRadian(theta)), 0, radius * sin(Math::DegreeToRadian(theta)));
+		v.texCoord = glm::vec2(0.5 * cos(Math::DegreeToRadian(theta)) + 0.5f, 0.5 * sin(Math::DegreeToRadian(theta)) + 0.5f);
+		vertex_buffer_data.push_back(v);
+		v.position = glm::vec3(0, 0, 0);
+		v.texCoord = glm::vec2(0.5f, 0.5f);
+		vertex_buffer_data.push_back(v);
+	}
 
-		0.5f, 1.0f,		0.0f, 1.0f,
-		1.0f, 0.5f,		1.0f, 0.0f,
-		1.0f, 1.0f,		1.0f, 1.0f
-	};
+
+	for (int i = 0; i < 74; i++)
+	{
+		index_buffer_data.push_back(i);
+	}*/
+
+	//float vertices[] = 
+	//{
+	//	// positions	// texCoords
+	//	0.5f, 1.0f,		0.0f, 1.0f,
+	//	0.5f, 0.5f,		0.0f, 0.0f,
+	//	1.0f, 0.5f,		1.0f, 0.0f,
+
+	//	0.5f, 1.0f,		0.0f, 1.0f,
+	//	1.0f, 0.5f,		1.0f, 0.0f,
+	//	1.0f, 1.0f,		1.0f, 1.0f
+	//};
+
+	float maxTheta = 360;
+	const int numSides = 36;
+	const int verticesPerSide = 4;
+	const int verticesSize = numSides * verticesPerSide + verticesPerSide;
+
+	float offset = 0.75f;
+	float radius = 0.25f;
+	float vertices[verticesSize];
+	indexSize = verticesSize / verticesPerSide;
+
+	int i = 0;
+	for (int theta = 0; theta <= maxTheta; theta += maxTheta / numSides)
+	{
+		vertices[i] = radius * cos(Math::DegreeToRadian(theta)) + offset;
+		vertices[i + 1] = radius * sin(Math::DegreeToRadian(theta)) + offset;
+		vertices[i + 2] = 0.5f * cos(Math::DegreeToRadian(theta)) + 0.5f;
+		vertices[i + 3] = 0.5f * sin(Math::DegreeToRadian(theta)) + 0.5f;
+		i += verticesPerSide;
+	}
 
 	// Set up the rendering environment
 	glGenVertexArrays(1, &VAO);
@@ -91,14 +137,27 @@ bool CMinimap::Init(void)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// Setup the border
-	float vertices_border[] =
+	//float vertices_border[] =
+	//{
+	//	// positions	// texCoords
+	//	0.5f, 1.0f,		0.0f, 1.0f,
+	//	0.5f, 0.5f,		0.0f, 0.0f,
+	//	1.0f, 0.5f,		1.0f, 0.0f,
+	//	1.0f, 1.0f,		1.0f, 1.0f
+	//};
+
+	float vertices_border[verticesSize];
+	float border_radius = radius;
+
+	i = 0;
+	for (int theta = 0; theta <= maxTheta; theta += maxTheta / numSides)
 	{
-		// positions	// texCoords
-		0.5f, 1.0f,		0.0f, 1.0f,
-		0.5f, 0.5f,		0.0f, 0.0f,
-		1.0f, 0.5f,		1.0f, 0.0f,
-		1.0f, 1.0f,		1.0f, 1.0f
-	};
+		vertices_border[i] = border_radius * cos(Math::DegreeToRadian(theta)) + offset;
+		vertices_border[i + 1] = border_radius * sin(Math::DegreeToRadian(theta)) + offset;
+		vertices_border[i + 2] = 0.5f * cos(Math::DegreeToRadian(theta)) + 0.5f;
+		vertices_border[i + 3] = 0.5f * sin(Math::DegreeToRadian(theta)) + 0.5f;
+		i += verticesPerSide;
+	}
 
 	// Set up the rendering environment
 	glGenVertexArrays(1, &VAO_BORDER);
@@ -192,14 +251,14 @@ void CMinimap::Render(void)
 	glBindVertexArray(VAO);
 		// Use the color attachment texture as the texture of the quad plane
 		glBindTexture(GL_TEXTURE_2D, uiTextureColorBuffer);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, indexSize);
 		// Reset to default
 		glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
 
 	// Render the border
 	glBindVertexArray(VAO_BORDER);
-		glDrawArrays(GL_LINE_LOOP, 0, 4);
+		glDrawArrays(GL_LINE_LOOP, 0, indexSize);
 	// Reset to default
 	glBindVertexArray(0);
 

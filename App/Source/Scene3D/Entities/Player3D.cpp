@@ -44,8 +44,11 @@ CPlayer3D::CPlayer3D(void)
 	, addCrouchVelocity(0.f)
 	, addSlideSpeed(0.f)
 	, addSlideVelocity(0.f)
+	, addProneSpeed(0.f)
+	, addProneVelocity(0.f)
 	, addCounterSlideSpeed(-10.f)
 	, totalVelocity(0.f)
+	, attachedAirplane(false)
 {
 	// Set the default position so it is above the ground
 	vec3Position = glm::vec3(0.0f, 0.5f, 0.0f);
@@ -86,8 +89,11 @@ CPlayer3D::CPlayer3D(	const glm::vec3 vec3Position,
 	, addCrouchVelocity(0.f) 
 	, addSlideSpeed(0.f)
 	, addSlideVelocity(0.f)
+	, addProneSpeed(0.f)
+	, addProneVelocity(0.f)
 	, addCounterSlideSpeed(-10.f)
 	, totalVelocity(0.f)
+	, attachedAirplane(false)
 {
 	mesh = NULL;
 
@@ -342,11 +348,13 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 		drag = totalVelocity;
 		addSprintSpeed = -50.f;
 		ResetMovementValues(PLAYER_STATE::CROUCH);
+		//ResetMovementValues(PLAYER_STATE::PRONE);
 		break;
 	case PLAYER_STATE::SPRINT:
 		drag = totalVelocity;
 		addSprintSpeed = 50.f;
 		ResetMovementValues(PLAYER_STATE::CROUCH);
+		//ResetMovementValues(PLAYER_STATE::PRONE);
 		break;
 	case PLAYER_STATE::CROUCH:
 		drag = addSprintVelocity;
@@ -366,6 +374,12 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 				addCrouchSpeed = -10.f;
 			}
 		}
+		//ResetMovementValues(PLAYER_STATE::PRONE);
+		break;
+	case PLAYER_STATE::PRONE:
+		drag = addProneVelocity;
+		addProneSpeed = -50.f;
+		//ResetMovementValues(PLAYER_STATE::CROUCH);
 		break;
 	}
 
@@ -381,18 +395,23 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 	addCrouchVelocity += addedCrouchAccel * deltaTime;
 	addCrouchVelocity = Math::Clamp(addCrouchVelocity, -.05f, .1f);
 
-	totalVelocity = velocity + addSprintVelocity + addCrouchVelocity;
+	float addedProneAccel = addProneSpeed * deltaTime;
+	addProneVelocity += addedProneAccel * deltaTime;
+	addProneVelocity = Math::Clamp(addProneVelocity, -.05f, 0.f);
+
+	totalVelocity = velocity + addSprintVelocity + addCrouchVelocity; // + addProneVelocity
+	std::cout << totalVelocity << std::endl;
 
 	//get predicted pos
 	glm::vec3 predictedPos = vec3Position;
 	if (direction == PLAYERMOVEMENT::FORWARD)
 		predictedPos += vec3Front * totalVelocity;
 	if (direction == PLAYERMOVEMENT::BACKWARD)
-		predictedPos -= vec3Front * velocity;
+		predictedPos -= vec3Front * totalVelocity;
 	if (direction == PLAYERMOVEMENT::LEFT)
-		predictedPos -= vec3Right * velocity;
+		predictedPos -= vec3Right * totalVelocity * 0.5f;
 	if (direction == PLAYERMOVEMENT::RIGHT)
-		predictedPos += vec3Right * velocity;
+		predictedPos += vec3Right * totalVelocity * 0.5f;
 
 	//get new pos height
 	float fCheckHeight = cTerrain->GetHeight(predictedPos.x, predictedPos.z) + fHeightOffset - vec3Position.y;
@@ -467,6 +486,9 @@ bool CPlayer3D::Update(const double dElapsedTime)
 	if (cSecondaryWeapon)
 		cSecondaryWeapon->Update(dElapsedTime);
 
+	if (CCameraEffectsManager::GetInstance()->Get("CrossHair")->GetStatus())
+		((CCrossHair*)(CCameraEffectsManager::GetInstance()->Get("CrossHair")))->SetCrossHairType(GetWeapon()->crossHairType);
+
 	// Update the Jump/Fall
 	UpdateJumpFall(dElapsedTime);
 
@@ -492,6 +514,9 @@ bool CPlayer3D::Update(const double dElapsedTime)
 		velocity = 0.f;
 		break;
 	case PLAYER_STATE::CROUCH:
+		vec3Position.y -= 0.1f;
+		break;
+	case PLAYER_STATE::PRONE:
 		vec3Position.y -= 0.1f;
 		break;
 	default:
@@ -666,6 +691,10 @@ void CPlayer3D::ResetMovementValues(PLAYER_STATE state)
 		addCrouchSpeed = 0;
 		addCrouchVelocity = 0;
 		enableSliding = true;
+		break;
+	case PLAYER_STATE::PRONE:
+		addProneSpeed = 0;
+		addProneVelocity = 0;
 		break;
 	}
 }

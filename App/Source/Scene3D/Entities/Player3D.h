@@ -53,6 +53,7 @@ public:
 		WALK,
 		SPRINT,
 		CROUCH,
+		PRONE,
 		NUM_STATES
 	};
 
@@ -67,6 +68,8 @@ public:
 	float fMouseSensitivity;
 	//Player State
 	PLAYER_STATE activeState;
+
+	bool attachedAirplane;
 
 	// Initialise this class instance
 	bool Init(void);
@@ -151,6 +154,9 @@ protected:
 
 	float addCrouchSpeed;
 	float addCrouchVelocity;
+
+	float addProneSpeed;
+	float addProneVelocity;
 
 	float addSlideSpeed;
 	float addCounterSlideSpeed;

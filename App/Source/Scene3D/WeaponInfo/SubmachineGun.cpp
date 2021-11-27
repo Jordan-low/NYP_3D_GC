@@ -66,6 +66,7 @@ bool CSubmachineGun::Init(void)
 	// Recoil vectors
 	minRecoil = glm::vec2(-0.2f, 0.1f);
 	maxRecoil = glm::vec2(0.2f, 0.2f);
+	crossHairType = CCrossHair::CROSSHAIR_DOT;
 
 	// Call the parent's Init()
 	CEntity3D::Init();

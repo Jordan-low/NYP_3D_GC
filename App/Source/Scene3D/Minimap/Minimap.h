@@ -60,4 +60,6 @@ protected:
 
 	// Destructor
 	~CMinimap(void);
+
+	int indexSize = 0;
 };

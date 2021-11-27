@@ -237,3 +237,8 @@ void CPhysics3D::PrintSelf(void)
 	cout << "fTotalTime\t=\t" << fTotalTime << endl;
 	cout << "fElapsedTime\t=\t" << fElapsedTime << endl;
 }
+
+void CPhysics3D::SetGravity(glm::vec3 gravity)
+{
+	v3Gravity = gravity;
+}
