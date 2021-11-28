@@ -213,7 +213,8 @@ bool CSolidObjectManager::CheckForCollision(void)
 			{
 				// Check if a movable entity collides with another movable entity
 				if (
-					((*it)->GetType() == CSolidObject::TYPE::PLAYER)
+					(((*it)->GetType() >= CSolidObject::TYPE::PLAYER) &&
+						((*it)->GetType() <= CSolidObject::TYPE::CAR)) 
 					&&
 					(((*it_other)->GetType() >= CSolidObject::TYPE::NPC) &&
 						((*it_other)->GetType() <= CSolidObject::TYPE::OTHERS))

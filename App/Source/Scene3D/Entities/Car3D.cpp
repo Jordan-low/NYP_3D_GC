@@ -8,11 +8,16 @@
  // Include ShaderManager
 #include "RenderControl/ShaderManager.h"
 
+ // Include LoadOBJ
+#include "System/LoadOBJ.h"
+
 // Include ImageLoader
 #include "System/ImageLoader.h"
 
 //For allowing creating of Mesh 
 #include "Primitives/MeshBuilder.h"
+
+#include "Inputs/MouseController.h"
 
 #include "../../MyMath.h"
 
@@ -34,7 +39,7 @@ CCar3D::CCar3D(void)
 	, velocity(0)
 	, maxSpeed(4)
 	, accel(0)
-	, speed(0)
+	, currSpeed(0)
 	, torque(0)
 	, torqueSpeed(80)
 	, tiltAngle(0)
@@ -65,7 +70,7 @@ CCar3D::CCar3D(	const glm::vec3 vec3Position,
 	, velocity(0)
 	, maxSpeed(4)
 	, accel(0)
-	, speed(0)
+	, currSpeed(0)
 	, torque(0)
 	, torqueSpeed(80)
 	, tiltAngle(0)
@@ -106,15 +111,39 @@ bool CCar3D::Init(void)
 	CSolidObject::Init();
 
 	// Set the type
-	SetType(CEntity3D::TYPE::AIRPLANE);
+	SetType(CEntity3D::TYPE::CAR);
 
-	// Generate and bind the VAO
+	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec2> uvs;
+	std::vector<glm::vec3> normals;
+	std::vector<ModelVertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+
+	std::string file_path = "Models/racer.obj";
+	bool success = CLoadOBJ::LoadOBJ(file_path.c_str(), vertices, uvs, normals, true);
+	if (!success)
+	{
+		cout << "Unable to load Models/Pistol/gun_type64_01.obj" << endl;
+		return false;
+	}
+
+	CLoadOBJ::IndexVBO(vertices, uvs, normals, index_buffer_data, vertex_buffer_data);
+
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &IBO);
 
-	//CS: Create the Quad Mesh using the mesh builder
-	mesh = CMeshBuilder::GenerateBox(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-		1.0f, 1.0f, 1.0f);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(ModelVertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	iIndicesSize = index_buffer_data.size();
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// load and create a texture 
 	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/Scene3D_Player.tga", false);
@@ -183,9 +212,9 @@ void CCar3D::ProcessMovement(double dElapsedTime)
 	//reset the accel to 0
 	accel = 0;
 
-	//add friction to curr speed
-	float friction = speed * -1.f;
-	speed += friction * dElapsedTime;
+	//add friction to currSpeed
+	float friction = currSpeed * -1.f;
+	currSpeed += friction * dElapsedTime;
 
 	//reset the torque to 0 if made 1 full round
 	//if (torque >= 360 || torque <= -360)
@@ -201,17 +230,20 @@ void CCar3D::ProcessMovement(double dElapsedTime)
 	vec3Right = glm::normalize(glm::cross(vec3Front, vec3WorldUp));
 	vec3Up = glm::normalize(glm::cross(vec3Right, vec3Front));
 
+	//clamp the yaw and pitch
+	cPlayer3D->fYaw = Math::Clamp(cPlayer3D->fYaw, -25.f, 25.f);
+	cPlayer3D->fPitch = Math::Clamp(cPlayer3D->fPitch, -20.f, 0.f);
 	//set yaw and pitch to car's torque rotation
-	fYaw = -torque - 90;// +cPlayer3D->fYaw;
+	fYaw = -torque - 90 + cPlayer3D->fYaw;
 	fPitch = cPlayer3D->fPitch;
 
 	//process for player inputs
 	ProcessAirplaneInputs(dElapsedTime);
 
-	speed += accel * dElapsedTime;
-	velocity = vec3Front * speed * (float)dElapsedTime;
+	currSpeed += accel * dElapsedTime;
+	velocity = vec3Front * currSpeed * (float)dElapsedTime;
 
-	std::cout << "ACCEL: " << accel << " SPEED: " << speed << " VEL: " << glm::length(velocity) << std::endl;
+	std::cout << "ACCEL: " << accel << " SPEED: " << currSpeed << " VEL: " << glm::length(velocity) << std::endl;
 	//max cap the velocity
 	if (glm::length(velocity) > 0.5f)
 		velocity = glm::normalize(velocity) * 0.5f;
@@ -255,6 +287,8 @@ bool CCar3D::Update(const double dElapsedTime)
 	}
 	else
 	{
+		StorePositionForRollback();
+		cPlayer3D->SetPosition(vec3Position);
 		ProcessMovement(dElapsedTime);
 	}
 
@@ -337,10 +371,11 @@ void CCar3D::ProcessAirplaneInputs(double dElapsedTime)
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_A))
 	{
 		float dir = 1;
-		if (speed < 0)
+		if (currSpeed < 0)
 			dir = -1;
 
-		torque += torqueSpeed * dir * dElapsedTime;
+		if (currSpeed > 0.5f || currSpeed < -0.5f)
+			torque += torqueSpeed * dir * (float)dElapsedTime;
 	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_S))
 	{
@@ -349,10 +384,11 @@ void CCar3D::ProcessAirplaneInputs(double dElapsedTime)
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_D))
 	{
 		float dir = 1;
-		if (speed < 0)
+		if (currSpeed < 0)
 			dir = -1;
 
-		torque -= torqueSpeed * dir * dElapsedTime;
+		if (currSpeed > 0.5f || currSpeed < -0.5f)
+			torque -= torqueSpeed * dir * (float)dElapsedTime;
 	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_W))
 	{

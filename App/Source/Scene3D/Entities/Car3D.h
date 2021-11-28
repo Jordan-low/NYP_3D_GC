@@ -112,7 +112,7 @@ protected:
 	CPlayer3D* cPlayer3D;
 
 	float accel;
-	float speed;
+	float currSpeed;
 	float torque;
 	float torqueSpeed;
 	float tiltAngle;
