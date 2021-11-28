@@ -123,7 +123,7 @@ bool CCar3D::Init(void)
 	bool success = CLoadOBJ::LoadOBJ(file_path.c_str(), vertices, uvs, normals, true);
 	if (!success)
 	{
-		cout << "Unable to load Models/Pistol/gun_type64_01.obj" << endl;
+		cout << "Unable to load Models/racer.obj" << endl;
 		return false;
 	}
 
