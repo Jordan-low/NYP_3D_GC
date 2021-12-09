@@ -58,7 +58,7 @@ bool CPlay3DGameState::Init(void)
  */
 bool CPlay3DGameState::Update(const double dElapsedTime)
 {
-	if (CKeyboardController::GetInstance()->IsKeyReleased(GLFW_KEY_ESCAPE))
+	if (CKeyboardController::GetInstance()->IsKeyReleased(GLFW_KEY_ESCAPE) && !CGameStateManager::GetInstance()->GetIsPausedGameState())
 	{
 		// Reset the CKeyboardController
 		CKeyboardController::GetInstance()->Reset();
@@ -77,10 +77,17 @@ bool CPlay3DGameState::Update(const double dElapsedTime)
 		// Load the menu state
 		cout << "Loading PauseState" << endl;
 		CGameStateManager::GetInstance()->SetPauseGameState("PauseState");
+
+		CSettings::GetInstance()->bShowMousePointer = true;
+		CSettings::GetInstance()->bDisableMousePointer = false;
+		return true;
 	}
 
-	// Call the CScene3D's Update method
-	CScene3D->Update(dElapsedTime);
+	// Call the CScene3D's Update method if not in paused game state
+	if (!CGameStateManager::GetInstance()->GetIsPausedGameState())
+	{
+		CScene3D->Update(dElapsedTime);
+	}
 
 	return true;
 }

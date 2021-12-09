@@ -81,7 +81,6 @@ bool CIntroState::Update(const double dElapsedTime)
 	{
 		// Reset the CKeyboardController
 		CKeyboardController::GetInstance()->Reset();
-
 		// Load the menu state
 		cout << "Loading MenuState" << endl;
 		CGameStateManager::GetInstance()->SetActiveGameState("MenuState");

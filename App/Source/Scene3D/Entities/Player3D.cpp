@@ -328,7 +328,7 @@ void CPlayer3D::SetToJump(void)
 	if (cPhysics3D.GetStatus() == CPhysics3D::STATUS::IDLE)
 	{
 		cPhysics3D.SetStatus(CPhysics3D::STATUS::JUMP);
-		cPhysics3D.SetInitialVelocity(glm::vec3(0.0f, 1.2f, 0.f) + (vec3Front * totalVelocity));
+		cPhysics3D.SetInitialVelocity(glm::vec3(0.0f, 1.2f, 0.f));
 	}
 }
 

@@ -490,7 +490,7 @@ void CScene3D::Render(void)
 	cCamera->ProcessMouseMovement(0, 0, false);
 	// Generate the view and projection
 	glm::mat4 playerView = cCamera->GetViewMatrix();
-	glm::mat4 playerProjection = glm::perspective(glm::radians(45.0f),
+	glm::mat4 playerProjection = glm::perspective(glm::radians(100.f),
 		(float)cSettings->iWindowWidth / (float)cSettings->iWindowHeight,
 		0.1f, 1000.0f);
 

@@ -22,6 +22,11 @@ CGameStateManager::~CGameStateManager(void)
 {
 }
 
+bool CGameStateManager::GetIsPausedGameState()
+{
+	return (pauseGameState != nullptr);
+}
+
 /**
  @brief Destroy this class instance
  */
@@ -209,3 +214,5 @@ void CGameStateManager::OffPauseGameState(void)
 {
 	pauseGameState = nullptr;
 }
+
+

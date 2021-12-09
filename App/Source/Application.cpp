@@ -306,6 +306,16 @@ void Application::Run(void)
 		// Update the FPS Counter
 		dTotalFrameTime = dElapsedTime + dDelayTime * 0.001;
 		cFPSCounter->Update(dTotalFrameTime);
+
+		if (!cSettings->bDisableMousePointer)
+		{
+			if (!cSettings->bShowMousePointer)
+				glfwSetInputMode(cSettings->pWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+			else
+				glfwSetInputMode(cSettings->pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+		else
+			glfwSetInputMode(cSettings->pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
 }
 

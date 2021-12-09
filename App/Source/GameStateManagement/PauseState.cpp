@@ -94,8 +94,11 @@ bool CPauseState::Update(const double dElapsedTime)
 
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 	{
+		std::cout << "IM IN" << std::endl;
 		static float f = 0.0f;
 		static int counter = 0;
+
+		ImGui::NewFrame();
 
 		// Create a window called "Hello, world!" and append into it.
 		ImGui::Begin("Main Menu", NULL, window_flags);
@@ -128,7 +131,8 @@ bool CPauseState::Update(const double dElapsedTime)
 
 			CSoundController::GetInstance()->MasterVolumeDecrease();
 		}
-	ImGui::End();
+		ImGui::End();
+		ImGui::EndFrame();
 	}
 
 	//For keyboard controls
@@ -139,7 +143,10 @@ bool CPauseState::Update(const double dElapsedTime)
 
 		// Load the menu state
 		cout << "UnLoading PauseState" << endl;
-		CGameStateManager::GetInstance()->SetPauseGameState(nullptr);
+		CGameStateManager::GetInstance()->SetPauseGameState("PauseState");
+
+		CSettings::GetInstance()->bDisableMousePointer = true;
+		CSettings::GetInstance()->bShowMousePointer = false;
 		return true;
 	}
 
