@@ -561,6 +561,8 @@ void CScene3D::Render(void)
 	cProjectileManager->Render();
 	cProjectileManager->PostRender();
 
+	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+
 	cGUI_Scene3D->SetProjection(projection);
 	// Call the CGUI_Scene3D's PreRender ()
 	cGUI_Scene3D->PreRender();
@@ -568,9 +570,6 @@ void CScene3D::Render(void)
 	cGUI_Scene3D->Render();
 	// Call the CGUI_Scene3D's PostRender()
 	cGUI_Scene3D->PostRender();
-
-
-	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 
 	return;
 }

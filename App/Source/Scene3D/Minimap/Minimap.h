@@ -25,6 +25,7 @@ public:
 	GLuint uiTextureColorBuffer;
 	GLuint RBO;
 	GLuint VAO_BORDER, VBO_BORDER;
+	GLuint VAO_ARROW, VBO_ARROW;
 
 	// Initialise this class instance
 	bool Init(void);
@@ -54,6 +55,9 @@ public:
 	// PrintSelf
 	void PrintSelf(void);
 
+	//Change the player current color 
+	void SetPlayerArrowCurrentColor(glm::vec4);
+
 protected:
 	// Constructor
 	CMinimap(void);
@@ -62,4 +66,7 @@ protected:
 	~CMinimap(void);
 
 	int indexSize = 0;
+
+	//Color of the mini map
+	glm::vec4 currentColor;
 };

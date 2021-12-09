@@ -310,6 +310,8 @@ void CGUI_Scene3D::Update(const double dElapsedTime)
 	ImGui::PopStyleColor();
 
 	ImGui::End();
+
+	cMinimap->SetPlayerArrowCurrentColor(glm::vec4(0.0, 0.0, 1.0, 1.0));
 }
 
 

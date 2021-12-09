@@ -45,44 +45,6 @@ bool CMinimap::Init(void)
 
 	// Set screenTexture to 0 in the shader program
 	CShaderManager::GetInstance()->activeShader->setInt("screenTexture", 0);
-	
-	
-
-	/*Vertex v;
-	std::vector<Vertex> vertex_buffer_data;
-	std::vector<unsigned> index_buffer_data;
-
-	float vert = 0;
-	float hor = 0;
-	float radius = 1;
-
-	for (int theta = 0; theta <= 360; theta += 10)
-	{
-		v.position = glm::vec3(radius * cos(Math::DegreeToRadian(theta)), 0, radius * sin(Math::DegreeToRadian(theta)));
-		v.texCoord = glm::vec2(0.5 * cos(Math::DegreeToRadian(theta)) + 0.5f, 0.5 * sin(Math::DegreeToRadian(theta)) + 0.5f);
-		vertex_buffer_data.push_back(v);
-		v.position = glm::vec3(0, 0, 0);
-		v.texCoord = glm::vec2(0.5f, 0.5f);
-		vertex_buffer_data.push_back(v);
-	}
-
-
-	for (int i = 0; i < 74; i++)
-	{
-		index_buffer_data.push_back(i);
-	}*/
-
-	//float vertices[] = 
-	//{
-	//	// positions	// texCoords
-	//	0.5f, 1.0f,		0.0f, 1.0f,
-	//	0.5f, 0.5f,		0.0f, 0.0f,
-	//	1.0f, 0.5f,		1.0f, 0.0f,
-
-	//	0.5f, 1.0f,		0.0f, 1.0f,
-	//	1.0f, 0.5f,		1.0f, 0.0f,
-	//	1.0f, 1.0f,		1.0f, 1.0f
-	//};
 
 	float maxTheta = 360;
 	const int numSides = 36;
@@ -136,16 +98,6 @@ bool CMinimap::Init(void)
 		cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	// Setup the border
-	//float vertices_border[] =
-	//{
-	//	// positions	// texCoords
-	//	0.5f, 1.0f,		0.0f, 1.0f,
-	//	0.5f, 0.5f,		0.0f, 0.0f,
-	//	1.0f, 0.5f,		1.0f, 0.0f,
-	//	1.0f, 1.0f,		1.0f, 1.0f
-	//};
-
 	float vertices_border[verticesSize];
 	float border_radius = radius;
 
@@ -169,6 +121,32 @@ bool CMinimap::Init(void)
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	// Setup the Arrow
+	float vertices_arrow[] =
+	{
+		// positions			// Colour					// texCoords
+		0.75f, 0.8f, 1.0f,		1.0f, 1.0f, 1.0f, 1.0f,		0.5f, 1.0f,
+		0.725f, 0.675f, 1.0f,	1.0f, 1.0f, 1.0f, 1.0f,		0.0f, 0.0f,
+		0.75f, 0.7f, 1.0f,		1.0f, 1.0f, 1.0f, 1.0f,		0.5f, 0.5f,
+
+		0.75f, 0.8f, 1.0f,		1.0f, 1.0f, 1.0f, 1.0f,		0.5f, 1.0f,
+		0.75f, 0.7f, 1.0f,		1.0f, 1.0f, 1.0f, 1.0f,		0.5f, 0.5f,
+		0.775f, 0.675f, 1.0f,	1.0f, 1.0f, 1.0f, 1.0f,		1.0f, 0.0f,
+	};
+
+	// Set up the rendering environment
+	glGenVertexArrays(1, &VAO_ARROW);
+	glGenBuffers(1, &VBO_ARROW);
+	glBindVertexArray(VAO_ARROW);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_ARROW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_arrow), &vertices_arrow, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7 * sizeof(float)));
 
 	return true;
 }
@@ -262,6 +240,37 @@ void CMinimap::Render(void)
 	// Reset to default
 	glBindVertexArray(0);
 
+	// Activate shader
+	CShaderManager::GetInstance()->Use("2DColorShader");
+
+	// Render the Arrow
+	glBindVertexArray(VAO_ARROW);
+
+	//Provide an identiy matrix as there is no projection
+	glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+	unsigned int transformLoc = glGetUniformLocation(CShaderManager::GetInstance()->activeShader->ID, "transform");
+	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+
+	//Set Current color for the color shader
+	unsigned int colorLoc = glGetUniformLocation(CShaderManager::GetInstance()->activeShader->ID, "runtime_color");
+	glUniform4fv(colorLoc, 1, glm::value_ptr(currentColor));
+
+	// Get the texture to be rendered
+	glBindTexture(GL_TEXTURE_2D, uiTextureColorBuffer);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	// Reset to default
+	glBindTexture(GL_TEXTURE_2D, 0);
+	// Reset to default
+	glBindVertexArray(0);
+}
+
+/**
+ @brief PostRender Set the player color that is use in the color shader
+ */
+void CMinimap::SetPlayerArrowCurrentColor(glm::vec4 value)
+{
+	currentColor = value;
 }
 
 /**
