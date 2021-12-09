@@ -164,7 +164,13 @@ void CScene3D::ProcessPlayerInputs(double dElapsedTime)
 		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, (float)dElapsedTime);
 	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_SPACE))
+	{
 		cPlayer3D->SetToJump();
+		if (cPlayer3D->GetPhysics().GetStatus() == CPhysics3D::STATUS::FALL)
+		{
+			cPlayer3D->SetToJetpack(dElapsedTime);
+		}
+	}
 
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_G))
 		cPlayer3D->GetWeapon()->AnimateEquip(dElapsedTime);

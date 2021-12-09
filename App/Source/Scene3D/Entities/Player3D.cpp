@@ -50,6 +50,8 @@ CPlayer3D::CPlayer3D(void)
 	, addCounterSlideSpeed(-10.f)
 	, totalVelocity(0.f)
 	, isDriving(false)
+	, jetPackFuel(0.f)
+	, jetPackSpeed(0.f)
 {
 	// Set the default position so it is above the ground
 	vec3Position = glm::vec3(0.0f, 0.5f, 0.0f);
@@ -96,6 +98,8 @@ CPlayer3D::CPlayer3D(	const glm::vec3 vec3Position,
 	, addCounterSlideSpeed(-10.f)
 	, totalVelocity(0.f)
 	, isDriving(false)
+	, jetPackFuel(0.f)
+	, jetPackSpeed(0.f)
 {
 	mesh = NULL;
 
@@ -332,6 +336,19 @@ void CPlayer3D::SetToJump(void)
 	}
 }
 
+/**
+ @brief Set to Jetpack
+ */
+void CPlayer3D::SetToJetpack(double dt)
+{
+	if (jetPackFuel > 0)
+	{
+		jetPackFuel -= 10 * dt;
+		cPhysics3D.SetStatus(CPhysics3D::STATUS::JUMP);
+		cPhysics3D.SetInitialVelocity(glm::vec3(0.0f, 1.0f, 0.f));
+	}
+}
+
 float CPlayer3D::GetTotalVelocity()
 {
 	return totalVelocity;
@@ -494,6 +511,13 @@ bool CPlayer3D::Update(const double dElapsedTime)
 	if (cVehicleWeapon)
 		cVehicleWeapon->Update(dElapsedTime);
 
+	//jetpack
+	if (cPhysics3D.GetStatus() == CPhysics3D::STATUS::IDLE)
+	{
+		jetPackFuel += 0.25f * dElapsedTime;
+	}
+	jetPackFuel = Math::Clamp(jetPackFuel, 0.f, 1.f);
+
 	if (isDriving)
 		return false;
 
@@ -501,7 +525,7 @@ bool CPlayer3D::Update(const double dElapsedTime)
 		cPrimaryWeapon->Update(dElapsedTime);
 	if (cSecondaryWeapon)
 		cSecondaryWeapon->Update(dElapsedTime);
-
+	std::cout << "JETPACK : " << jetPackFuel << std::endl;
 	if (CCameraEffectsManager::GetInstance()->Get("CrossHair")->GetStatus())
 		((CCrossHair*)(CCameraEffectsManager::GetInstance()->Get("CrossHair")))->SetCrossHairType(GetWeapon()->crossHairType);
 
@@ -521,7 +545,6 @@ bool CPlayer3D::Update(const double dElapsedTime)
 
 	// Constraint the player's position
 	Constraint();
-
 
 	switch (activeState)
 	{
@@ -566,9 +589,8 @@ void CPlayer3D::PreRender(void)
 void CPlayer3D::Render(void)
 {
 	// Don't render the player if the camera is attached to it
-	//if (cCamera)
-	//	return;
-	std::cout << GetPosition().x << std::endl;
+	if (cCamera)
+		return;
 
 	CSolidObject::Render();
 }

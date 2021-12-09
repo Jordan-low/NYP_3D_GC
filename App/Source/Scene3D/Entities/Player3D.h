@@ -107,6 +107,9 @@ public:
 	// Set to Jump
 	void SetToJump(void);
 
+	// Set to Jetpack
+	void SetToJetpack(double dt);
+
 	// Get Total Velocity
 	float GetTotalVelocity();
 
@@ -115,6 +118,7 @@ public:
 	CWeaponInfo* GetVehicleWeapon();
 
 	CPhysics3D GetPhysics();
+
 
     // Processes input received from any keyboard-like input system as player movements. 
 	// Accepts input parameter in the form of Player defined ENUM (to abstract it from windowing systems)
@@ -173,6 +177,9 @@ protected:
 	float addCounterSlideSpeed;
 	float addSlideVelocity;
 	bool enableSliding = true;
+
+	float jetPackFuel;
+	float jetPackSpeed;
 
 	// Physics
 	CPhysics3D cPhysics3D;
