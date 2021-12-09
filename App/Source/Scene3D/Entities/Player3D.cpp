@@ -266,8 +266,10 @@ bool CPlayer3D::IsCameraAttached(void)
 void CPlayer3D::SetWeapon(const int iSlot, CWeaponInfo* cWeaponInfo)
 {
 	if (iSlot == 0)
-		cPrimaryWeapon = cWeaponInfo;
+		cMeleeWeapon = cWeaponInfo;
 	else if (iSlot == 1)
+		cPrimaryWeapon = cWeaponInfo;
+	else if (iSlot == 2)
 		cSecondaryWeapon = cWeaponInfo;
 }
 
@@ -278,8 +280,10 @@ void CPlayer3D::SetWeapon(const int iSlot, CWeaponInfo* cWeaponInfo)
 CWeaponInfo* CPlayer3D::GetWeapon(void) const
 {
 	if (iCurrentWeapon == 0)
-		return cPrimaryWeapon;
+		return cMeleeWeapon;
 	else if (iCurrentWeapon == 1)
+		return cPrimaryWeapon;
+	else if (iCurrentWeapon == 2)
 		return cSecondaryWeapon;
 
 	return NULL;
@@ -303,7 +307,12 @@ void CPlayer3D::SetCurrentWeapon(const int iSlot)
  */
 bool CPlayer3D::DischargeWeapon(void)
 {
-	if ((iCurrentWeapon == 0) && (cPrimaryWeapon))
+	if ((iCurrentWeapon == 0) && (cMeleeWeapon))
+	{
+		if (!cMeleeWeapon->isMeleeAttacking)
+			cMeleeWeapon->isMeleeAttacking = true;
+	}
+	if ((iCurrentWeapon == 1) && (cPrimaryWeapon))
 	{
 		bool fired = cPrimaryWeapon->Discharge(vec3Position, vec3Front, (CSolidObject*)this);
 
@@ -312,7 +321,7 @@ bool CPlayer3D::DischargeWeapon(void)
 
 		return fired;
 	}
-	else if ((iCurrentWeapon == 1) && (cSecondaryWeapon))
+	else if ((iCurrentWeapon == 2) && (cSecondaryWeapon))
 	{
 		bool fired = cSecondaryWeapon->Discharge(vec3Position, vec3Front, (CSolidObject*)this);
 		
@@ -521,20 +530,24 @@ bool CPlayer3D::Update(const double dElapsedTime)
 	if (isDriving)
 		return false;
 
+	//model = glm::rotate(model, glm::radians(30.f), glm::vec3(1, 0, 0));
+	
+	if (cMeleeWeapon)
+		cMeleeWeapon->Update(dElapsedTime);
 	if (cPrimaryWeapon)
 		cPrimaryWeapon->Update(dElapsedTime);
 	if (cSecondaryWeapon)
 		cSecondaryWeapon->Update(dElapsedTime);
-	std::cout << "JETPACK : " << jetPackFuel << std::endl;
+
 	if (CCameraEffectsManager::GetInstance()->Get("CrossHair")->GetStatus())
 		((CCrossHair*)(CCameraEffectsManager::GetInstance()->Get("CrossHair")))->SetCrossHairType(GetWeapon()->crossHairType);
 
 	// Update the Jump/Fall
 	UpdateJumpFall(dElapsedTime);
-
 	// If the camera is attached to this player, then update the camera
 	if (cCamera)
 	{
+		std::cout << cCamera->vec3Offset.x << std::endl;
 		cCamera->vec3Position = vec3Position + cCamera->vec3Offset;
 		cCamera->vec3Front = vec3Front;
 		cCamera->vec3Up = vec3Up;
@@ -573,6 +586,16 @@ void CPlayer3D::SetVehicleWeapon(CWeaponInfo* _cVehicleWeapon)
 CWeaponInfo* CPlayer3D::GetVehicleWeapon()
 {
 	return cVehicleWeapon;
+}
+
+void CPlayer3D::SetMeleeWeapon(CWeaponInfo* _cMeleeWeapon)
+{
+	cMeleeWeapon = _cMeleeWeapon;
+}
+
+CWeaponInfo* CPlayer3D::GetMeleeWeapon()
+{
+	return cMeleeWeapon;
 }
 
 /**

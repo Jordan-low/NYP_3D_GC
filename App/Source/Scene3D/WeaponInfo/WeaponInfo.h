@@ -116,6 +116,9 @@ public:
 	// Print Self
 	virtual void PrintSelf(void);
 
+	void AnimateMeleeAttack(const double dElapsedTime);
+	bool isMeleeAttacking = false;
+
 	CCrossHair::CROSSHAIR_TYPE crossHairType;
 protected:
 	// The name of the weapon in string
@@ -153,6 +156,8 @@ protected:
 	float bulletSpread;
 
 	// Float for reload rotate angle
+	float animateMeleeAttackZ;
+	float animateMeleeAttackDir;
 	float animateReloadAngle;
 	float animateReloadPosY;
 	float animateReloadPosZ;

@@ -117,7 +117,13 @@ public:
 
 	CWeaponInfo* GetVehicleWeapon();
 
+	void SetMeleeWeapon(CWeaponInfo* _cVehicleWeapon);
+
+	CWeaponInfo* GetMeleeWeapon();
+
 	CPhysics3D GetPhysics();
+
+	void AnimateMeleeAttack(const double dElapsedTime);
 
 
     // Processes input received from any keyboard-like input system as player movements. 
@@ -152,6 +158,7 @@ protected:
 	CTerrain* cTerrain;
 
 	// The handle to the CWeaponInfo class instance
+	CWeaponInfo* cMeleeWeapon;
 	CWeaponInfo* cPrimaryWeapon;
 	CWeaponInfo* cSecondaryWeapon;
 	CWeaponInfo* cVehicleWeapon;

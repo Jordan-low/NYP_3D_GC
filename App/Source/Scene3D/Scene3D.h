@@ -58,6 +58,7 @@
 #include "WeaponInfo/AssaultRifle.h"
 #include "WeaponInfo/SubmachineGun.h"
 #include "WeaponInfo/Turret.h"
+#include "WeaponInfo/Knife.h"
 
 class CSettings;
 

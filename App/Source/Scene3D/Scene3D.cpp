@@ -163,7 +163,7 @@ void CScene3D::ProcessPlayerInputs(double dElapsedTime)
 		}
 		cPlayer3D->ProcessMovement(CPlayer3D::PLAYERMOVEMENT::FORWARD, (float)dElapsedTime);
 	}
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_SPACE))
+	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_SPACE))
 	{
 		cPlayer3D->SetToJump();
 		if (cPlayer3D->GetPhysics().GetStatus() == CPhysics3D::STATUS::FALL)
@@ -312,8 +312,19 @@ bool CScene3D::Init(void)
 	cSubmachineGun->Init();
 	cSubmachineGun->SetShader("Shader3D_Model");
 
-	cPlayer3D->SetWeapon(0, cAssaultRifle);
-	cPlayer3D->SetWeapon(1, cSubmachineGun);
+	// Assign a cSubmachineGun to the cPlayer3D
+	CKnife* cKnife = new CKnife();
+	// Set the pos, rot, scale of this weapon
+	cKnife->SetPosition(glm::vec3(0.05f, -0.075f, -0.3f));
+	cKnife->SetRotation(3.14159f, glm::vec3(0.0f, 1.0f, 0.0f));
+	cKnife->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
+	//Initialise the instance
+	cKnife->Init();
+	cKnife->SetShader("Shader3D_Model");
+
+	cPlayer3D->SetWeapon(0, cKnife);
+	cPlayer3D->SetWeapon(1, cAssaultRifle);
+	cPlayer3D->SetWeapon(2, cSubmachineGun);
 	cPlayer3D->SetCurrentWeapon(0);
 
 	// Assign a cSubmachineGun to the cPlayer3D
@@ -357,7 +368,7 @@ bool CScene3D::Update(const double dElapsedTime)
 
 	// Update the projectiles
 	cProjectileManager->Update(dElapsedTime);
-
+	
 	// Call the CGUI_Scene3D's update method
 	cGUI_Scene3D->Update(dElapsedTime);
 
@@ -396,9 +407,13 @@ bool CScene3D::Update(const double dElapsedTime)
 		{
 			cPlayer3D->SetCurrentWeapon(0);
 		}
-		else if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_2))
+		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_2))
 		{
 			cPlayer3D->SetCurrentWeapon(1);
+		}
+		else if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_3))
+		{
+			cPlayer3D->SetCurrentWeapon(2);
 		}
 		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_R))
 		{
@@ -554,7 +569,6 @@ void CScene3D::Render(void)
 	cTerrain->Render();
 	cTerrain->PostRender();
 
-	// Render the entities for the minimap
 	cSolidObjectManager->SetView(view);
 	cSolidObjectManager->SetProjection(projection);
 	cSolidObjectManager->Render();

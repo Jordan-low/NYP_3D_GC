@@ -33,6 +33,8 @@ CWeaponInfo::CWeaponInfo()
 	, dEquipTime(0.0f)
 	, dMaxEquipTime(0.0f)
 	, dMaxReloadTime(5.0f)
+	, animateMeleeAttackZ(0.f)
+	, animateMeleeAttackDir(-1)
 	, animateReloadAngle(0.f)
 	, animateReloadPosY(0.f)
 	, animateReloadPosZ(0.f)
@@ -281,15 +283,19 @@ bool CWeaponInfo::Update(const double dt)
 
 	// Update the model matrix
 	model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-	model = glm::translate(model, glm::vec3(vec3Position.x, vec3Position.y, vec3Position.z) + gunRecoilPos + glm::vec3(0, animateReloadPosY, animateReloadPosZ));
+	model = glm::translate(model, glm::vec3(vec3Position.x, vec3Position.y, vec3Position.z) + gunRecoilPos + glm::vec3(0, animateReloadPosY, animateReloadPosZ) + glm::vec3(0, 0, animateMeleeAttackZ));
 	model = glm::scale(model, vec3Scale);
 	model = glm::rotate(model, fRotationAngle, vec3RotationAxis);
 	model = glm::rotate(model, glm::radians(animateReloadAngle), glm::vec3(1, 0, 0));
 	model = glm::rotate(model, glm::radians(animateEquipAngle), glm::vec3(1, 0, 0));
 
+	if (isMeleeAttacking)
+		AnimateMeleeAttack(dt);
+
 	// If the weapon can fire, then just fire and return
 	if (bFire)
 		return false;
+
 
 	// Update the dReloadTime
 	if (dReloadTime >= 0.0f)
@@ -544,4 +550,20 @@ void CWeaponInfo::PrintSelf(void)
 	cout << "dTimeBetweenShots\t:\t" << dTimeBetweenShots << endl;
 	cout << "dElapsedTime\t\t:\t" << dElapsedTime << endl;
 	cout << "bFire\t\t:\t" << bFire << endl;
+}
+
+void CWeaponInfo::AnimateMeleeAttack(const double dElapsedTime)
+{
+	if (animateMeleeAttackDir == -1 && animateMeleeAttackZ < -0.25f)
+		animateMeleeAttackDir = 1;
+	else if (animateMeleeAttackDir == 1 && animateMeleeAttackZ >= 0)
+	{
+		std::cout << "DASD" << std::endl;
+		animateMeleeAttackZ = 0;
+		isMeleeAttacking = false;
+		bFire = true;
+		animateMeleeAttackDir = -1;
+		return;
+	}
+	animateMeleeAttackZ += dElapsedTime * animateMeleeAttackDir;
 }

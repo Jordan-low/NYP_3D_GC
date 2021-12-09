@@ -1,9 +1,9 @@
 /**
- CAssaultRifle
+ CKnife
  By: Jordan Low
  Date: Oct 2021
  */
-#include "AssaultRifle.h"
+#include "Knife.h"
 
  // Include LoadOBJ
 #include "System/LoadOBJ.h"
@@ -17,31 +17,31 @@ using namespace std;
 /**
 @brief Default Constructor
 */
-CAssaultRifle::CAssaultRifle(void)
+CKnife::CKnife(void)
 {
 }
 
 /**
 @brief Default Destructor
 */
-CAssaultRifle::~CAssaultRifle(void)
+CKnife::~CKnife(void)
 {
 }
 
 /**
  @brief Initialise this instance to default values
  */
-bool CAssaultRifle::Init(void)
+bool CKnife::Init(void)
 {
 	// Call the parent's Init method
 	CWeaponInfo::Init();
 
 	// The name of the weapon
-	name = "Assault Rifle";
+	name = "Knife";
 	// The number of ammunition in a magazine for this weapon
-	iMagRounds = 30;
+	iMagRounds = 10;
 	// The maximum number of ammunition for this magazine for this weapon
-	iMaxMagRounds = 30;
+	iMaxMagRounds = 10;
 	// The current total number of rounds currently carried by this player
 	iTotalRounds = 100;
 	// The max total number of rounds currently carried by this player
@@ -52,7 +52,7 @@ bool CAssaultRifle::Init(void)
 	// The time between shots
 	dTimeBetweenShots = 0.02;
 	// The time to reload
-	dMaxReloadTime = 2.f;
+	dMaxReloadTime = 2.0f;
 	// The time to equip
 	dMaxEquipTime = 0.3f;
 	// The elapsed time (between shots)
