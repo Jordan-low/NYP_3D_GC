@@ -488,7 +488,7 @@ void CWeaponInfo::SetProjection(glm::mat4 projection)
 }
 
 /**
- @brief Set up the OpenGL display environment before rendering
+ @brief Set up the OpenGL display environment before 1ing
  */
 void CWeaponInfo::PreRender(void)
 {

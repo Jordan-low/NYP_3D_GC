@@ -43,6 +43,7 @@ CCar3D::CCar3D(void)
 	, torque(0)
 	, torqueSpeed(80)
 	, tiltAngle(0)
+	, thirdPersonView(true)
 {
 	// Set the default position so it is above the ground
 	vec3Position = glm::vec3(0.0f, 0.5f, 0.0f);
@@ -74,6 +75,7 @@ CCar3D::CCar3D(	const glm::vec3 vec3Position,
 	, torque(0)
 	, torqueSpeed(80)
 	, tiltAngle(0)
+	, thirdPersonView(true)
 {
 	mesh = NULL;
 
@@ -230,15 +232,20 @@ void CCar3D::ProcessMovement(double dElapsedTime)
 	vec3Right = glm::normalize(glm::cross(vec3Front, vec3WorldUp));
 	vec3Up = glm::normalize(glm::cross(vec3Right, vec3Front));
 
-	//clamp the yaw and pitch
-	cPlayer3D->fYaw = Math::Clamp(cPlayer3D->fYaw, -25.f, 25.f);
-	cPlayer3D->fPitch = Math::Clamp(cPlayer3D->fPitch, -20.f, 0.f);
+	////clamp the yaw and pitch
+	//cPlayer3D->fYaw = Math::Clamp(cPlayer3D->fYaw, -115.f, -65.f);
+	//cPlayer3D->fPitch = Math::Clamp(cPlayer3D->fPitch, -20.f, 0.f);
+
+	cPlayer3D->UpdatePlayerVectors();
+
 	//set yaw and pitch to car's torque rotation
-	fYaw = -torque - 90 + cPlayer3D->fYaw;
+	fYaw = -torque + cPlayer3D->fYaw;
 	fPitch = cPlayer3D->fPitch;
 
+	//UpdatePlayerVectors();
+
 	//process for player inputs
-	ProcessAirplaneInputs(dElapsedTime);
+	ProcessCarInputs(dElapsedTime);
 
 	currSpeed += accel * dElapsedTime;
 	velocity = vec3Front * currSpeed * (float)dElapsedTime;
@@ -266,6 +273,16 @@ CPlayer3D* CCar3D::GetPlayer3D()
 	return cPlayer3D;
 }
 
+void CCar3D::SetWeapon(CWeaponInfo* cWeaponInfo)
+{
+	cWeapon = cWeaponInfo;
+}
+
+CWeaponInfo* CCar3D::GetWeapon(void) const
+{
+	return cWeapon;
+}
+
 /**
  @brief Update the elapsed time
  @param dt A const double variable containing the elapsed time since the last frame
@@ -281,26 +298,59 @@ bool CCar3D::Update(const double dElapsedTime)
 			{
 				cPlayer3D = CPlayer3D::GetInstance();
 				cCamera = CCamera::GetInstance();
-				cPlayer3D->attachedAirplane = true;
+				cPlayer3D->isDriving = true;
+				cPlayer3D->SetVehicleWeapon(this->cWeapon);
 			}
 		}
 	}
 	else
 	{
 		StorePositionForRollback();
-		cPlayer3D->SetPosition(vec3Position);
 		ProcessMovement(dElapsedTime);
-	}
 
+		if (cWeapon != nullptr)
+		{
+			if (cWeapon->GetAutoFire())
+			{
+				if (CMouseController::GetInstance()->IsButtonDown(CMouseController::BUTTON_TYPE::LMB))
+				{
+					bool fired = cWeapon->Discharge(vec3Position + glm::vec3(0, vec3Scale.y * 0.5f, 0), cPlayer3D->GetFront(), (CSolidObject*)this);
+
+					//if (fired) //if first bullet is fired, apply recoil
+					//	cPlayer3D->ApplyRecoil(cWeapon);
+				}
+			}
+			else
+			{
+				if (CMouseController::GetInstance()->IsButtonPressed(CMouseController::BUTTON_TYPE::LMB))
+				{
+					bool fired = cWeapon->Discharge(vec3Position + glm::vec3(0, vec3Scale.y * 0.5f, 0), cPlayer3D->GetFront(), (CSolidObject*)this);
+
+					//if (fired) //if first bullet is fired, apply recoil
+					//	cPlayer3D->ApplyRecoil(cWeapon);
+				}
+			}
+			if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_R))
+			{
+				cWeapon->Reload();
+			}
+		}
+	}
+	if (cPlayer3D)
+		std::cout << cPlayer3D->GetFront().x << std::endl;
 	// If the camera is attached to this player, then update the camera
 	if (cCamera)
 	{
-		cCamera->vec3Position = vec3Position + vec3Up * 2.f + vec3Front * -5.f;
+		glm::vec3 camOffset = vec3Up * 2.f + vec3Front * -5.f;
+		if (!thirdPersonView)
+			camOffset = vec3Up * 0.1f;
+		cCamera->vec3Position = vec3Position + camOffset;
 		cCamera->vec3Front = vec3Front;
 		cCamera->vec3Up = vec3Up;
 		cCamera->vec3Right = vec3Right;
 		cCamera->fYaw = fYaw;
 		cCamera->fPitch = fPitch;
+		cPlayer3D->SetPosition(vec3Position);
 	}
 
 	// Constraint the player's position
@@ -359,14 +409,22 @@ void CCar3D::Constraint(void)
 	}
 }
 
-void CCar3D::ProcessAirplaneInputs(double dElapsedTime)
+
+void CCar3D::ProcessCarInputs(double dElapsedTime)
 {
+	//exit car
 	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_E))
 	{
-		cPlayer3D->attachedAirplane = false;
+		cPlayer3D->isDriving = false;
+		cPlayer3D->SetVehicleWeapon(nullptr);
 		cPlayer3D = NULL;
 		cCamera = NULL;
 		return;
+	}
+	//change cam view
+	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_TAB))
+	{
+		thirdPersonView = !thirdPersonView;
 	}
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_A))
 	{
@@ -394,6 +452,21 @@ void CCar3D::ProcessAirplaneInputs(double dElapsedTime)
 	{
 		accel = fMovementSpeed * dElapsedTime;
 	}
+}
+
+void CCar3D::UpdatePlayerVectors(void)
+{
+	// Calculate the new vec3Front vector
+	glm::vec3 front;
+	front.x = cos(glm::radians(fYaw)) * cos(glm::radians(fPitch));
+	front.y = sin(glm::radians(fPitch));
+	front.z = sin(glm::radians(fYaw)) * cos(glm::radians(fPitch));
+	vec3Front = glm::normalize(front);
+	// Also re-calculate the Right and Up vector
+	// Normalize the vectors, because their length gets closer to 0 the more 
+	// you look up or down which results in slower movement.
+	vec3Right = glm::normalize(glm::cross(vec3Front, vec3WorldUp));
+	vec3Up = glm::normalize(glm::cross(vec3Right, vec3Front));
 }
 
 /**

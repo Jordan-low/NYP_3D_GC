@@ -218,7 +218,7 @@ bool CSolidObjectManager::CheckForCollision(void)
 					&&
 					(((*it_other)->GetType() >= CSolidObject::TYPE::NPC) &&
 						((*it_other)->GetType() <= CSolidObject::TYPE::OTHERS))
-					)
+					) 
 				{
 					(*it)->RollbackPosition();
 					(*it_other)->RollbackPosition();

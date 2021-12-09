@@ -85,6 +85,12 @@ public:
 
 	CPlayer3D* GetPlayer3D();
 
+	// Set Weapon to this class instance
+	void SetWeapon(CWeaponInfo* cWeaponInfo = NULL);
+
+	// Get current weapon of this class instance
+	CWeaponInfo* GetWeapon(void) const;
+
 	// Update this class instance
 	virtual bool Update(const double dElapsedTime);
 
@@ -111,6 +117,9 @@ protected:
 	// Player
 	CPlayer3D* cPlayer3D;
 
+	// Weapon
+	CWeaponInfo* cWeapon;
+
 	float accel;
 	float currSpeed;
 	float torque;
@@ -118,6 +127,7 @@ protected:
 	float tiltAngle;
 	glm::vec3 velocity;
 	float maxSpeed;
+	bool thirdPersonView;
 
 	// Destructor
 	virtual ~CCar3D(void);
@@ -125,5 +135,8 @@ protected:
 	// Constraint the player's position
 	void Constraint(void);
 
-	void ProcessAirplaneInputs(double dElapsedTime);
+	void ProcessCarInputs(double dElapsedTime);
+
+	// Calculates the front vector from the Player's (updated) Euler Angles
+	void UpdatePlayerVectors(void);
 };

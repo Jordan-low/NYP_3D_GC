@@ -310,9 +310,14 @@ bool CScene3D::Init(void)
 	cPlayer3D->SetWeapon(1, cSubmachineGun);
 	cPlayer3D->SetCurrentWeapon(0);
 
+	// Assign a cSubmachineGun to the cPlayer3D
+	CTurret* cTurret = new CTurret();
+	cTurret->Init();
+
 	CCar3D* car = new CCar3D(glm::vec3(-5.f, 0.5f, 0.0f));
 	car->SetShader("Shader3D");
 	car->Init();
+	car->SetWeapon(cTurret);
 	car->InitCollider("Shader3D_Line", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
 	// Add the airplane to the cSolidObjectManager
@@ -350,7 +355,7 @@ bool CScene3D::Update(const double dElapsedTime)
 	// Call the CGUI_Scene3D's update method
 	cGUI_Scene3D->Update(dElapsedTime);
 
-	if (!cPlayer3D->attachedAirplane)
+	if (!cPlayer3D->isDriving)
 		ProcessPlayerInputs(dElapsedTime);
 
 	if (!cPlayer3D->IsCameraAttached())
@@ -377,31 +382,47 @@ bool CScene3D::Update(const double dElapsedTime)
 		cCamera->ProcessMouseScroll((float)cMouseController->GetMouseScrollStatus(CMouseController
 			::SCROLL_TYPE::SCROLL_TYPE_YOFFSET));
 	}
-	//Update for weapons
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_1))
+
+	if (!cPlayer3D->isDriving)
 	{
-		cPlayer3D->SetCurrentWeapon(0);
-	}
-	else if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_2))
-	{
-		cPlayer3D->SetCurrentWeapon(1);
-	}
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_R))
-	{
-		cPlayer3D->GetWeapon()->Reload();
-	}
-	if (cPlayer3D->GetWeapon()->GetAutoFire())
-	{
-		if (cMouseController->IsButtonDown(CMouseController::BUTTON_TYPE::LMB))
+		//Update for weapons
+		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_1))
 		{
-			cPlayer3D->DischargeWeapon();
+			cPlayer3D->SetCurrentWeapon(0);
 		}
-	}
-	else
-	{
-		if (cMouseController->IsButtonPressed(CMouseController::BUTTON_TYPE::LMB))
+		else if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_2))
 		{
-			cPlayer3D->DischargeWeapon();
+			cPlayer3D->SetCurrentWeapon(1);
+		}
+		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_R))
+		{
+			cPlayer3D->GetWeapon()->Reload();
+		}
+		if (cPlayer3D->GetWeapon()->GetAutoFire())
+		{
+			if (cMouseController->IsButtonDown(CMouseController::BUTTON_TYPE::LMB))
+			{
+				cPlayer3D->DischargeWeapon();
+			}
+		}
+		else
+		{
+			if (cMouseController->IsButtonPressed(CMouseController::BUTTON_TYPE::LMB))
+			{
+				cPlayer3D->DischargeWeapon();
+			}
+		}
+		if (cMouseController->IsButtonPressed(CMouseController::BUTTON_TYPE::RMB))
+		{
+			// Switch on Scope mode and zoom in
+			cCamera->fZoom = 1.0f;
+			CCameraEffectsManager::GetInstance()->Get("ScopeScreen")->SetStatus(true);
+		}
+		else if (cMouseController->IsButtonReleased(CMouseController::BUTTON_TYPE::RMB))
+		{
+			// Switch off Scope mode and zoom out
+			cCamera->fZoom = 45.0f;
+			CCameraEffectsManager::GetInstance()->Get("ScopeScreen")->SetStatus(false);
 		}
 	}
 
@@ -422,18 +443,6 @@ bool CScene3D::Update(const double dElapsedTime)
 		CKeyboardController::GetInstance()->ResetKey(GLFW_KEY_8);
 	}
 
-	if (cMouseController->IsButtonPressed(CMouseController::BUTTON_TYPE::RMB))
-	{
-		// Switch on Scope mode and zoom in
-		cCamera->fZoom = 1.0f;
-		CCameraEffectsManager::GetInstance()->Get("ScopeScreen")->SetStatus(true);
-	}
-	else if (cMouseController->IsButtonReleased(CMouseController::BUTTON_TYPE::RMB))
-	{
-		// Switch off Scope mode and zoom out
-		cCamera->fZoom = 45.0f;
-		CCameraEffectsManager::GetInstance()->Get("ScopeScreen")->SetStatus(false);
-	}
 	// Post Update the mouse controller
 	cMouseController->PostUpdate();
 

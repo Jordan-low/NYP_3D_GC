@@ -276,12 +276,25 @@ void CGUI_Scene3D::Update(const double dElapsedTime)
 		ImVec2(0, 1), ImVec2(1, 0));
 	ImGui::SameLine();
 	ImGui::SetWindowFontScale(1.5f * relativeScale_y);
-	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Ammo : %d / %d",
-		cPlayer3D->GetWeapon()->GetMagRound(), cPlayer3D->GetWeapon()->GetMaxMagRound());
-	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Total Ammo : %d / %d",
-		cPlayer3D->GetWeapon()->GetTotalRound(), cPlayer3D->GetWeapon()->GetMaxTotalRound());
-	ImGui::End();
-	ImGui::PopStyleColor();
+	if (!cPlayer3D->isDriving)
+	{
+		ImGui::TextColored(ImVec4(1, 1, 0, 1), "Ammo : %d / %d",
+			cPlayer3D->GetWeapon()->GetMagRound(), cPlayer3D->GetWeapon()->GetMaxMagRound());
+		ImGui::TextColored(ImVec4(1, 1, 0, 1), "Total Ammo : %d / %d",
+			cPlayer3D->GetWeapon()->GetTotalRound(), cPlayer3D->GetWeapon()->GetMaxTotalRound());
+		ImGui::End();
+		ImGui::PopStyleColor();
+	}
+	else
+	{
+		ImGui::TextColored(ImVec4(1, 1, 0, 1), "Ammo : %d / %d",
+			cPlayer3D->GetVehicleWeapon()->GetMagRound(), cPlayer3D->GetVehicleWeapon()->GetMaxMagRound());
+		ImGui::TextColored(ImVec4(1, 1, 0, 1), "Total Ammo : %d / %d",
+			cPlayer3D->GetVehicleWeapon()->GetTotalRound(), cPlayer3D->GetVehicleWeapon()->GetMaxTotalRound());
+		ImGui::End();
+		ImGui::PopStyleColor();
+	}
+	
 
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));  // Set a background color
 	ImGui::Begin("PlayerPos", NULL, inventoryWindowFlags);
@@ -320,12 +333,16 @@ void CGUI_Scene3D::Render(void)
 	cMinimap->Render();
 	cMinimap->PostRender();
 
-	glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
+	//if player is not driving, allow render weapon
+	if (!cPlayer3D->isDriving)
+	{
+		glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
 		cPlayer3D->GetWeapon()->SetProjection(projection);
 		cPlayer3D->GetWeapon()->PreRender();
 		cPlayer3D->GetWeapon()->Render();
 		cPlayer3D->GetWeapon()->PostRender();
-	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+		glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+	}
 
 	// Rendering
 	ImGui::Render();

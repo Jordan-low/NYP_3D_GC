@@ -203,6 +203,9 @@
     <ClCompile Include="Source\Scene3D\Entities\Car3D.cpp">
       <Filter>Scene3D\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene3D\WeaponInfo\Turret.cpp">
+      <Filter>Scene3D\WeaponInfo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -360,6 +363,9 @@
     </ClInclude>
     <ClInclude Include="Source\Scene3D\Entities\Car3D.h">
       <Filter>Scene3D\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\WeaponInfo\Turret.h">
+      <Filter>Scene3D\WeaponInfo</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

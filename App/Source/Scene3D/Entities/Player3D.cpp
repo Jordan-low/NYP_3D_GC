@@ -33,6 +33,7 @@ CPlayer3D::CPlayer3D(void)
 	, cTerrain(NULL)
 	, cPrimaryWeapon(NULL)
 	, cSecondaryWeapon(NULL)
+	, cVehicleWeapon(NULL)
 	, iCurrentWeapon(0)
 	, slideTimer(1.f)
 	, velocity(0.f)
@@ -48,7 +49,7 @@ CPlayer3D::CPlayer3D(void)
 	, addProneVelocity(0.f)
 	, addCounterSlideSpeed(-10.f)
 	, totalVelocity(0.f)
-	, attachedAirplane(false)
+	, isDriving(false)
 {
 	// Set the default position so it is above the ground
 	vec3Position = glm::vec3(0.0f, 0.5f, 0.0f);
@@ -78,6 +79,7 @@ CPlayer3D::CPlayer3D(	const glm::vec3 vec3Position,
 	, cTerrain(NULL)
 	, cPrimaryWeapon(NULL)
 	, cSecondaryWeapon(NULL)
+	, cVehicleWeapon(NULL)
 	, iCurrentWeapon(0)
 	, slideTimer(1.f)
 	, velocity(0.f)
@@ -93,7 +95,7 @@ CPlayer3D::CPlayer3D(	const glm::vec3 vec3Position,
 	, addProneVelocity(0.f)
 	, addCounterSlideSpeed(-10.f)
 	, totalVelocity(0.f)
-	, attachedAirplane(false)
+	, isDriving(false)
 {
 	mesh = NULL;
 
@@ -121,6 +123,12 @@ CPlayer3D::~CPlayer3D(void)
 	{
 		delete cPrimaryWeapon;
 		cPrimaryWeapon = NULL;
+	}
+
+	if (cVehicleWeapon)
+	{
+		delete cVehicleWeapon;
+		cVehicleWeapon = NULL;
 	}
 
 	if (cTerrain)
@@ -481,6 +489,14 @@ void CPlayer3D::ProcessRotate(float fXOffset, float fYOffset, const bool constra
  */
 bool CPlayer3D::Update(const double dElapsedTime)
 {
+	CSolidObject::Update(dElapsedTime);
+
+	if (cVehicleWeapon)
+		cVehicleWeapon->Update(dElapsedTime);
+
+	if (isDriving)
+		return false;
+
 	if (cPrimaryWeapon)
 		cPrimaryWeapon->Update(dElapsedTime);
 	if (cSecondaryWeapon)
@@ -506,7 +522,6 @@ bool CPlayer3D::Update(const double dElapsedTime)
 	// Constraint the player's position
 	Constraint();
 
-	CSolidObject::Update(dElapsedTime);
 
 	switch (activeState)
 	{
@@ -527,6 +542,16 @@ bool CPlayer3D::Update(const double dElapsedTime)
 	return true;
 }
 
+void CPlayer3D::SetVehicleWeapon(CWeaponInfo* _cVehicleWeapon)
+{
+	cVehicleWeapon = _cVehicleWeapon;
+}
+
+CWeaponInfo* CPlayer3D::GetVehicleWeapon()
+{
+	return cVehicleWeapon;
+}
+
 /**
  @brief PreRender Set up the OpenGL display environment before rendering
  */
@@ -541,8 +566,9 @@ void CPlayer3D::PreRender(void)
 void CPlayer3D::Render(void)
 {
 	// Don't render the player if the camera is attached to it
-	if (cCamera)
-		return;
+	//if (cCamera)
+	//	return;
+	std::cout << GetPosition().x << std::endl;
 
 	CSolidObject::Render();
 }

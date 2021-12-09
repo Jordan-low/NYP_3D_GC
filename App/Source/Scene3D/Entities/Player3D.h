@@ -69,7 +69,7 @@ public:
 	//Player State
 	PLAYER_STATE activeState;
 
-	bool attachedAirplane;
+	bool isDriving;
 
 	// Initialise this class instance
 	bool Init(void);
@@ -101,11 +101,18 @@ public:
 	// Discharge current weapon
 	bool DischargeWeapon(void);
 
+	// Apply Recoil
+	void ApplyRecoil(CWeaponInfo* weapon);
+
 	// Set to Jump
 	void SetToJump(void);
 
 	// Get Total Velocity
 	float GetTotalVelocity();
+
+	void SetVehicleWeapon(CWeaponInfo* _cVehicleWeapon);
+
+	CWeaponInfo* GetVehicleWeapon();
 
 	CPhysics3D GetPhysics();
 
@@ -116,6 +123,9 @@ public:
     // Processes input received from a mouse input system as player rotation. 
 	// Expects the offset value in both the x and y direction.
 	void ProcessRotate(float fXOffset, float fYOffset, const bool bConstrainPitch = true);
+
+	// Calculates the front vector from the Player's (updated) Euler Angles
+	void UpdatePlayerVectors(void);
 
 	// Update this class instance
 	virtual bool Update(const double dElapsedTime);
@@ -140,6 +150,7 @@ protected:
 	// The handle to the CWeaponInfo class instance
 	CWeaponInfo* cPrimaryWeapon;
 	CWeaponInfo* cSecondaryWeapon;
+	CWeaponInfo* cVehicleWeapon;
 	int iCurrentWeapon;
 
 	// Slide movement
@@ -178,17 +189,11 @@ protected:
 	// Destructor
 	virtual ~CPlayer3D(void);
 
-    // Calculates the front vector from the Player's (updated) Euler Angles
-	void UpdatePlayerVectors(void);
-
 	// Constraint the player's position
 	void Constraint(void);
 
 	// Update Jump or Fall
 	void UpdateJumpFall(const double dElapsedTime);
-
-	// Apply Recoil
-	void ApplyRecoil(CWeaponInfo* weapon);
 
 	//Reset Movement Values
 	void ResetMovementValues(PLAYER_STATE state);
