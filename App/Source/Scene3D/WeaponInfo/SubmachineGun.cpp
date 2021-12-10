@@ -51,8 +51,11 @@ bool CSubmachineGun::Init(void)
 
 	ADSzoom = cSettings->FOV * 0.5f;
 
+	// The Damage for this weapon
+	iDamage = 8;
+
 	// The time between shots
-	dTimeBetweenShots = 0.01;
+	dTimeBetweenShots = 0.07;
 	// The time to reload
 	dMaxReloadTime = 2.f;
 	// The time to equip

@@ -105,6 +105,7 @@ int CProjectileManager::Activate(	glm::vec3 vec3Position,
 									glm::vec3 vec3Front, 
 									const double dLifetime,
 									const float fSpeed,
+									const int iDamage,
 									CSolidObject* pSource)
 {
 	// Since a projectile has been added, we activate the next element in the vector
@@ -116,6 +117,7 @@ int CProjectileManager::Activate(	glm::vec3 vec3Position,
 											glm::vec3(0.05f, 0.05f, 0.05f));
 	vProjectile[uiIndexLast]->SetStatus(true);
 	vProjectile[uiIndexLast]->SetSource(pSource);
+	vProjectile[uiIndexLast]->SetDamage(iDamage);
 	vProjectile[uiIndexLast]->SetShader(sShaderName);
 
 	// Increase the uiIndexLast by 1 since a projectile is going to be added

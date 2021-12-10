@@ -54,7 +54,11 @@ public:
 	virtual int GetMaxTotalRound(void) const;
 	// Get the number of bullets per click
 	virtual int GetBulletsPerClick(void) const;
+	// Get the damage for this weapon
+	virtual int GetDamage(void) const;
 
+	// Set the damage for this weapon
+	virtual void SetDamage(const int _iDamage);
 	// Set the time between shots
 	virtual void SetTimeBetweenShots(const double dTimeBetweenShots);
 	// Set the firing rate in rounds per min
@@ -136,6 +140,8 @@ protected:
 	int iMaxTotalRounds;
 	// The number of bullets per click
 	int iBulletsPerClick;
+	// Weapon Damage
+	int iDamage;
 
 	// The time between shots in milliseconds
 	double dTimeBetweenShots;

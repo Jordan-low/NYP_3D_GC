@@ -48,9 +48,12 @@ bool CPistol::Init(void)
 	iMaxTotalRounds = 40;
 	// The number of bullets per click
 	iBulletsPerClick = 1;
+	// The Damage for this weapon5
+	iDamage = 5;
+	ADSzoom = cSettings->FOV;
 
 	// The time between shots
-	dTimeBetweenShots = 0.025;
+	dTimeBetweenShots = 0.06;
 	// The time to reload
 	dMaxReloadTime = 1.5f;
 	// The time to equip

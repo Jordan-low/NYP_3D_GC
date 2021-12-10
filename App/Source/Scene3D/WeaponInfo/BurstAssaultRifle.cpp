@@ -48,6 +48,9 @@ bool CBurstAssaultRifle::Init(void)
 	iMaxTotalRounds = 100;
 	// The number of bullets per click
 	iBulletsPerClick = 3;
+	// The Damage for this weapon
+	iDamage = 10;
+	ADSzoom = cSettings->FOV * 0.4f;
 
 	// The time between shots
 	dTimeBetweenShots = 0.4;

@@ -42,6 +42,7 @@ public:
 							glm::vec3 vec3Front,
 							const double dLifetime,
 							const float fSpeed,
+							const int iDamage,
 							CSolidObject* pSource);
 	// Deactivate a CProjectile* from this class instance
 	virtual bool Deactivate(const unsigned int iIndex);

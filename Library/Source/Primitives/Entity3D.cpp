@@ -31,6 +31,7 @@ CEntity3D::CEntity3D()
 	, vec3PreviousPosition(0.0f)
 	, vec3Scale(1.0f)
 	, fRotationAngle(0.0f)
+	, iHealth(100)
 	, vec3RotationAxis(1.0f)
 	, vec4Colour(1.0f)
 	, bStatus(false)
@@ -216,5 +217,21 @@ void CEntity3D::StorePositionForRollback(void)
 void CEntity3D::RollbackPosition(void)
 {
 	vec3Position = vec3PreviousPosition;
+}
+
+/**
+ @brief Set Health
+ */
+void CEntity3D::SetHealth(int _iHealth)
+{
+	iHealth = _iHealth;
+}
+
+/**
+ @brief Get Health
+ */
+int CEntity3D::GetHealth(void)
+{
+	return iHealth;
 }
 

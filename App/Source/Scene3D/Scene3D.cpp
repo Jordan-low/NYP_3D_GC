@@ -292,15 +292,15 @@ bool CScene3D::Init(void)
 	cAssaultRifle->Init();
 	cAssaultRifle->SetShader("Shader3D_Model");
 
-	//// Assign a cAssaultRifle to the cPlayer3D
-	//CBurstAssaultRifle* cBurstAssaultRifle = new CBurstAssaultRifle();
-	//// Set the pos, rot, scale of this weapon
-	//cBurstAssaultRifle->SetPosition(glm::vec3(0.05f, -0.075f, -0.3f));
-	//cBurstAssaultRifle->SetRotation(3.14159f, glm::vec3(0.0f, 1.0f, 0.0f));
-	//cBurstAssaultRifle->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
-	////Initialise the instance
-	//cBurstAssaultRifle->Init();
-	//cBurstAssaultRifle->SetShader("Shader3D_Model");
+	// Assign a cAssaultRifle to the cPlayer3D
+	CBurstAssaultRifle* cBurstAssaultRifle = new CBurstAssaultRifle();
+	// Set the pos, rot, scale of this weapon
+	cBurstAssaultRifle->SetPosition(glm::vec3(0.05f, -0.075f, -0.3f));
+	cBurstAssaultRifle->SetRotation(3.14159f, glm::vec3(0.0f, 1.0f, 0.0f));
+	cBurstAssaultRifle->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
+	//Initialise the instance
+	cBurstAssaultRifle->Init();
+	cBurstAssaultRifle->SetShader("Shader3D_Model");
 
 	// Assign a cSubmachineGun to the cPlayer3D
 	CSubmachineGun* cSubmachineGun = new CSubmachineGun();
@@ -324,7 +324,7 @@ bool CScene3D::Init(void)
 
 	cPlayer3D->SetWeapon(0, cKnife);
 	cPlayer3D->SetWeapon(1, cAssaultRifle);
-	cPlayer3D->SetWeapon(2, cSubmachineGun);
+	cPlayer3D->SetWeapon(2, cBurstAssaultRifle);
 	cPlayer3D->SetCurrentWeapon(0);
 
 	// Assign a cSubmachineGun to the cPlayer3D

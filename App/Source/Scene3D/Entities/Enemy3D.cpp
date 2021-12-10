@@ -145,6 +145,8 @@ bool CEnemy3D::Init(void)
 
 	// Movement Control
 	fMovementSpeed = 1.5f;
+	//iHealth = 100;
+	SetHealth(100);
 	iCurrentNumMovement = 0;
 	iMaxNumMovement = 100;
 

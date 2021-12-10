@@ -113,8 +113,8 @@ bool CSolidObjectManager::Erase(CSolidObject* cSolidObject)
 		// Delete the CSolidObject
 		//delete *findIter;
 		// Go to the next iteration after erasing from the list
-		findIter = lSolidObject.erase(findIter);
-		return true;
+findIter = lSolidObject.erase(findIter);
+return true;
 	}
 	// Return false if not found
 	return false;
@@ -132,10 +132,10 @@ bool CSolidObjectManager::CollisionCheck(CSolidObject* cSolidObject)
 	for (it = lSolidObject.begin(); it != end; ++it)
 	{
 		// Check for collisions between the 2 entities
-		if (CCollisionManager::BoxBoxCollision( cSolidObject->GetPosition() + cSolidObject->boxMin,
-												cSolidObject->GetPosition() + cSolidObject->boxMax,
-												(*it)->GetPosition() + (*it)->boxMin,
-												(*it)->GetPosition() + (*it)->boxMax) == true)
+		if (CCollisionManager::BoxBoxCollision(cSolidObject->GetPosition() + cSolidObject->boxMin,
+			cSolidObject->GetPosition() + cSolidObject->boxMax,
+			(*it)->GetPosition() + (*it)->boxMin,
+			(*it)->GetPosition() + (*it)->boxMax) == true)
 		{
 			// Rollback the cSolidObject's position
 			cSolidObject->RollbackPosition();
@@ -211,10 +211,17 @@ bool CSolidObjectManager::CheckForCollision(void)
 				(*it_other)->GetPosition() + (*it_other)->boxMin,
 				(*it_other)->GetPosition() + (*it_other)->boxMax) == true)
 			{
+				if ((*it)->GetType() == CSolidObject::TYPE::PLAYER &&
+					(*it_other)->GetType() == CSolidObject::TYPE::CAR)
+				{
+					(*it)->RollbackPosition();
+					cout << "** Collision between Player and an Entity ***" << endl;
+					break;
+				}
 				// Check if a movable entity collides with another movable entity
 				if (
 					(((*it)->GetType() >= CSolidObject::TYPE::PLAYER) &&
-						((*it)->GetType() <= CSolidObject::TYPE::CAR)) 
+						((*it)->GetType() <= CSolidObject::TYPE::CAR))
 					&&
 					(((*it_other)->GetType() >= CSolidObject::TYPE::NPC) &&
 						((*it_other)->GetType() <= CSolidObject::TYPE::OTHERS))
@@ -244,8 +251,8 @@ bool CSolidObjectManager::CheckForCollision(void)
 						(((*it)->GetType() >= CSolidObject::TYPE::PLAYER) &&
 							((*it)->GetType() <= CSolidObject::TYPE::OTHERS))
 						&&
-						((*it_other)->GetType() == CSolidObject::TYPE::STRUCTURE)
-					)
+						((*it_other)->GetType() == CSolidObject::TYPE::STRUCTURE
+							))
 				{
 					(*it)->RollbackPosition();
 					if (((*it)->GetType() == CSolidObject::TYPE::PLAYER))
@@ -298,6 +305,12 @@ bool CSolidObjectManager::CheckForCollision(void)
 					if ((cProjectileManager->vProjectile[i])->GetSource() == (*it))
 						continue;
 					(cProjectileManager->vProjectile[i])->SetStatus(false);
+
+					//Damage the player health using the projectile damage
+					(*it)->SetHealth((*it)->GetHealth() - cProjectileManager->vProjectile[i]->GetDamage());
+					if ((*it)->GetHealth() <= 0)
+						(*it)->SetStatus(false);
+					
 					cout << "** RayBoxCollision between Player and Projectile ***" << endl;
 					bResult = true;
 					break;
@@ -307,14 +320,25 @@ bool CSolidObjectManager::CheckForCollision(void)
 					// If this projectile is fired by the NPC, then skip it
 					if ((cProjectileManager->vProjectile[i])->GetSource() == (*it))
 						continue;
-					(*it)->SetStatus(false);
 					(cProjectileManager->vProjectile[i])->SetStatus(false);
+					//Damage the player health using the projectile damage
+					(*it)->SetHealth((*it)->GetHealth() - cProjectileManager->vProjectile[i]->GetDamage());
+					if ((*it)->GetHealth() <= 0)
+						(*it)->SetStatus(false);
+					std::cout << "HEALTH: " << (*it)->GetHealth() << std::endl;
+
 					cout << "** RayBoxCollision between NPC and Projectile ***" << endl;
 					break;
 				}
-				else if ((*it)->GetType() == CSolidObject::TYPE::STRUCTURE)
+				else if ((*it)->GetType() == CSolidObject::TYPE::STRUCTURE || (*it)->GetType() == CSolidObject::TYPE::CAR)
 				{
 					(cProjectileManager->vProjectile[i])->SetStatus(false);
+
+					//Damage the player health using the projectile damage
+					(*it)->SetHealth((*it)->GetHealth() - cProjectileManager->vProjectile[i]->GetDamage());
+					if ((*it)->GetHealth() <= 0)
+						(*it)->SetStatus(false);
+
 					cout << "** RayBoxCollision between Structure and Projectile ***" << endl;
 					break;
 				}
@@ -329,20 +353,37 @@ bool CSolidObjectManager::CheckForCollision(void)
 				if ((*it)->GetType() == CSolidObject::TYPE::PLAYER)
 				{
 					(cProjectileManager->vProjectile[i])->SetStatus(false);
+
+					//Damage the player health using the projectile damage
+					(*it)->SetHealth((*it)->GetHealth() - cProjectileManager->vProjectile[i]->GetDamage());
+					if ((*it)->GetHealth() <= 0)
+						(*it)->SetStatus(false);
+
 					cout << "** BoxBoxCollision between Player and Projectile ***" << endl;
 					bResult = true;
 					break;
 				}
 				else if ((*it)->GetType() == CSolidObject::TYPE::NPC)
 				{
-					(*it)->SetStatus(false);
 					(cProjectileManager->vProjectile[i])->SetStatus(false);
+
+					//Damage the player health using the projectile damage
+					(*it)->SetHealth((*it)->GetHealth() - cProjectileManager->vProjectile[i]->GetDamage());
+					if ((*it)->GetHealth() <= 0)
+						(*it)->SetStatus(false);
+
 					cout << "** BoxBoxCollision between NPC and Projectile ***" << endl;
 					break;
 				}
 				else if ((*it)->GetType() == CSolidObject::TYPE::STRUCTURE)
 				{
 					(cProjectileManager->vProjectile[i])->SetStatus(false);
+
+					//Damage the player health using the projectile damage
+					(*it)->SetHealth((*it)->GetHealth() - cProjectileManager->vProjectile[i]->GetDamage());
+					if ((*it)->GetHealth() <= 0)
+						(*it)->SetStatus(false);
+
 					cout << "** BoxBoxCollision between Structure and Projectile ***" << endl;
 					break;
 				}

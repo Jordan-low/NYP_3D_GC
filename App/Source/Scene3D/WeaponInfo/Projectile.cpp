@@ -22,6 +22,7 @@ using namespace std;
 CProjectile::CProjectile(void)
 	: dLifetime(0.0f)
 	, fSpeed(1.0f)
+	, iDamage(0.f)
 	, pSource(NULL)
 {
 }
@@ -186,6 +187,16 @@ float CProjectile::GetSpeed(void) const
 CSolidObject* CProjectile::GetSource(void) const
 {
 	return pSource;
+}
+
+void CProjectile::SetDamage(int _iDamage)
+{
+	iDamage = _iDamage;
+}
+
+int CProjectile::GetDamage() const
+{
+	return iDamage;
 }
 
 /** 

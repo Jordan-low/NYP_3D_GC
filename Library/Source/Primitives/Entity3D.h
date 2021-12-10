@@ -92,6 +92,11 @@ public:
 	// Rollback the position to the previous position
 	virtual void RollbackPosition(void);
 
+	// Set Health
+	virtual void SetHealth(int _iHealth);
+	// Get Health
+	virtual int GetHealth(void);
+
 	// Update this class instance
 	virtual bool Update(const double dElapsedTime) = 0;
 
@@ -150,4 +155,7 @@ protected:
 
 	// Boolean flag to indicate if this CEntity3D is to be deleted
 	bool bToDelete;
+
+	// Health
+	int iHealth;
 };

@@ -187,6 +187,8 @@ bool CPlayer3D::Init(void)
 	cPhysics3D.SetStatus(CPhysics3D::STATUS::FALL);
 
 	fMovementSpeed = 10.f;
+
+	iHealth = 200;
 	return true;
 }
 
@@ -516,7 +518,7 @@ void CPlayer3D::ProcessRotate(float fXOffset, float fYOffset, const bool constra
 bool CPlayer3D::Update(const double dElapsedTime)
 {
 	CSolidObject::Update(dElapsedTime);
-
+	std::cout << "Heal: " << iHealth << std::endl;
 	if (cVehicleWeapon)
 		cVehicleWeapon->Update(dElapsedTime);
 

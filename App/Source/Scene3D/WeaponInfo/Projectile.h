@@ -53,6 +53,9 @@ public:
 	// Get the source of the projectile
 	CSolidObject* GetSource(void) const;
 
+	void SetDamage(int _iDamage);
+	int GetDamage() const;
+
 	// Update this projectile
 	virtual bool Update(const double dElapsedTime);
 	// PreRender
@@ -72,4 +75,7 @@ protected:
 	float fSpeed;
 	// The source which fired this projectile
 	CSolidObject* pSource;
+
+	// Projectile damage
+	int iDamage;
 };

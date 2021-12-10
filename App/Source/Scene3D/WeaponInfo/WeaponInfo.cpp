@@ -25,6 +25,7 @@ using namespace std;
 CWeaponInfo::CWeaponInfo()
 	: iMagRounds(1)
 	, iMaxMagRounds(1)
+	, iDamage(1)
 	, iTotalRounds(8)
 	, iMaxTotalRounds(8)
 	, iBulletsPerClick(1)
@@ -145,6 +146,16 @@ int CWeaponInfo::GetMaxTotalRound(void) const
 int CWeaponInfo::GetBulletsPerClick(void) const
 {
 	return iBulletsPerClick;
+}
+
+int CWeaponInfo::GetDamage(void) const
+{
+	return iDamage;
+}
+
+void CWeaponInfo::SetDamage(const int _iDamage)
+{
+	iDamage = _iDamage;
 }
 
 /**
@@ -370,7 +381,7 @@ bool CWeaponInfo::Discharge(glm::vec3 vec3Position,
 				// It will last for 2.0 seconds and travel at 20 units per frame
 				CProjectileManager::GetInstance()->Activate(vec3Position + vec3Front * 0.75f,
 					vec3Front + glm::vec3(randomSpreadX, randomSpreadY, 0),
-					2.0f, 20.0f, pSource);
+					2.0f, 20.0f, iDamage, pSource);
 
 				// Lock the weapon after this discharge
 				bFire = false;

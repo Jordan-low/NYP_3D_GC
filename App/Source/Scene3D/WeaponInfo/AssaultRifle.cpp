@@ -48,9 +48,12 @@ bool CAssaultRifle::Init(void)
 	iMaxTotalRounds = 100;
 	// The number of bullets per click
 	iBulletsPerClick = 1;
+	// The Damage for this weapon
+	iDamage = 11;
+	ADSzoom = cSettings->FOV * 0.4f;
 
 	// The time between shots
-	dTimeBetweenShots = 0.02;
+	dTimeBetweenShots = 0.1;
 	// The time to reload
 	dMaxReloadTime = 2.f;
 	// The time to equip
