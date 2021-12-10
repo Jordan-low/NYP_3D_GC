@@ -13,6 +13,7 @@
 
 // Include CProjectileManager
 #include "ProjectileManager.h"
+#include "../Camera.h"
 
 #include <iostream>
 #include "../App/Source/MyMath.h"
@@ -39,7 +40,9 @@ CWeaponInfo::CWeaponInfo()
 	, animateReloadPosY(0.f)
 	, animateReloadPosZ(0.f)
 	, animateEquipAngle(90.f)
+	, animateADSPosX(0.f)
 	, bFire(true)
+	, isMeleeAttacking(false)
 	, bAuto(true)
 	, bulletSpread(0.0f)
 	, minRecoil(glm::vec2(0.f))
@@ -258,8 +261,12 @@ bool CWeaponInfo::Init(void)
 	// Boolean flag to indicate if weapon can fire now
 	bFire = true;
 
+	cSettings = CSettings::GetInstance();
+	ADSzoom = cSettings->FOV;
+
 	// Update the model matrix
 	initialZPos = vec3Position.z;
+	initialXPos = vec3Position.x;
 	vec3Position.z += 0.3f;
 	finalZPos = vec3Position.z;
 	model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
@@ -278,12 +285,16 @@ bool CWeaponInfo::Init(void)
  */
 bool CWeaponInfo::Update(const double dt)
 {
+	//apply ads
+	ADS(dt, isADS);
+
+	//lerp gun recoil pos back to normal
 	gunRecoilPos.y = Math::Lerp(gunRecoilPos.y, 0.f, (float)dt);
 	gunRecoilPos.z = Math::Lerp(gunRecoilPos.z, 0.f, (float)dt);
 
 	// Update the model matrix
 	model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-	model = glm::translate(model, glm::vec3(vec3Position.x, vec3Position.y, vec3Position.z) + gunRecoilPos + glm::vec3(0, animateReloadPosY, animateReloadPosZ) + glm::vec3(0, 0, animateMeleeAttackZ));
+	model = glm::translate(model, glm::vec3(vec3Position.x, vec3Position.y, vec3Position.z) + gunRecoilPos + glm::vec3(animateADSPosX, animateReloadPosY, animateReloadPosZ + animateMeleeAttackZ));
 	model = glm::scale(model, vec3Scale);
 	model = glm::rotate(model, fRotationAngle, vec3RotationAxis);
 	model = glm::rotate(model, glm::radians(animateReloadAngle), glm::vec3(1, 0, 0));
@@ -454,6 +465,21 @@ void CWeaponInfo::SetUnequip()
 	vec3Position.z = finalZPos;
 }
 
+void CWeaponInfo::ADS(double dt, bool enable)
+{
+	if (enable) //if ads, lerp towards the zoom
+	{
+		animateADSPosX = Math::Lerp(animateADSPosX, -initialXPos, (float)dt * 10);
+		CCamera::GetInstance()->fZoom = Math::Lerp(CCamera::GetInstance()->fZoom, ADSzoom, (float)dt * 5);
+	}
+	else //else lerp back to normal pos
+	{
+		animateADSPosX = Math::Lerp(animateADSPosX, 0.f, (float)dt * 10);
+		CCamera::GetInstance()->fZoom = Math::Lerp(CCamera::GetInstance()->fZoom, cSettings->FOV, (float)dt * 5);
+	}
+}
+
+/**
 /**
  @brief Add rounds
  @param newRounds A const int variable containing the number of new ammunition to add to this weapon

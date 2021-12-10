@@ -60,14 +60,14 @@ bool CKnife::Init(void)
 	// Boolean flag to indicate if weapon can fire now
 	bFire = true;
 	// Boolean flag to indicate if weapon is full auto
-	bAuto = true;
+	bAuto = false;
 	// Bullet spread
 	bulletSpread = 0.015f;
 	// Recoil vectors
 	minRecoil = glm::vec2(-0.1f, 0.1f);
 	maxRecoil = glm::vec2(0.1f, 0.15f);
 
-	crossHairType = CCrossHair::CROSSHAIR_SPREAD;
+	crossHairType = CCrossHair::CROSSHAIR_DOT;
 
 	// Call the parent's Init()
 	CEntity3D::Init();
@@ -81,11 +81,11 @@ bool CKnife::Init(void)
 	std::vector<ModelVertex> vertex_buffer_data;
 	std::vector<GLuint> index_buffer_data;
 
-	std::string file_path = "Models/Pistol/gun_type64_01.obj";
+	std::string file_path = "Models/Weapons/sword.obj";
 	bool success = CLoadOBJ::LoadOBJ(file_path.c_str(), vertices, uvs, normals, true);
 	if (!success)
 	{
-		cout << "Unable to load Models/Pistol/gun_type64_01.obj" << endl;
+		cout << "Unable to load Models/Weapons/gun_type64_01.obj" << endl;
 		return false;
 	}
 
@@ -111,7 +111,7 @@ bool CKnife::Init(void)
 	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/M4A1-s.tga", false);
 	if (iTextureID == 0)
 	{
-		cout << "Unable to load Models/Pistol/map_gunType64_01_AO.png" << endl;
+		cout << "Unable to load Models/Weapons/map_gunType64_01_AO.png" << endl;
 		return false;
 	}
 

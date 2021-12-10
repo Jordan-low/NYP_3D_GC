@@ -45,6 +45,8 @@ public:
 	unsigned int iWindowPosY = 50;
 	bool bDisableMousePointer = true;
 	bool bShowMousePointer = false;
+	
+	float FOV = 45.f;
 
 	// Frame Rate Information
 	const unsigned char FPS = 60; // FPS of this game

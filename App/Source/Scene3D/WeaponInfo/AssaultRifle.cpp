@@ -81,11 +81,11 @@ bool CAssaultRifle::Init(void)
 	std::vector<ModelVertex> vertex_buffer_data;
 	std::vector<GLuint> index_buffer_data;
 
-	std::string file_path = "Models/Pistol/gun_type64_01.obj";
+	std::string file_path = "Models/Weapons/gun_type64_01.obj";
 	bool success = CLoadOBJ::LoadOBJ(file_path.c_str(), vertices, uvs, normals, true);
 	if (!success)
 	{
-		cout << "Unable to load Models/Pistol/gun_type64_01.obj" << endl;
+		cout << "Unable to load Models/Weapons/gun_type64_01.obj" << endl;
 		return false;
 	}
 
@@ -111,7 +111,7 @@ bool CAssaultRifle::Init(void)
 	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/M4A1-s.tga", false);
 	if (iTextureID == 0)
 	{
-		cout << "Unable to load Models/Pistol/map_gunType64_01_AO.png" << endl;
+		cout << "Unable to load Models/Weapons/map_gunType64_01_AO.png" << endl;
 		return false;
 	}
 

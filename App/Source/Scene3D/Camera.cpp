@@ -160,10 +160,10 @@ void CCamera::ProcessMouseMovement(float xoffset, float yoffset, const bool cons
  */
 void CCamera::ProcessMouseScroll(const float yoffset)
 {
-	if (fZoom >= 45.0f && fZoom <= 70.f)
+	if (fZoom >= 25.f && fZoom <= 70.f)
 		fZoom -= yoffset;
-	if (fZoom <= 45.0f)
-		fZoom = 45.0f;
+	if (fZoom <= 25.f)
+		fZoom = 25.f;
 	if (fZoom >= 70.f)
 		fZoom = 70.f;
 }

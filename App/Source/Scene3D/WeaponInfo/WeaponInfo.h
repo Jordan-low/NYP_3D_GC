@@ -96,6 +96,8 @@ public:
 	virtual void AnimateEquip(const double dt);
 	virtual void SetEquip();
 	virtual void SetUnequip();
+	//Aim down sights
+	virtual void ADS(double dt, bool enable);
 	// Add rounds
 	virtual void AddRounds(const int iNewRounds);
 
@@ -118,6 +120,7 @@ public:
 
 	void AnimateMeleeAttack(const double dElapsedTime);
 	bool isMeleeAttacking = false;
+	bool isADS = false;
 
 	CCrossHair::CROSSHAIR_TYPE crossHairType;
 protected:
@@ -155,7 +158,10 @@ protected:
 	// The amount of bullet spread
 	float bulletSpread;
 
+	float ADSzoom;
+
 	// Float for reload rotate angle
+	float animateADSPosX;
 	float animateMeleeAttackZ;
 	float animateMeleeAttackDir;
 	float animateReloadAngle;
@@ -165,6 +171,7 @@ protected:
 	float animateEquipAngle;
 	// Float for initial weapon z position
 	float initialZPos;
+	float initialXPos;
 	// Float for final weapon z position
 	float finalZPos;
 
