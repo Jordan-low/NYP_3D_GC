@@ -419,7 +419,7 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 
 	float addedCrouchAccel = addCrouchSpeed * deltaTime;
 	addCrouchVelocity += addedCrouchAccel * deltaTime;
-	addCrouchVelocity = Math::Clamp(addCrouchVelocity, -.01f, .15f);
+	addCrouchVelocity = Math::Clamp(addCrouchVelocity, -.025f, .15f);
 
 	totalVelocity = velocity + addSprintVelocity + addCrouchVelocity;
 	std::cout << totalVelocity << std::endl;
