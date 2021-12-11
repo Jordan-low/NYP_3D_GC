@@ -233,19 +233,21 @@ void CCar3D::ProcessMovement(double dElapsedTime)
 	vec3Up = glm::normalize(glm::cross(vec3Right, vec3Front));
 
 	////clamp the yaw and pitch
-	cPlayer3D->fYaw = Math::Clamp(cPlayer3D->fYaw, -115.f, -65.f);
-	cPlayer3D->fPitch = Math::Clamp(cPlayer3D->fPitch, -20.f, 0.f);
+	if (cPlayer3D)
+	{
+		cPlayer3D->fYaw = Math::Clamp(cPlayer3D->fYaw, -115.f, -65.f);
+		cPlayer3D->fPitch = Math::Clamp(cPlayer3D->fPitch, -20.f, 0.f);
 
-	cPlayer3D->UpdatePlayerVectors();
+		cPlayer3D->UpdatePlayerVectors();
 
-	//set yaw and pitch to car's torque rotation
-	fYaw = -torque + cPlayer3D->fYaw;
-	fPitch = cPlayer3D->fPitch;
+		//set yaw and pitch to car's torque rotation
+		fYaw = -torque + cPlayer3D->fYaw;
+		fPitch = cPlayer3D->fPitch;
 
-	//UpdatePlayerVectors();
+		//process for player inputs
+		ProcessCarInputs(dElapsedTime);
+	}
 
-	//process for player inputs
-	ProcessCarInputs(dElapsedTime);
 
 	currSpeed += accel * dElapsedTime;
 	velocity = vec3Front * currSpeed * (float)dElapsedTime;
@@ -296,6 +298,7 @@ bool CCar3D::Update(const double dElapsedTime)
 {
 	if (!cPlayer3D)
 	{
+		ProcessMovement(dElapsedTime);
 		if (glm::distance(vec3Position, CPlayer3D::GetInstance()->GetPosition()) < 5)
 		{
 			if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_E))
@@ -432,6 +435,7 @@ void CCar3D::ProcessCarInputs(double dElapsedTime)
 	//exit car
 	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_E))
 	{
+		cPlayer3D->SetPosition(vec3Position + vec3Right * 2.f);
 		cPlayer3D->isDriving = false;
 		cPlayer3D->SetVehicleWeapon(nullptr);
 		cPlayer3D = NULL;
@@ -469,21 +473,6 @@ void CCar3D::ProcessCarInputs(double dElapsedTime)
 	{
 		accel = fMovementSpeed * dElapsedTime;
 	}
-}
-
-void CCar3D::UpdatePlayerVectors(void)
-{
-	// Calculate the new vec3Front vector
-	glm::vec3 front;
-	front.x = cos(glm::radians(fYaw)) * cos(glm::radians(fPitch));
-	front.y = sin(glm::radians(fPitch));
-	front.z = sin(glm::radians(fYaw)) * cos(glm::radians(fPitch));
-	vec3Front = glm::normalize(front);
-	// Also re-calculate the Right and Up vector
-	// Normalize the vectors, because their length gets closer to 0 the more 
-	// you look up or down which results in slower movement.
-	vec3Right = glm::normalize(glm::cross(vec3Front, vec3WorldUp));
-	vec3Up = glm::normalize(glm::cross(vec3Right, vec3Front));
 }
 
 /**

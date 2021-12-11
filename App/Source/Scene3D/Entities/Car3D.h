@@ -138,7 +138,4 @@ protected:
 	void Constraint(void);
 
 	void ProcessCarInputs(double dElapsedTime);
-
-	// Calculates the front vector from the Player's (updated) Euler Angles
-	void UpdatePlayerVectors(void);
 };

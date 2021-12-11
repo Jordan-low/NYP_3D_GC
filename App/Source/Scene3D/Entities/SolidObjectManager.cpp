@@ -223,7 +223,8 @@ bool CSolidObjectManager::CheckForCollision(void)
 				if ((*it)->GetType() == CSolidObject::TYPE::PLAYER &&
 					(*it_other)->GetType() == CSolidObject::TYPE::CAR)
 				{
-					(*it)->RollbackPosition();
+					if (!CPlayer3D::GetInstance()->isDriving)
+						(*it)->RollbackPosition();
 					cout << "** Collision between Player and an Entity ***" << endl;
 					break;
 				}
