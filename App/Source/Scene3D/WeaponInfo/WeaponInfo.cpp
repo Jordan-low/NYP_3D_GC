@@ -317,7 +317,9 @@ bool CWeaponInfo::Update(const double dt)
 	model = glm::rotate(model, glm::radians(animateEquipAngle), glm::vec3(1, 0, 0));
 
 	if (isMeleeAttacking)
+	{
 		AnimateMeleeAttack(dt);
+	}
 
 	// If the weapon can fire, then just fire and return
 	if (bFire)

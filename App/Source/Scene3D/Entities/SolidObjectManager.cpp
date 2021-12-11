@@ -139,18 +139,18 @@ bool CSolidObjectManager::CollisionCheck(CSolidObject* cSolidObject)
 		{
 			// Rollback the cSolidObject's position
 			cSolidObject->RollbackPosition();
-			// Rollback the NPC's position
-			(*it)->RollbackPosition();
-			if ((*it)->GetType() == CSolidObject::TYPE::NPC)
-				cout << "** Collision between this Entity and a NPC ***" << endl;
-			else if ((*it)->GetType() == CSolidObject::TYPE::OTHERS)
-				cout << "** Collision between this Entity and an OTHERS ***" << endl;
-			else if ((*it)->GetType() == CSolidObject::TYPE::STRUCTURE)
-				cout << "** Collision between this Entity and a STRUCTURE ***" << endl;
-			else if ((*it)->GetType() == CSolidObject::TYPE::PROJECTILE)
-				cout << "** Collision between this Entity and a PROJECTILE ***" << endl;
-			// Quit this loop since a collision has been found
-			break;
+// Rollback the NPC's position
+(*it)->RollbackPosition();
+if ((*it)->GetType() == CSolidObject::TYPE::NPC)
+cout << "** Collision between this Entity and a NPC ***" << endl;
+else if ((*it)->GetType() == CSolidObject::TYPE::OTHERS)
+cout << "** Collision between this Entity and an OTHERS ***" << endl;
+else if ((*it)->GetType() == CSolidObject::TYPE::STRUCTURE)
+cout << "** Collision between this Entity and a STRUCTURE ***" << endl;
+else if ((*it)->GetType() == CSolidObject::TYPE::PROJECTILE)
+cout << "** Collision between this Entity and a PROJECTILE ***" << endl;
+// Quit this loop since a collision has been found
+break;
 		}
 	}
 
@@ -233,10 +233,22 @@ bool CSolidObjectManager::CheckForCollision(void)
 					&&
 					(((*it_other)->GetType() >= CSolidObject::TYPE::NPC) &&
 						((*it_other)->GetType() <= CSolidObject::TYPE::OTHERS))
-					) 
+					)
 				{
 					(*it)->RollbackPosition();
 					(*it_other)->RollbackPosition();
+
+					if ((*it)->GetType() == CSolidObject::TYPE::PLAYER)
+					{
+						if (CPlayer3D::GetInstance()->GetWeapon()->isMeleeAttacking)
+						{
+							//player melee attack
+							(*it_other)->SetHealth((*it_other)->GetHealth() - CPlayer3D::GetInstance()->GetWeapon()->GetDamage());
+							if ((*it_other)->GetHealth() <= 0)
+								(*it_other)->SetStatus(false);
+						}
+					}
+
 					bResult = true;
 					cout << "** Collision between Player and an Entity ***" << endl;
 					break;

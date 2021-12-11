@@ -48,6 +48,7 @@ bool CKnife::Init(void)
 	iMaxTotalRounds = 100;
 	// The number of bullets per click
 	iBulletsPerClick = 1;
+	iDamage = 5;
 
 	// The time between shots
 	dTimeBetweenShots = 0.02;
