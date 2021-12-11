@@ -220,13 +220,37 @@ void CScene3D::SpawnEnemy(glm::vec3 pos)
 
 void CScene3D::SpawnStructure(glm::vec3 pos)
 {
-	// Initialise a structure
-	float fCheckHeight = cTerrain->GetHeight(pos.x, pos.z);
-	CStructure3D* cStructure3D = new CStructure3D(glm::vec3(pos.x, fCheckHeight, pos.z));
-	cStructure3D->SetShader("Shader3D");
-	cStructure3D->Init();
-	cStructure3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 1.0f, 1.0f), glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
-	cSolidObjectManager->Add(cStructure3D);
+	int random = Math::RandIntMinMax(2, 6);
+	int j = Math::RandIntMinMax(0, 2);
+	int k = Math::RandIntMinMax(0, 2);
+
+	for (int i = 0; i < random; i++)
+	{
+		if (i % 2 == 0)
+		{
+			// Initialise a structure
+			float fCheckHeight = cTerrain->GetHeight(pos.x + k * 1, pos.z + j * 1);
+			CStructure3D* cStructure3D = new CStructure3D(glm::vec3(pos.x + k * 1, fCheckHeight, pos.z + j * 1));
+			cStructure3D->SetShader("Shader3D");
+			cStructure3D->Init();
+			cStructure3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 1.0f, 1.0f), glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
+			cSolidObjectManager->Add(cStructure3D);
+
+			j += Math::RandIntMinMax(1, 2);
+		}
+		else
+		{
+			// Initialise a structure
+			float fCheckHeight = cTerrain->GetHeight(pos.x + k * 1, pos.z + j * 1);
+			CStructure3D* cStructure3D = new CStructure3D(glm::vec3(pos.x + k * 1, fCheckHeight, pos.z + j * 1));
+			cStructure3D->SetShader("Shader3D");
+			cStructure3D->Init();
+			cStructure3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 1.0f, 1.0f), glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
+			cSolidObjectManager->Add(cStructure3D);
+
+			k += Math::RandIntMinMax(1, 2);
+		}
+	}
 }
 
 void CScene3D::SpawnAmmoBox(glm::vec3 pos)
@@ -262,6 +286,7 @@ void CScene3D::SpawnEnemyWave(int waveCount)
  */ 
 bool CScene3D::Init(void)
 {
+	srand(time(NULL));
 	cSettings = CSettings::GetInstance();
 
 	// configure global opengl state
@@ -316,7 +341,7 @@ bool CScene3D::Init(void)
 		SpawnEnemy(glm::vec3(posX, 0, posZ));
 	}
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		float posX = Math::RandFloatMinMax(-125, 125);
 		float posZ = Math::RandFloatMinMax(-125, 125);

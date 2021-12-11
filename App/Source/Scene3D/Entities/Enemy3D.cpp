@@ -346,7 +346,6 @@ bool CEnemy3D::Update(const double dElapsedTime)
 
 	vec3Position += vec3Vel * (float)dElapsedTime;
 
-	std::cout << "EVE: " << vec3Vel.x << " " << vec3Vel.y << " " << vec3Vel.z << std::endl;
 	float frictionX = vec3Vel.x * -1.f;
 	vec3Vel.x += frictionX * (float)dElapsedTime;
 

@@ -233,8 +233,8 @@ void CCar3D::ProcessMovement(double dElapsedTime)
 	vec3Up = glm::normalize(glm::cross(vec3Right, vec3Front));
 
 	////clamp the yaw and pitch
-	//cPlayer3D->fYaw = Math::Clamp(cPlayer3D->fYaw, -115.f, -65.f);
-	//cPlayer3D->fPitch = Math::Clamp(cPlayer3D->fPitch, -20.f, 0.f);
+	cPlayer3D->fYaw = Math::Clamp(cPlayer3D->fYaw, -115.f, -65.f);
+	cPlayer3D->fPitch = Math::Clamp(cPlayer3D->fPitch, -20.f, 0.f);
 
 	cPlayer3D->UpdatePlayerVectors();
 
