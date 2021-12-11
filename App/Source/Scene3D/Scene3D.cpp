@@ -220,10 +220,12 @@ void CScene3D::SpawnEnemy(glm::vec3 pos)
 
 void CScene3D::SpawnStructure(glm::vec3 pos)
 {
+	//get random values
 	int random = Math::RandIntMinMax(2, 6);
 	int j = Math::RandIntMinMax(0, 2);
 	int k = Math::RandIntMinMax(0, 2);
 
+	//random spawning of structures
 	for (int i = 0; i < random; i++)
 	{
 		if (i % 2 == 0)
