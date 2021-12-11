@@ -13,6 +13,8 @@
 #include "CameraEffects/CrossHair.h"
 // Include CCameraShake
 #include "CameraEffects/CameraShake.h"
+#include "Entities/SolidObjectManager.h"
+
 
 #include <iostream>
 using namespace std;
@@ -211,6 +213,8 @@ void CGUI_Scene3D::Update(const double dElapsedTime)
 
 	// Display the FPS
 	ImGui::TextColored(ImVec4(1, 1, 0, 1), "FPS: %d", cFPSCounter->GetFrameRate());
+	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Timer: %3.2f", cPlayer3D->timer);
+	ImGui::TextColored(ImVec4(1, 1, 0, 1), "WaveCount: %d", cPlayer3D->waveCount);
 
 	// Render the Health
 	ImGuiWindowFlags healthWindowFlags = ImGuiWindowFlags_AlwaysAutoResize |
@@ -221,7 +225,7 @@ void CGUI_Scene3D::Update(const double dElapsedTime)
 		ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoScrollbar;
 	ImGui::Begin("Health", NULL, healthWindowFlags);
-	ImGui::SetWindowPos(ImVec2(cSettings->iWindowWidth * 0.03f, cSettings->iWindowHeight * 0.03f));
+	ImGui::SetWindowPos(ImVec2(cSettings->iWindowWidth * 0.4f, cSettings->iWindowHeight * 0.9f));
 	ImGui::SetWindowSize(ImVec2(100.0f * relativeScale_x, 25.0f * relativeScale_y));
 	ImGui::SetWindowFontScale(1.5f * relativeScale_y);
 	cInventoryItem = cInventoryManager->GetItem("Health");
@@ -231,33 +235,33 @@ void CGUI_Scene3D::Update(const double dElapsedTime)
 	ImGui::SameLine();
 	ImGui::PushStyleColor(ImGuiCol_PlotHistogram, ImVec4(0.0f, 0.0f, 1.0f, 1.0f));
 	ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
-	ImGui::ProgressBar(cInventoryItem->GetCount() /
-		(float)cInventoryItem->GetMaxCount(), ImVec2(100.0f * relativeScale_x, 20.0f * relativeScale_y));
+	ImGui::ProgressBar(cPlayer3D->GetHealth() /
+		(float)200, ImVec2(100.0f * relativeScale_x, 20.0f * relativeScale_y));
 	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
 	ImGui::End();
 
-	// Render the Lives
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));  // Set a background color
-	ImGuiWindowFlags livesWindowFlags = ImGuiWindowFlags_AlwaysAutoResize |
-		ImGuiWindowFlags_NoTitleBar |
-		ImGuiWindowFlags_NoMove |
-		ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoScrollbar;
-	ImGui::Begin("Lives", NULL, livesWindowFlags);
-	ImGui::SetWindowPos(ImVec2(cSettings->iWindowWidth * 0.03f, cSettings->iWindowHeight * 0.09f));
-	ImGui::SetWindowSize(ImVec2(100.0f * relativeScale_x, 25.0f * relativeScale_y));
-	cInventoryItem = cInventoryManager->GetItem("Lives");
-	ImGui::Image((void*)(intptr_t)cInventoryItem->GetTextureID(),
-		ImVec2(cInventoryItem->vec2Size.x * relativeScale_x, cInventoryItem->vec2Size.y * relativeScale_y),
-		ImVec2(0, 1), ImVec2(1, 0));
-	ImGui::SameLine();
-	ImGui::SetWindowFontScale(1.5f * relativeScale_y);
-	ImGui::TextColored(ImVec4(1, 1, 0, 1), "%d / %d",
-		cInventoryItem->GetCount(), cInventoryItem->GetMaxCount());
-	ImGui::End();
-	ImGui::PopStyleColor();
+	//// Render the Lives
+	//ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));  // Set a background color
+	//ImGuiWindowFlags livesWindowFlags = ImGuiWindowFlags_AlwaysAutoResize |
+	//	ImGuiWindowFlags_NoTitleBar |
+	//	ImGuiWindowFlags_NoMove |
+	//	ImGuiWindowFlags_NoResize |
+	//	ImGuiWindowFlags_NoCollapse |
+	//	ImGuiWindowFlags_NoScrollbar;
+	//ImGui::Begin("Lives", NULL, livesWindowFlags);
+	//ImGui::SetWindowPos(ImVec2(cSettings->iWindowWidth * 0.03f, cSettings->iWindowHeight * 0.09f));
+	//ImGui::SetWindowSize(ImVec2(100.0f * relativeScale_x, 25.0f * relativeScale_y));
+	//cInventoryItem = cInventoryManager->GetItem("Lives");
+	//ImGui::Image((void*)(intptr_t)cInventoryItem->GetTextureID(),
+	//	ImVec2(cInventoryItem->vec2Size.x * relativeScale_x, cInventoryItem->vec2Size.y * relativeScale_y),
+	//	ImVec2(0, 1), ImVec2(1, 0));
+	//ImGui::SameLine();
+	//ImGui::SetWindowFontScale(1.5f * relativeScale_y);
+	//ImGui::TextColored(ImVec4(1, 1, 0, 1), "%d / %d",
+	//	cInventoryItem->GetCount(), cInventoryItem->GetMaxCount());
+	//ImGui::End();
+	//ImGui::PopStyleColor();
 
 	// Render the inventory items
 	cInventoryItem = cInventoryManager->GetItem("Pistol");
@@ -295,7 +299,6 @@ void CGUI_Scene3D::Update(const double dElapsedTime)
 		ImGui::PopStyleColor();
 	}
 	
-
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));  // Set a background color
 	ImGui::Begin("PlayerPos", NULL, inventoryWindowFlags);
 	ImGui::SetWindowPos(ImVec2(cSettings->iWindowWidth * 0.75f, cSettings->iWindowHeight * 0.9f));
@@ -308,6 +311,21 @@ void CGUI_Scene3D::Update(const double dElapsedTime)
 		CCamera::GetInstance()->vec3Position.z);
 	ImGui::End();
 	ImGui::PopStyleColor();
+
+	
+	//render loading wave
+	if (CSolidObjectManager::GetInstance()->allEnemyDied)
+	{
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));  // Set a background color
+		ImGui::Begin("Wave", NULL, inventoryWindowFlags);
+		ImGui::SetWindowPos(ImVec2(cSettings->iWindowWidth * 0.4f, cSettings->iWindowHeight * 0.5f));
+		ImGui::SetWindowSize(ImVec2(cSettings->iWindowWidth, cSettings->iWindowHeight));
+		ImGui::SetWindowFontScale(1.5f * relativeScale_y);
+		string c = "Loading Wave: " + to_string(cPlayer3D->waveCount);
+		ImGui::TextColored(ImVec4(1, 1, 0, 1), c.c_str());
+		ImGui::End();
+		ImGui::PopStyleColor();
+	}
 
 	ImGui::End();
 

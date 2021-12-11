@@ -44,6 +44,7 @@ CWeaponInfo::CWeaponInfo()
 	, animateADSPosX(0.f)
 	, bFire(true)
 	, isMeleeAttacking(false)
+	, toggleADSCloseZoom(false)
 	, bAuto(true)
 	, bulletSpread(0.0f)
 	, minRecoil(glm::vec2(0.f))
@@ -296,6 +297,10 @@ bool CWeaponInfo::Init(void)
  */
 bool CWeaponInfo::Update(const double dt)
 {
+	if (toggleADSCloseZoom)
+		ADSzoom = cSettings->FOV * 0.4f;
+	else
+		ADSzoom = cSettings->FOV;
 	//apply ads
 	ADS(dt, isADS);
 

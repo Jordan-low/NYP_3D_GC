@@ -52,6 +52,8 @@ CPlayer3D::CPlayer3D(void)
 	, isDriving(false)
 	, jetPackFuel(0.f)
 	, jetPackSpeed(0.f)
+	, timer(0.f)
+	, waveCount(1)
 {
 	// Set the default position so it is above the ground
 	vec3Position = glm::vec3(0.0f, 0.5f, 0.0f);
@@ -518,7 +520,7 @@ void CPlayer3D::ProcessRotate(float fXOffset, float fYOffset, const bool constra
 bool CPlayer3D::Update(const double dElapsedTime)
 {
 	CSolidObject::Update(dElapsedTime);
-	std::cout << "Heal: " << iHealth << std::endl;
+
 	if (cVehicleWeapon)
 		cVehicleWeapon->Update(dElapsedTime);
 
@@ -531,8 +533,6 @@ bool CPlayer3D::Update(const double dElapsedTime)
 
 	if (isDriving)
 		return false;
-
-	//model = glm::rotate(model, glm::radians(30.f), glm::vec3(1, 0, 0));
 	
 	if (cMeleeWeapon)
 		cMeleeWeapon->Update(dElapsedTime);

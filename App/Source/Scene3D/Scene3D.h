@@ -127,5 +127,11 @@ protected:
 	virtual ~CScene3D(void);
 
 	void ProcessPlayerInputs(double dt);
+
+	void SpawnEnemy(glm::vec3);
+	void SpawnStructure(glm::vec3);
+
+	void SpawnEnemyWave(int waveCount);
+	float loadingWave = 0.f;
 };
 

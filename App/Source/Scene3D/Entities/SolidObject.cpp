@@ -139,8 +139,8 @@ void CSolidObject::Render(void)
 	CShaderManager::GetInstance()->activeShader->setMat4("model", model);
 
 	// bind textures on corresponding texture units
-	glBindTexture(GL_TEXTURE_2D, iTextureID);
 	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, iTextureID);
 		// Render the mesh
 		glBindVertexArray(VAO);
 			if (mesh)

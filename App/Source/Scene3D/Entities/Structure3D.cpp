@@ -130,7 +130,8 @@ void CStructure3D::PreRender(void)
 */
 void CStructure3D::Render(void)
 {
-	CSolidObject::Render();
+	if (bStatus)
+		CSolidObject::Render();
 }
 
 /**

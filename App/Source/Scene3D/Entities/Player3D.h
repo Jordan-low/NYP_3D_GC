@@ -150,6 +150,9 @@ public:
 	// Print Self
 	virtual void PrintSelf(void);
 
+	float timer;
+	int waveCount;
+
 protected:
 	// The handle to the CCamera class instance
 	CCamera* cCamera;

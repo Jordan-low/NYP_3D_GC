@@ -17,6 +17,7 @@
 
 // Include filesystem to read from a file
 #include "System\filesystem.h"
+#include "../MyMath.h"
 
 // Include CShaderManager
 #include "RenderControl/ShaderManager.h"
@@ -124,6 +125,15 @@ void CScene3D::ProcessPlayerInputs(double dElapsedTime)
 	// Get keyboard 1s for cPlayer3D
 	//Player Movement
 	cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::REST;
+	
+	if (cPlayer3D->GetWeapon()->isADS)
+	{
+		if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
+		{
+			cPlayer3D->GetWeapon()->toggleADSCloseZoom = !cPlayer3D->GetWeapon()->toggleADSCloseZoom;
+		}
+	}
+
 
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C))
 		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
@@ -155,7 +165,7 @@ void CScene3D::ProcessPlayerInputs(double dElapsedTime)
 		((CCameraShake*)CCameraEffectsManager::GetInstance()->Get("CameraShake"))->bToBeUpdated = true;
 		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
 			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::WALK;
-		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT))
+		if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_SHIFT) && !cPlayer3D->GetWeapon()->isADS)
 		{
 			cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::SPRINT;
 			if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C))
@@ -185,6 +195,50 @@ void CScene3D::ProcessPlayerInputs(double dElapsedTime)
 
 		// Reset the key so that it will not repeat until the key is released and pressed again
 		CKeyboardController::GetInstance()->ResetKey(GLFW_KEY_0);
+	}
+}
+
+void CScene3D::SpawnEnemy(glm::vec3 pos)
+{
+	// Initialise a CEnemy3D
+	float fCheckHeight = cTerrain->GetHeight(pos.x, pos.z);
+	CEnemy3D* cEnemy3D = new CEnemy3D(glm::vec3(pos.x, fCheckHeight, pos.z));
+	cEnemy3D->SetShader("Shader3D");
+	cEnemy3D->Init();
+	cEnemy3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+
+
+	// Assign a cPistol to the cEnemy3D
+	CPistol* cEnemyPistol = new CPistol();
+	// Set the scale of this weapon
+	cEnemyPistol->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
+	//Initialise the instance
+	cEnemyPistol->Init();
+	cEnemyPistol->SetShader("Shader3D_Model");
+	cEnemy3D->SetWeapon(0, cEnemyPistol);
+
+	// Add the cStructure3D to the cSolidObjectManager
+	cSolidObjectManager->Add(cEnemy3D);
+}
+
+void CScene3D::SpawnStructure(glm::vec3 pos)
+{
+	// Initialise a structure
+	float fCheckHeight = cTerrain->GetHeight(pos.x, pos.z);
+	CStructure3D* cStructure3D = new CStructure3D(glm::vec3(pos.x, fCheckHeight, pos.z));
+	cStructure3D->SetShader("Shader3D");
+	cStructure3D->Init();
+	cStructure3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 1.0f, 1.0f), glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
+	cSolidObjectManager->Add(cStructure3D);
+}
+
+void CScene3D::SpawnEnemyWave(int waveCount)
+{
+	for (int i = 0; i < (5 * waveCount); i++)
+	{
+		float posX = Math::RandFloatMinMax(-125, 125);
+		float posZ = Math::RandFloatMinMax(-125, 125);
+		SpawnEnemy(glm::vec3(posX, 0, posZ));
 	}
 }
 
@@ -223,7 +277,7 @@ bool CScene3D::Init(void)
 	cTerrain->SetShader("Shader3D_Terrain");
 	cTerrain->Init();
 	// Set the size of the terrain
-	cTerrain->SetRenderSize(100.f, 5.0f, 100.f);
+	cTerrain->SetRenderSize(300.f, 5.0f, 300.f);
 
 	// Load the movable Entities
 	// Init the CSolidObjectManager
@@ -241,31 +295,20 @@ bool CScene3D::Init(void)
 	// Add the cPlayer3D to the cSolidObjectManager
 	cSolidObjectManager->Add(cPlayer3D);
 
-	// Initialise a CStructure3D
-	float fCheckHeight = cTerrain->GetHeight(2.0f, -2.0f);
-	CStructure3D* cStructure3D = new CStructure3D(glm::vec3(2.0f, fCheckHeight, -2.0f));
-	cStructure3D->SetShader("Shader3D");
-	cStructure3D->Init();
-	cStructure3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 1.0f, 1.0f), glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
+	for (int i = 0; i < 1; i++)
+	{
+		float posX = Math::RandFloatMinMax(-125, 125);
+		float posZ = Math::RandFloatMinMax(-125, 125);
+		SpawnEnemy(glm::vec3(posX, 0, posZ));
+	}
 
-	// Initialise a CEnemy3D
-	fCheckHeight = cTerrain->GetHeight(0.0f, -10.0f);
-	CEnemy3D* cEnemy3D = new CEnemy3D(glm::vec3(0.0f, fCheckHeight, -10.0f));
-	cEnemy3D->SetShader("Shader3D");
-	cEnemy3D->Init();
-	cEnemy3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-	// Assign a cPistol to the cEnemy3D
-	CPistol* cEnemyPistol = new CPistol();
-	// Set the scale of this weapon
-	cEnemyPistol->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
-	//Initialise the instance
-	cEnemyPistol->Init();
-	cEnemyPistol->SetShader("Shader3D_Model");
-	cEnemy3D->SetWeapon(0, cEnemyPistol);
-
-	// Add the cStructure3D to the cSolidObjectManager
-	cSolidObjectManager->Add(cStructure3D);
-	cSolidObjectManager->Add(cEnemy3D);
+	for (int i = 0; i < 1; i++)
+	{
+		float posX = Math::RandFloatMinMax(-125, 125);
+		float posZ = Math::RandFloatMinMax(-125, 125);
+		SpawnStructure(glm::vec3(posX, 0, posZ));
+	}
+	
 
 	// Initialise the projectile manager
 	cProjectileManager = CProjectileManager::GetInstance();
@@ -363,6 +406,24 @@ bool CScene3D::Init(void)
 */
 bool CScene3D::Update(const double dElapsedTime)
 {
+	//count wave timer
+	cPlayer3D->timer += dElapsedTime;
+
+	if (cSolidObjectManager->allEnemyDied)
+	{
+		//add loading wave timer
+		loadingWave += dElapsedTime;
+
+		//start loading new wave
+		if (loadingWave > 1)
+		{
+			cPlayer3D->waveCount += 1;
+			SpawnEnemyWave(cPlayer3D->waveCount);
+			loadingWave = 0;
+			cSolidObjectManager->allEnemyDied = false;
+		}
+	}
+
 	// Store the current position, if rollback is needed
 	cPlayer3D->StorePositionForRollback();
 
@@ -472,6 +533,7 @@ bool CScene3D::Update(const double dElapsedTime)
 	cSolidObjectManager->Update(dElapsedTime);
 
 	cSolidObjectManager->CheckForCollision();
+
 
 	return true;
 }

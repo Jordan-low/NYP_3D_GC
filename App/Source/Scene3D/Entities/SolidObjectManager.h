@@ -52,6 +52,7 @@ public:
 	// Render this class instance
 	virtual void Render(void);
 
+	bool allEnemyDied = false;
 protected:
 	// Render Settings
 	glm::mat4 model;
@@ -68,4 +69,6 @@ protected:
 	CSolidObjectManager(void);
 	// Destructor
 	virtual ~CSolidObjectManager(void);
+
+	int enemyCount = 0;
 };

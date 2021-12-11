@@ -50,7 +50,6 @@ bool CBurstAssaultRifle::Init(void)
 	iBulletsPerClick = 3;
 	// The Damage for this weapon
 	iDamage = 10;
-	ADSzoom = cSettings->FOV * 0.4f;
 
 	// The time between shots
 	dTimeBetweenShots = 0.4;

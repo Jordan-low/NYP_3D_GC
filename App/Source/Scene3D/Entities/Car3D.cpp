@@ -305,6 +305,8 @@ bool CCar3D::Update(const double dElapsedTime)
 	}
 	else
 	{
+		std::cout << cPlayer3D->GetPosition().x << std::endl;
+		cPlayer3D->SetPosition(vec3Position);
 		StorePositionForRollback();
 		ProcessMovement(dElapsedTime);
 
@@ -336,8 +338,7 @@ bool CCar3D::Update(const double dElapsedTime)
 			}
 		}
 	}
-	if (cPlayer3D)
-		std::cout << cPlayer3D->GetFront().x << std::endl;
+
 	// If the camera is attached to this player, then update the camera
 	if (cCamera)
 	{
@@ -350,7 +351,6 @@ bool CCar3D::Update(const double dElapsedTime)
 		cCamera->vec3Right = vec3Right;
 		cCamera->fYaw = fYaw;
 		cCamera->fPitch = fPitch;
-		cPlayer3D->SetPosition(vec3Position);
 	}
 
 	// Constraint the player's position

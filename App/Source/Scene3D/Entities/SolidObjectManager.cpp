@@ -164,13 +164,21 @@ bool CSolidObjectManager::CollisionCheck(CSolidObject* cSolidObject)
  */
 bool CSolidObjectManager::Update(const double dElapsedTime)
 {
+	enemyCount = 0;
 	std::list<CSolidObject*>::iterator it, end;
 	// Update all CSolidObject
 	end = lSolidObject.end();
 	for (it = lSolidObject.begin(); it != end; ++it)
 	{
+		if ((*it)->GetType() == CEntity3D::TYPE::NPC && (*it)->GetStatus())
+			enemyCount++;
 		(*it)->Update(dElapsedTime);
 	}
+
+	if (enemyCount == 0)
+		allEnemyDied = true;
+
+	std::cout << "COIUNT: " << enemyCount << std::endl;
 
 	return true;
 }
@@ -219,7 +227,7 @@ bool CSolidObjectManager::CheckForCollision(void)
 					break;
 				}
 				// Check if a movable entity collides with another movable entity
-				if (
+				else if (
 					(((*it)->GetType() >= CSolidObject::TYPE::PLAYER) &&
 						((*it)->GetType() <= CSolidObject::TYPE::CAR))
 					&&

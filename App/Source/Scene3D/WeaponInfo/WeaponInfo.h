@@ -125,6 +125,7 @@ public:
 	void AnimateMeleeAttack(const double dElapsedTime);
 	bool isMeleeAttacking = false;
 	bool isADS = false;
+	bool toggleADSCloseZoom = false;
 
 	CCrossHair::CROSSHAIR_TYPE crossHairType;
 protected:

@@ -50,7 +50,6 @@ bool CAssaultRifle::Init(void)
 	iBulletsPerClick = 1;
 	// The Damage for this weapon
 	iDamage = 11;
-	ADSzoom = cSettings->FOV * 0.4f;
 
 	// The time between shots
 	dTimeBetweenShots = 0.1;

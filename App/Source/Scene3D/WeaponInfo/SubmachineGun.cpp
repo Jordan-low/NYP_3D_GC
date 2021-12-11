@@ -49,8 +49,6 @@ bool CSubmachineGun::Init(void)
 	// The number of bullets per click
 	iBulletsPerClick = 1;
 
-	ADSzoom = cSettings->FOV * 0.5f;
-
 	// The Damage for this weapon
 	iDamage = 8;
 
