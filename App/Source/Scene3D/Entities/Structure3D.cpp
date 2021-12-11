@@ -13,6 +13,7 @@
 
 // Include ImageLoader
 #include "System\ImageLoader.h"
+#include "System/LoadOBJ.h"
 
 #include <iostream>
 using namespace std;
@@ -51,27 +52,73 @@ CStructure3D::~CStructure3D(void)
  @brief Initialise this class instance
  @return true is successfully initialised this class instance, else false
  */
-bool CStructure3D::Init(void)
+bool CStructure3D::Init(CEntity3D::TYPE type)
 {
 	// Call the parent's Init()
 	CSolidObject::Init();
 
 	// Set the type
-	SetType(CEntity3D::TYPE::STRUCTURE);
+	SetType(type);
 
-	// Generate and bind the VAO
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-
-	mesh = CMeshBuilder::GenerateBox(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-
-	// load and create a texture 
-	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/Scene3D_Structure_01.tga", false);
-	if (iTextureID == 0)
+	if (type == CEntity3D::TYPE::AMMO)
 	{
-		cout << "Unable to load Image/Scene3D_Structure_01.tga" << endl;
-		return false;
+		std::vector<glm::vec3> vertices;
+		std::vector<glm::vec2> uvs;
+		std::vector<glm::vec3> normals;
+		std::vector<ModelVertex> vertex_buffer_data;
+		std::vector<GLuint> index_buffer_data;
+
+		std::string file_path = "Models/Weapons/AmmoBox.obj";
+		bool success = CLoadOBJ::LoadOBJ(file_path.c_str(), vertices, uvs, normals, true);
+		if (!success)
+		{
+			cout << "Unable to load Models/Weapons/gun_type64_01.obj" << endl;
+			return false;
+		}
+
+		CLoadOBJ::IndexVBO(vertices, uvs, normals, index_buffer_data, vertex_buffer_data);
+
+		glGenVertexArrays(1, &VAO);
+		glBindVertexArray(VAO);
+		glGenBuffers(1, &VBO);
+		glGenBuffers(1, &IBO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(ModelVertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+		iIndicesSize = index_buffer_data.size();
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		// load and create a texture 
+		iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/Weapons/AmmoBox.jpg", false);
+		if (iTextureID == 0)
+		{
+			cout << "Unable to load Models/Weapons/map_gunType64_01_AO.png" << endl;
+			return false;
+		}
 	}
+	else
+	{
+		// Generate and bind the VAO
+		glGenVertexArrays(1, &VAO);
+		glBindVertexArray(VAO);
+
+		mesh = CMeshBuilder::GenerateBox(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+
+		// load and create a texture 
+		iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/Scene3D_Structure_01.tga", false);
+		if (iTextureID == 0)
+		{
+			cout << "Unable to load Image/Scene3D_Structure_01.tga" << endl;
+			return false;
+		}
+	}
+
 
 	return true;
 }
@@ -111,6 +158,8 @@ void CStructure3D::SetProjection(const glm::mat4 projection)
  */
 bool CStructure3D::Update(const double dElapsedTime)
 {
+	if (!bStatus)
+		return false;
 	CSolidObject::Update(dElapsedTime);
 
 	return true;
@@ -121,6 +170,8 @@ bool CStructure3D::Update(const double dElapsedTime)
 */
 void CStructure3D::PreRender(void)
 {
+	if (!bStatus)
+		return;
 	CSolidObject::PreRender();
 }
 
@@ -130,8 +181,9 @@ void CStructure3D::PreRender(void)
 */
 void CStructure3D::Render(void)
 {
-	if (bStatus)
-		CSolidObject::Render();
+	if (!bStatus)
+		return;
+	CSolidObject::Render();
 }
 
 /**
@@ -139,5 +191,7 @@ void CStructure3D::Render(void)
 */
 void CStructure3D::PostRender(void)
 {
+	if (!bStatus)
+		return;
 	CSolidObject::PostRender();
 }

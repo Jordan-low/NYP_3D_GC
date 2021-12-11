@@ -14,6 +14,9 @@
 // Include ImageLoader
 #include "System\ImageLoader.h"
 
+#include "Structure3D.h"
+#include "SolidObjectManager.h"
+
 #include <iostream>
 using namespace std;
 

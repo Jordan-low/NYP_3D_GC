@@ -121,7 +121,7 @@ bool CCar3D::Init(void)
 	std::vector<ModelVertex> vertex_buffer_data;
 	std::vector<GLuint> index_buffer_data;
 
-	std::string file_path = "Models/racer.obj";
+	std::string file_path = "Models/tank.obj";
 	bool success = CLoadOBJ::LoadOBJ(file_path.c_str(), vertices, uvs, normals, true);
 	if (!success)
 	{
@@ -310,13 +310,16 @@ bool CCar3D::Update(const double dElapsedTime)
 		StorePositionForRollback();
 		ProcessMovement(dElapsedTime);
 
+		if (!cPlayer3D)
+			return false;
+
 		if (cWeapon != nullptr)
 		{
 			if (cWeapon->GetAutoFire())
 			{
 				if (CMouseController::GetInstance()->IsButtonDown(CMouseController::BUTTON_TYPE::LMB))
 				{
-					bool fired = cWeapon->Discharge(vec3Position + glm::vec3(0, vec3Scale.y * 0.5f, 0), cPlayer3D->GetFront(), (CSolidObject*)this);
+					bool fired = cWeapon->Discharge(vec3Position + glm::vec3(0, vec3Scale.y, 0), vec3Front, (CSolidObject*)this);
 
 					//if (fired) //if first bullet is fired, apply recoil
 					//	cPlayer3D->ApplyRecoil(cWeapon);
@@ -326,7 +329,7 @@ bool CCar3D::Update(const double dElapsedTime)
 			{
 				if (CMouseController::GetInstance()->IsButtonPressed(CMouseController::BUTTON_TYPE::LMB))
 				{
-					bool fired = cWeapon->Discharge(vec3Position + glm::vec3(0, vec3Scale.y * 0.5f, 0), cPlayer3D->GetFront(), (CSolidObject*)this);
+					bool fired = cWeapon->Discharge(vec3Position + glm::vec3(0, vec3Scale.y, 0), vec3Front, (CSolidObject*)this);
 
 					//if (fired) //if first bullet is fired, apply recoil
 					//	cPlayer3D->ApplyRecoil(cWeapon);

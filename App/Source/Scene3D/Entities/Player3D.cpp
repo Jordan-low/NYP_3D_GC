@@ -38,15 +38,13 @@ CPlayer3D::CPlayer3D(void)
 	, slideTimer(1.f)
 	, velocity(0.f)
 	, minSpeed(0.f)
-	, maxSpeed(.1f)
+	, maxSpeed(.05f)
 	, addSprintSpeed(0.f)
 	, addSprintVelocity(0.f)
 	, addCrouchSpeed(0.f)
 	, addCrouchVelocity(0.f)
 	, addSlideSpeed(0.f)
 	, addSlideVelocity(0.f)
-	, addProneSpeed(0.f)
-	, addProneVelocity(0.f)
 	, addCounterSlideSpeed(-10.f)
 	, totalVelocity(0.f)
 	, isDriving(false)
@@ -88,15 +86,13 @@ CPlayer3D::CPlayer3D(	const glm::vec3 vec3Position,
 	, slideTimer(1.f)
 	, velocity(0.f)
 	, minSpeed(0.f)
-	, maxSpeed(.1f)
+	, maxSpeed(.05f)
 	, addSprintSpeed(0.f)
 	, addSprintVelocity(0.f)
 	, addCrouchSpeed(0.f)
 	, addCrouchVelocity(0.f) 
 	, addSlideSpeed(0.f)
 	, addSlideVelocity(0.f)
-	, addProneSpeed(0.f)
-	, addProneVelocity(0.f)
 	, addCounterSlideSpeed(-10.f)
 	, totalVelocity(0.f)
 	, isDriving(false)
@@ -386,13 +382,11 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 		drag = totalVelocity;
 		addSprintSpeed = -50.f;
 		ResetMovementValues(PLAYER_STATE::CROUCH);
-		//ResetMovementValues(PLAYER_STATE::PRONE);
 		break;
 	case PLAYER_STATE::SPRINT:
 		drag = totalVelocity;
 		addSprintSpeed = 50.f;
 		ResetMovementValues(PLAYER_STATE::CROUCH);
-		//ResetMovementValues(PLAYER_STATE::PRONE);
 		break;
 	case PLAYER_STATE::CROUCH:
 		drag = addSprintVelocity;
@@ -412,12 +406,6 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 				addCrouchSpeed = -10.f;
 			}
 		}
-		//ResetMovementValues(PLAYER_STATE::PRONE);
-		break;
-	case PLAYER_STATE::PRONE:
-		drag = addProneVelocity;
-		addProneSpeed = -50.f;
-		//ResetMovementValues(PLAYER_STATE::CROUCH);
 		break;
 	}
 
@@ -427,17 +415,13 @@ void CPlayer3D::ProcessMovement(const PLAYERMOVEMENT direction, const float delt
 
 	float addedSprintAccel = addSprintSpeed * deltaTime;
 	addSprintVelocity += addedSprintAccel * deltaTime;
-	addSprintVelocity = Math::Clamp(addSprintVelocity, 0.f, .1f);
+	addSprintVelocity = Math::Clamp(addSprintVelocity, 0.f, .05f);
 
 	float addedCrouchAccel = addCrouchSpeed * deltaTime;
 	addCrouchVelocity += addedCrouchAccel * deltaTime;
-	addCrouchVelocity = Math::Clamp(addCrouchVelocity, -.05f, .1f);
+	addCrouchVelocity = Math::Clamp(addCrouchVelocity, -.01f, .15f);
 
-	float addedProneAccel = addProneSpeed * deltaTime;
-	addProneVelocity += addedProneAccel * deltaTime;
-	addProneVelocity = Math::Clamp(addProneVelocity, -.05f, 0.f);
-
-	totalVelocity = velocity + addSprintVelocity + addCrouchVelocity; // + addProneVelocity
+	totalVelocity = velocity + addSprintVelocity + addCrouchVelocity;
 	std::cout << totalVelocity << std::endl;
 
 	//get predicted pos
@@ -567,10 +551,7 @@ bool CPlayer3D::Update(const double dElapsedTime)
 		velocity = 0.f;
 		break;
 	case PLAYER_STATE::CROUCH:
-		vec3Position.y -= 0.1f;
-		break;
-	case PLAYER_STATE::PRONE:
-		vec3Position.y -= 0.1f;
+		vec3Position.y -= 0.05f;
 		break;
 	default:
 		break;
@@ -764,10 +745,6 @@ void CPlayer3D::ResetMovementValues(PLAYER_STATE state)
 		addCrouchSpeed = 0;
 		addCrouchVelocity = 0;
 		enableSliding = true;
-		break;
-	case PLAYER_STATE::PRONE:
-		addProneSpeed = 0;
-		addProneVelocity = 0;
 		break;
 	}
 }

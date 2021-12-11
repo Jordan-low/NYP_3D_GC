@@ -53,7 +53,6 @@ public:
 		WALK,
 		SPRINT,
 		CROUCH,
-		PRONE,
 		NUM_STATES
 	};
 

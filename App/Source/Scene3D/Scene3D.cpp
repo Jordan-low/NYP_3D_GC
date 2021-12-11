@@ -138,9 +138,6 @@ void CScene3D::ProcessPlayerInputs(double dElapsedTime)
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_C))
 		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::CROUCH;
 
-	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_V))
-		cPlayer3D->activeState = CPlayer3D::PLAYER_STATE::PRONE;
-
 	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_A))
 	{
 		if (cPlayer3D->activeState != CPlayer3D::PLAYER_STATE::CROUCH)
@@ -232,6 +229,17 @@ void CScene3D::SpawnStructure(glm::vec3 pos)
 	cSolidObjectManager->Add(cStructure3D);
 }
 
+void CScene3D::SpawnAmmoBox(glm::vec3 pos)
+{
+	// Initialise a structure
+	float fCheckHeight = cTerrain->GetHeight(pos.x, pos.z);
+	CStructure3D* cStructure3D = new CStructure3D(glm::vec3(pos.x, fCheckHeight, pos.z));
+	cStructure3D->SetShader("Shader3D");
+	cStructure3D->Init(CEntity3D::TYPE::AMMO);
+	cStructure3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 1.0f, 1.0f), glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
+	cSolidObjectManager->Add(cStructure3D);
+}
+
 void CScene3D::SpawnEnemyWave(int waveCount)
 {
 	for (int i = 0; i < (5 * waveCount); i++)
@@ -239,6 +247,12 @@ void CScene3D::SpawnEnemyWave(int waveCount)
 		float posX = Math::RandFloatMinMax(-125, 125);
 		float posZ = Math::RandFloatMinMax(-125, 125);
 		SpawnEnemy(glm::vec3(posX, 0, posZ));
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		float posX = Math::RandFloatMinMax(-125, 125);
+		float posZ = Math::RandFloatMinMax(-125, 125);
+		SpawnAmmoBox(glm::vec3(posX, 0, posZ));
 	}
 }
 
@@ -309,6 +323,12 @@ bool CScene3D::Init(void)
 		SpawnStructure(glm::vec3(posX, 0, posZ));
 	}
 	
+	for (int i = 0; i < 5; i++)
+	{
+		float posX = Math::RandFloatMinMax(-125, 125);
+		float posZ = Math::RandFloatMinMax(-125, 125);
+		SpawnAmmoBox(glm::vec3(posX, 0, posZ));
+	}
 
 	// Initialise the projectile manager
 	cProjectileManager = CProjectileManager::GetInstance();
@@ -328,7 +348,7 @@ bool CScene3D::Init(void)
 	//// Assign a cAssaultRifle to the cPlayer3D
 	CAssaultRifle* cAssaultRifle = new CAssaultRifle();
 	// Set the pos, rot, scale of this weapon
-	cAssaultRifle->SetPosition(glm::vec3(0.05f, -0.075f, -0.3f));
+	cAssaultRifle->SetPosition(glm::vec3(0.1f, -0.06f, -0.3f));
 	cAssaultRifle->SetRotation(3.14159f, glm::vec3(0.0f, 1.0f, 0.0f));
 	cAssaultRifle->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
 	//Initialise the instance
@@ -338,7 +358,7 @@ bool CScene3D::Init(void)
 	// Assign a cAssaultRifle to the cPlayer3D
 	CBurstAssaultRifle* cBurstAssaultRifle = new CBurstAssaultRifle();
 	// Set the pos, rot, scale of this weapon
-	cBurstAssaultRifle->SetPosition(glm::vec3(0.05f, -0.075f, -0.3f));
+	cBurstAssaultRifle->SetPosition(glm::vec3(0.1f, -0.075f, -0.3f));
 	cBurstAssaultRifle->SetRotation(3.14159f, glm::vec3(0.0f, 1.0f, 0.0f));
 	cBurstAssaultRifle->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
 	//Initialise the instance
@@ -378,7 +398,7 @@ bool CScene3D::Init(void)
 	car->SetShader("Shader3D");
 	car->Init();
 	car->SetWeapon(cTurret);
-	car->InitCollider("Shader3D_Line", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	car->InitCollider("Shader3D_Line", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), glm::vec3(-0.5f, -0.5f, -1.f), glm::vec3(0.5f, 0.5f, 1.f));
 
 	// Add the airplane to the cSolidObjectManager
 	cSolidObjectManager->Add(car);

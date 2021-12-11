@@ -297,6 +297,8 @@ bool CWeaponInfo::Init(void)
  */
 bool CWeaponInfo::Update(const double dt)
 {
+	iTotalRounds = Math::Clamp(iTotalRounds, 0, iMaxTotalRounds);
+
 	if (toggleADSCloseZoom)
 		ADSzoom = cSettings->FOV * 0.4f;
 	else
@@ -388,7 +390,7 @@ bool CWeaponInfo::Discharge(glm::vec3 vec3Position,
 				// It will last for 2.0 seconds and travel at 20 units per frame
 				CProjectileManager::GetInstance()->Activate(vec3Position + vec3Front * 0.75f,
 					vec3Front + glm::vec3(randomSpreadX, randomSpreadY, 0),
-					2.0f, 20.0f, iDamage, pSource);
+					2.0f, 30.0f, iDamage, pSource);
 
 				// Lock the weapon after this discharge
 				bFire = false;

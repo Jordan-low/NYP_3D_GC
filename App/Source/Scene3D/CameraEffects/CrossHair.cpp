@@ -57,6 +57,8 @@ bool CCrossHair::Init(void)
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
+	bStatus = true;
+
 	// Generate the mesh
 	mesh = CMeshBuilder::GenerateQuad(glm::vec4(1, 1, 1, 1), .05, .05f);
 

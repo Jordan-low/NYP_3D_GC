@@ -34,7 +34,7 @@ public:
 	virtual ~CStructure3D(void);
 
 	// Initialise this class instance
-	bool Init(void);
+	bool Init(CEntity3D::TYPE type = CEntity3D::TYPE::STRUCTURE);
 
 	// Set model
 	virtual void SetModel(const glm::mat4 model);

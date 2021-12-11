@@ -39,13 +39,13 @@ bool CKnife::Init(void)
 	// The name of the weapon
 	name = "Knife";
 	// The number of ammunition in a magazine for this weapon
-	iMagRounds = 10;
+	iMagRounds = 0;
 	// The maximum number of ammunition for this magazine for this weapon
-	iMaxMagRounds = 10;
+	iMaxMagRounds = 0;
 	// The current total number of rounds currently carried by this player
-	iTotalRounds = 100;
+	iTotalRounds = 0;
 	// The max total number of rounds currently carried by this player
-	iMaxTotalRounds = 100;
+	iMaxTotalRounds = 0;
 	// The number of bullets per click
 	iBulletsPerClick = 1;
 	iDamage = 5;

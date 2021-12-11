@@ -35,6 +35,7 @@ public:
 		NPC,
 		OTHERS,		// Default value: Other entities such as ground and skybox
 		STRUCTURE,	// Buildings etc
+		AMMO,
 		PROJECTILE,
 		NUM_TYPES
 	};

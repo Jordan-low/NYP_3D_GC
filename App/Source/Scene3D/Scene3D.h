@@ -130,6 +130,7 @@ protected:
 
 	void SpawnEnemy(glm::vec3);
 	void SpawnStructure(glm::vec3);
+	void SpawnAmmoBox(glm::vec3);
 
 	void SpawnEnemyWave(int waveCount);
 	float loadingWave = 0.f;

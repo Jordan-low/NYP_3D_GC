@@ -226,6 +226,15 @@ bool CSolidObjectManager::CheckForCollision(void)
 					cout << "** Collision between Player and an Entity ***" << endl;
 					break;
 				}
+				else if ((*it)->GetType() == CSolidObject::TYPE::PLAYER &&
+					(*it_other)->GetType() == CSolidObject::TYPE::AMMO)
+				{
+					//increase player ammo
+					CPlayer3D::GetInstance()->GetWeapon()->SetTotalRound(CPlayer3D::GetInstance()->GetWeapon()->GetTotalRound() + 30);
+					(*it_other)->SetStatus(false);
+					cout << "** Collision between Player and Ammo ***" << endl;
+					break;
+				}
 				// Check if a movable entity collides with another movable entity
 				else if (
 					(((*it)->GetType() >= CSolidObject::TYPE::PLAYER) &&
