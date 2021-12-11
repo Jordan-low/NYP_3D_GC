@@ -66,6 +66,7 @@ public:
 	virtual void SetPreviousPosition(const glm::vec3 vec3PreviousPosition);
 	virtual void SetFront(const glm::vec3 vec3Front);
 	virtual void SetScale(const glm::vec3 vec3Scale);
+	virtual void SetVel(const glm::vec3 vec3Vel);
 	virtual void SetRotation(const float fRotationAngle, const glm::vec3 vec3RotationAxis);
 	virtual void SetColour(const glm::vec4 vec4Colour);
 	virtual void SetMovementSpeed(const float fMovementSpeed);
@@ -78,6 +79,7 @@ public:
 	virtual const glm::vec3 GetPreviousPosition(void) const;
 	virtual const glm::vec3 GetFront(void) const;
 	virtual const glm::vec3 GetScale(void) const;
+	virtual const glm::vec3 GetVel(void) const;
 	virtual const float GetRotationAngle(void) const;
 	virtual const glm::vec3 GetRotationAxis(void) const;
 	virtual const glm::vec4 GetColour(void) const;
@@ -140,6 +142,8 @@ protected:
 	glm::vec3 vec3Front;
 	// Scale
 	glm::vec3 vec3Scale;
+	// Velocity
+	glm::vec3 vec3Vel;
 	// Rotation angle and axis
 	float fRotationAngle;
 	glm::vec3 vec3RotationAxis;

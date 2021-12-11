@@ -250,7 +250,6 @@ void CCar3D::ProcessMovement(double dElapsedTime)
 	currSpeed += accel * dElapsedTime;
 	velocity = vec3Front * currSpeed * (float)dElapsedTime;
 
-	std::cout << "ACCEL: " << accel << " SPEED: " << currSpeed << " VEL: " << glm::length(velocity) << std::endl;
 	//max cap the velocity
 	if (glm::length(velocity) > 0.5f)
 		velocity = glm::normalize(velocity) * 0.5f;
@@ -276,6 +275,11 @@ CPlayer3D* CCar3D::GetPlayer3D()
 void CCar3D::SetWeapon(CWeaponInfo* cWeaponInfo)
 {
 	cWeapon = cWeaponInfo;
+}
+
+float CCar3D::GetCurrSpeed()
+{
+	return currSpeed;
 }
 
 CWeaponInfo* CCar3D::GetWeapon(void) const
@@ -305,10 +309,20 @@ bool CCar3D::Update(const double dElapsedTime)
 	}
 	else
 	{
-		std::cout << cPlayer3D->GetPosition().x << std::endl;
 		cPlayer3D->SetPosition(vec3Position);
 		StorePositionForRollback();
 		ProcessMovement(dElapsedTime);
+
+		vec3Position += vec3Vel * (float)dElapsedTime;
+
+		float frictionX = vec3Vel.x * -1.f;
+		vec3Vel.x += frictionX * (float)dElapsedTime;
+
+		float frictionY = vec3Vel.y * -1.f;
+		vec3Vel.y += frictionY * (float)dElapsedTime;
+
+		float frictionZ = vec3Vel.z * -1.f;
+		vec3Vel.z += frictionZ * (float)dElapsedTime;
 
 		if (!cPlayer3D)
 			return false;

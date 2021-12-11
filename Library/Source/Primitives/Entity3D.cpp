@@ -30,6 +30,7 @@ CEntity3D::CEntity3D()
 	, vec3Front(glm::vec3(0.0f, 0.0f, -1.0f))
 	, vec3PreviousPosition(0.0f)
 	, vec3Scale(1.0f)
+	, vec3Vel(glm::vec3(0.f))
 	, fRotationAngle(0.0f)
 	, iHealth(100)
 	, vec3RotationAxis(1.0f)
@@ -120,6 +121,11 @@ void CEntity3D::SetScale(const glm::vec3 vec3Scale)
 	this->vec3Scale = vec3Scale;
 }
 
+void CEntity3D::SetVel(const glm::vec3 vec3Vel)
+{
+	this->vec3Vel = vec3Vel;
+}
+
 void CEntity3D::SetRotation(const float fRotationAngle, const glm::vec3 vec3RotationAxis)
 {
 	this->fRotationAngle = fRotationAngle;
@@ -162,6 +168,10 @@ const glm::vec3 CEntity3D::GetFront(void) const
 const glm::vec3 CEntity3D::GetScale(void) const
 {
 	return vec3Scale;
+}
+const glm::vec3 CEntity3D::GetVel(void) const
+{
+	return vec3Vel;
 }
 const float CEntity3D::GetRotationAngle(void) const
 {

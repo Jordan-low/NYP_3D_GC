@@ -10,6 +10,7 @@
 #include "Primitives/CollisionManager.h"
 
 #include "../Entities/Player3D.h"
+#include "../Entities/Car3D.h"
 
 #include "../CameraEffects/CameraEffectsManager.h"
 
@@ -139,18 +140,18 @@ bool CSolidObjectManager::CollisionCheck(CSolidObject* cSolidObject)
 		{
 			// Rollback the cSolidObject's position
 			cSolidObject->RollbackPosition();
-// Rollback the NPC's position
-(*it)->RollbackPosition();
-if ((*it)->GetType() == CSolidObject::TYPE::NPC)
-cout << "** Collision between this Entity and a NPC ***" << endl;
-else if ((*it)->GetType() == CSolidObject::TYPE::OTHERS)
-cout << "** Collision between this Entity and an OTHERS ***" << endl;
-else if ((*it)->GetType() == CSolidObject::TYPE::STRUCTURE)
-cout << "** Collision between this Entity and a STRUCTURE ***" << endl;
-else if ((*it)->GetType() == CSolidObject::TYPE::PROJECTILE)
-cout << "** Collision between this Entity and a PROJECTILE ***" << endl;
-// Quit this loop since a collision has been found
-break;
+			// Rollback the NPC's position
+			(*it)->RollbackPosition();
+			if ((*it)->GetType() == CSolidObject::TYPE::NPC)
+			cout << "** Collision between this Entity and a NPC ***" << endl;
+			else if ((*it)->GetType() == CSolidObject::TYPE::OTHERS)
+			cout << "** Collision between this Entity and an OTHERS ***" << endl;
+			else if ((*it)->GetType() == CSolidObject::TYPE::STRUCTURE)
+			cout << "** Collision between this Entity and a STRUCTURE ***" << endl;
+			else if ((*it)->GetType() == CSolidObject::TYPE::PROJECTILE)
+			cout << "** Collision between this Entity and a PROJECTILE ***" << endl;
+			// Quit this loop since a collision has been found
+			break;
 		}
 	}
 
@@ -244,11 +245,11 @@ bool CSolidObjectManager::CheckForCollision(void)
 						((*it_other)->GetType() <= CSolidObject::TYPE::OTHERS))
 					)
 				{
-					(*it)->RollbackPosition();
-					(*it_other)->RollbackPosition();
 
 					if ((*it)->GetType() == CSolidObject::TYPE::PLAYER)
 					{
+						(*it)->RollbackPosition();
+						(*it_other)->RollbackPosition();
 						if (CPlayer3D::GetInstance()->GetWeapon()->isMeleeAttacking)
 						{
 							//player melee attack
@@ -256,6 +257,12 @@ bool CSolidObjectManager::CheckForCollision(void)
 							if ((*it_other)->GetHealth() <= 0)
 								(*it_other)->SetStatus(false);
 						}
+					}
+					else
+					{
+						//set enemy vel relative to the car's front
+						CCar3D* c = (CCar3D*)(*it);
+						(*it_other)->SetVel((*it_other)->GetVel() + (*it)->GetFront() * c->GetCurrSpeed());
 					}
 
 					bResult = true;
@@ -283,9 +290,17 @@ bool CSolidObjectManager::CheckForCollision(void)
 						((*it_other)->GetType() == CSolidObject::TYPE::STRUCTURE
 							))
 				{
-					(*it)->RollbackPosition();
 					if (((*it)->GetType() == CSolidObject::TYPE::PLAYER))
+					{
+						(*it)->RollbackPosition();
 						bResult = true;
+
+					}
+					else if ((*it)->GetType() == CSolidObject::TYPE::CAR)
+					{
+						CCar3D* c = (CCar3D*)(*it);
+						(*it)->SetVel((*it)->GetVel() - (*it)->GetFront() * c->GetCurrSpeed());
+					}
 
 					/*if (bResult)
 						CCameraEffectsManager::GetInstance()->Get("BloodScreen")->SetStatus(true);*/

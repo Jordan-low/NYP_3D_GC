@@ -88,6 +88,8 @@ public:
 	// Set Weapon to this class instance
 	void SetWeapon(CWeaponInfo* cWeaponInfo = NULL);
 
+	float GetCurrSpeed();
+
 	// Get current weapon of this class instance
 	CWeaponInfo* GetWeapon(void) const;
 

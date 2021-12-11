@@ -14,6 +14,8 @@
 // Include ImageLoader
 #include "System\ImageLoader.h"
 
+#include "../../MyMath.h"
+
 #include "Structure3D.h"
 #include "SolidObjectManager.h"
 
@@ -341,6 +343,18 @@ bool CEnemy3D::Update(const double dElapsedTime)
 
 	// Store the enemy's current position, if rollback is needed.
 	StorePositionForRollback();
+
+	vec3Position += vec3Vel * (float)dElapsedTime;
+
+	std::cout << "EVE: " << vec3Vel.x << " " << vec3Vel.y << " " << vec3Vel.z << std::endl;
+	float frictionX = vec3Vel.x * -1.f;
+	vec3Vel.x += frictionX * (float)dElapsedTime;
+
+	float frictionY = vec3Vel.y * -1.f;
+	vec3Vel.y += frictionY * (float)dElapsedTime;
+
+	float frictionZ = vec3Vel.z * -1.f;
+	vec3Vel.z += frictionZ * (float)dElapsedTime;
 
 	switch (sCurrentFSM)
 	{
