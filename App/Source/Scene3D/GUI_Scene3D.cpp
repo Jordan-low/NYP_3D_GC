@@ -4,6 +4,7 @@
  Date: Sep 2021
  */
 #include "GUI_Scene3D.h"
+#include "../MyMath.h"
 
 // Include CBloodScreen
 #include "CameraEffects/BloodScreen.h"
@@ -28,6 +29,7 @@ CGUI_Scene3D::CGUI_Scene3D(void)
 	, view(glm::mat4(1.0f))
 	, projection(glm::mat4(1.0f))
 	, m_fProgressBar(0.0f)
+	, m_fTransparentBackground(0.0f)
 	, cCameraEffectsManager(NULL)
 	, cMinimap(NULL)
 	, cInventoryManager(NULL)
@@ -316,15 +318,62 @@ void CGUI_Scene3D::Update(const double dElapsedTime)
 	//render loading wave
 	if (CSolidObjectManager::GetInstance()->allEnemyDied)
 	{
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));  // Set a background color
-		ImGui::Begin("Wave", NULL, inventoryWindowFlags);
-		ImGui::SetWindowPos(ImVec2(cSettings->iWindowWidth * 0.4f, cSettings->iWindowHeight * 0.5f));
+		m_fTransparentBackground += dElapsedTime * 2.f;
+		m_fTransparentBackground = Math::Clamp(m_fTransparentBackground, 0.f, 0.9f);
+		ImGuiWindowFlags waveBGWindowFlags = ImGuiWindowFlags_NoTitleBar;
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.2f, 0.2f, 0.2f, m_fTransparentBackground));  // Set a background color
+		ImGui::Begin("WaveBG", NULL, waveBGWindowFlags);
+		ImGui::SetWindowPos(ImVec2(0, 0));
 		ImGui::SetWindowSize(ImVec2(cSettings->iWindowWidth, cSettings->iWindowHeight));
+		//ImGui::SetWindowFontScale(1.5f * relativeScale_y);
+		//string c = "Loading Wave: " + to_string(cPlayer3D->waveCount);
+		//ImGui::TextColored(ImVec4(1, 1, 0, 1), c.c_str());
+		ImGui::PopStyleColor();
+
+		ImGuiWindowFlags waveTextWindowFlags = ImGuiWindowFlags_NoTitleBar 
+			| ImGuiWindowFlags_NoBackground
+			| ImGuiWindowFlags_NoScrollbar;
+		ImGui::Begin("WaveText", NULL, waveTextWindowFlags);
+		ImGui::SetWindowPos(ImVec2(cSettings->iWindowWidth * 0.4f, cSettings->iWindowHeight * 0.4f));
+		ImGui::SetWindowSize(ImVec2(200.0f * relativeScale_x, 25.0f * relativeScale_y));
 		ImGui::SetWindowFontScale(1.5f * relativeScale_y);
 		string c = "Loading Wave: " + to_string(cPlayer3D->waveCount);
 		ImGui::TextColored(ImVec4(1, 1, 0, 1), c.c_str());
 		ImGui::End();
+		ImGui::End();
+	}
+	else
+	{
+		if (cPlayer3D->GetStatus())
+			m_fTransparentBackground = 0.f;
+	}
+
+	//render loading wave
+	if (!cPlayer3D->GetStatus())
+	{
+		m_fTransparentBackground += dElapsedTime * 2.f;
+		m_fTransparentBackground = Math::Clamp(m_fTransparentBackground, 0.f, 0.9f);
+		ImGuiWindowFlags waveBGWindowFlags = ImGuiWindowFlags_NoTitleBar;
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.2f, 0.2f, 0.2f, m_fTransparentBackground));  // Set a background color
+		ImGui::Begin("WaveBG", NULL, waveBGWindowFlags);
+		ImGui::SetWindowPos(ImVec2(0, 0));
+		ImGui::SetWindowSize(ImVec2(cSettings->iWindowWidth, cSettings->iWindowHeight));
+		//ImGui::SetWindowFontScale(1.5f * relativeScale_y);
+		//string c = "Loading Wave: " + to_string(cPlayer3D->waveCount);
+		//ImGui::TextColored(ImVec4(1, 1, 0, 1), c.c_str());
 		ImGui::PopStyleColor();
+
+		ImGuiWindowFlags waveTextWindowFlags = ImGuiWindowFlags_NoTitleBar
+			| ImGuiWindowFlags_NoBackground
+			| ImGuiWindowFlags_NoScrollbar;
+		ImGui::Begin("WaveText", NULL, waveTextWindowFlags);
+		ImGui::SetWindowPos(ImVec2(cSettings->iWindowWidth * 0.4f, cSettings->iWindowHeight * 0.4f));
+		ImGui::SetWindowSize(ImVec2(250.0f * relativeScale_x, 25.0f * relativeScale_y));
+		ImGui::SetWindowFontScale(1.5f * relativeScale_y);
+		string c = "You survived till wave: " + to_string(cPlayer3D->waveCount);
+		ImGui::TextColored(ImVec4(1, 1, 0, 1), c.c_str());
+		ImGui::End();
+		ImGui::End();
 	}
 
 	ImGui::End();

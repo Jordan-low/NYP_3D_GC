@@ -134,5 +134,6 @@ protected:
 
 	void SpawnEnemyWave(int waveCount);
 	float loadingWave = 0.f;
+	float loadingPlayerDied = 0.f;
 };
 

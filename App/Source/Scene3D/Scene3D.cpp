@@ -268,7 +268,7 @@ void CScene3D::SpawnAmmoBox(glm::vec3 pos)
 
 void CScene3D::SpawnEnemyWave(int waveCount)
 {
-	for (int i = 0; i < (5 * waveCount); i++)
+	for (int i = 0; i < (3 * waveCount); i++)
 	{
 		float posX = Math::RandFloatMinMax(-125, 125);
 		float posZ = Math::RandFloatMinMax(-125, 125);
@@ -342,7 +342,7 @@ bool CScene3D::Init(void)
 		float posZ = Math::RandFloatMinMax(-125, 125);
 		SpawnEnemy(glm::vec3(posX, 0, posZ));
 	}
-
+	
 	for (int i = 0; i < 5; i++)
 	{
 		float posX = Math::RandFloatMinMax(-125, 125);
@@ -470,7 +470,18 @@ bool CScene3D::Update(const double dElapsedTime)
 			cSolidObjectManager->allEnemyDied = false;
 		}
 	}
+	if (!cPlayer3D->GetStatus())
+	{
+		//add loading player died timer
+		loadingPlayerDied += dElapsedTime;
 
+		//start loading player died screen
+		if (loadingPlayerDied > 1)
+		{
+			loadingPlayerDied = 0;
+		}
+	}
+	
 	// Store the current position, if rollback is needed
 	cPlayer3D->StorePositionForRollback();
 

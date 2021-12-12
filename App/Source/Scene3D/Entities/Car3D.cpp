@@ -312,6 +312,15 @@ bool CCar3D::Update(const double dElapsedTime)
 	}
 	else
 	{
+		cout << "SPEED: " << currSpeed << std::endl;
+		if (!bStatus) {
+			cPlayer3D->SetPosition(vec3Position + vec3Right * 2.f);
+			cPlayer3D->isDriving = false;
+			cPlayer3D->SetVehicleWeapon(nullptr);
+			cPlayer3D = NULL;
+			cCamera = NULL;
+			return true;
+		}
 		cPlayer3D->SetPosition(vec3Position);
 		StorePositionForRollback();
 		ProcessMovement(dElapsedTime);
@@ -336,7 +345,7 @@ bool CCar3D::Update(const double dElapsedTime)
 			{
 				if (CMouseController::GetInstance()->IsButtonDown(CMouseController::BUTTON_TYPE::LMB))
 				{
-					bool fired = cWeapon->Discharge(vec3Position + glm::vec3(0, vec3Scale.y, 0), vec3Front, (CSolidObject*)this);
+					bool fired = cWeapon->Discharge(vec3Position + glm::vec3(0, vec3Scale.y * 0.75f, 0), vec3Front, (CSolidObject*)this);
 
 					//if (fired) //if first bullet is fired, apply recoil
 					//	cPlayer3D->ApplyRecoil(cWeapon);
@@ -346,7 +355,7 @@ bool CCar3D::Update(const double dElapsedTime)
 			{
 				if (CMouseController::GetInstance()->IsButtonPressed(CMouseController::BUTTON_TYPE::LMB))
 				{
-					bool fired = cWeapon->Discharge(vec3Position + glm::vec3(0, vec3Scale.y, 0), vec3Front, (CSolidObject*)this);
+					bool fired = cWeapon->Discharge(vec3Position + glm::vec3(0, vec3Scale.y * 0.75f, 0), vec3Front, (CSolidObject*)this);
 
 					//if (fired) //if first bullet is fired, apply recoil
 					//	cPlayer3D->ApplyRecoil(cWeapon);
@@ -394,6 +403,8 @@ void CCar3D::PreRender(void)
  */
 void CCar3D::Render(void)
 {
+	if (!bStatus)
+		return;
 	model = glm::rotate(model, glm::radians(torque / 2), glm::vec3(0, 1, 0));
 	model = glm::rotate(model, glm::radians(tiltAngle), glm::vec3(1, 0, 0));
 	CSolidObject::Render();

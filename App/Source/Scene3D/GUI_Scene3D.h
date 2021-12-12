@@ -99,6 +99,7 @@ protected:
 	// Flags for IMGUI
 	ImGuiWindowFlags window_flags;
 	float m_fProgressBar;
+	float m_fTransparentBackground;
 
 	// Handler to the CSettings
 	CSettings* cSettings;

@@ -264,6 +264,9 @@ bool CSolidObjectManager::CheckForCollision(void)
 						//set enemy vel relative to the car's front
 						CCar3D* c = (CCar3D*)(*it);
 						(*it_other)->SetVel((*it_other)->GetVel() + (*it)->GetFront() * c->GetCurrSpeed());
+						(*it_other)->SetHealth((*it_other)->GetHealth() - c->GetCurrSpeed());
+						if ((*it_other)->GetHealth() <= 0)
+							(*it_other)->SetStatus(false);
 					}
 
 					bResult = true;
