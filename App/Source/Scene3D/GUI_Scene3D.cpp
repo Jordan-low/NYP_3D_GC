@@ -367,8 +367,8 @@ void CGUI_Scene3D::Update(const double dElapsedTime)
 			| ImGuiWindowFlags_NoBackground
 			| ImGuiWindowFlags_NoScrollbar;
 		ImGui::Begin("WaveText", NULL, waveTextWindowFlags);
-		ImGui::SetWindowPos(ImVec2(cSettings->iWindowWidth * 0.4f, cSettings->iWindowHeight * 0.4f));
-		ImGui::SetWindowSize(ImVec2(250.0f * relativeScale_x, 25.0f * relativeScale_y));
+		ImGui::SetWindowPos(ImVec2(cSettings->iWindowWidth * 0.3f, cSettings->iWindowHeight * 0.4f));
+		ImGui::SetWindowSize(ImVec2(400.0f * relativeScale_x, 25.0f * relativeScale_y));
 		ImGui::SetWindowFontScale(1.5f * relativeScale_y);
 		string c = "You survived till wave: " + to_string(cPlayer3D->waveCount);
 		ImGui::TextColored(ImVec4(1, 1, 0, 1), c.c_str());
