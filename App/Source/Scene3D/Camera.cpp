@@ -4,6 +4,7 @@
  Date: Apr 2020
  */
 #include "Camera.h"
+#include "GameControl/Settings.h"
 
 #include <iostream>
 using namespace std;
@@ -160,12 +161,12 @@ void CCamera::ProcessMouseMovement(float xoffset, float yoffset, const bool cons
  */
 void CCamera::ProcessMouseScroll(const float yoffset)
 {
-	if (fZoom >= 25.f && fZoom <= 70.f)
-		fZoom -= yoffset;
-	if (fZoom <= 25.f)
-		fZoom = 25.f;
-	if (fZoom >= 70.f)
-		fZoom = 70.f;
+	if (CSettings::GetInstance()->FOV >= 45.f && CSettings::GetInstance()->FOV <= 70.f)
+		CSettings::GetInstance()->FOV -= yoffset;
+	if (CSettings::GetInstance()->FOV <= 45.f)
+		CSettings::GetInstance()->FOV = 45.f;
+	if (CSettings::GetInstance()->FOV >= 70.f)
+		CSettings::GetInstance()->FOV = 70.f;
 }
 
 /**

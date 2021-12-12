@@ -291,8 +291,7 @@ bool CSolidObjectManager::CheckForCollision(void)
 						(((*it)->GetType() >= CSolidObject::TYPE::PLAYER) &&
 							((*it)->GetType() <= CSolidObject::TYPE::OTHERS))
 						&&
-						((*it_other)->GetType() == CSolidObject::TYPE::STRUCTURE
-							))
+						((*it_other)->GetType() == CSolidObject::TYPE::STRUCTURE))
 				{
 					if (((*it)->GetType() == CSolidObject::TYPE::PLAYER))
 					{
