@@ -209,6 +209,9 @@
     <ClCompile Include="Source\Scene3D\WeaponInfo\Knife.cpp">
       <Filter>Scene3D\WeaponInfo</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene3D\Entities\Hut_Concrete.cpp">
+      <Filter>Scene3D\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -372,6 +375,9 @@
     </ClInclude>
     <ClInclude Include="Source\Scene3D\WeaponInfo\Knife.h">
       <Filter>Scene3D\WeaponInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\Entities\Hut_Concrete.h">
+      <Filter>Scene3D\Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

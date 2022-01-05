@@ -14,7 +14,7 @@
 // Include this for glm::to_string() function
 #define GLM_ENABLE_EXPERIMENTAL
 #include <includes/gtx/string_cast.hpp>
-
+#include "../Application.h"
 // Include filesystem to read from a file
 #include "System\filesystem.h"
 #include "../MyMath.h"
@@ -22,6 +22,7 @@
 // Include CShaderManager
 #include "RenderControl/ShaderManager.h"
 
+#include "Entities/Hut_Concrete.h"
 #include "CameraEffects/CameraShake.h"
 #include <iostream>
 using namespace std;
@@ -430,6 +431,16 @@ bool CScene3D::Init(void)
 	// Add the airplane to the cSolidObjectManager
 	cSolidObjectManager->Add(car);
 
+	// Initialise a CHut_Concrete
+	float fCheckHeight = cTerrain->GetHeight(-2.0f, 2.0f);
+	CHut_Concrete* cHut_Concrete = new CHut_Concrete(glm::vec3(-2.0f, fCheckHeight, 2.0f));
+	cHut_Concrete->SetShader("Shader3DNoColour");
+	cHut_Concrete->SetLODStatus(true);
+	cHut_Concrete->Init();
+	cHut_Concrete->InitCollider("Shader3D_Line", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+
+	// Add the cHut_Concrete to the cSolidObjectManager
+	cSolidObjectManager->Add(cHut_Concrete);
 
 	// Load the GUI Entities
 	// Store the CGUI_Scene3D singleton instance here
@@ -476,9 +487,10 @@ bool CScene3D::Update(const double dElapsedTime)
 		loadingPlayerDied += dElapsedTime;
 
 		//start loading player died screen
-		if (loadingPlayerDied > 1)
+		if (loadingPlayerDied > 3)
 		{
 			loadingPlayerDied = 0;
+			return false;
 		}
 	}
 	

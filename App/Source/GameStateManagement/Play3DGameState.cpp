@@ -86,7 +86,8 @@ bool CPlay3DGameState::Update(const double dElapsedTime)
 	// Call the CScene3D's Update method if not in paused game state
 	if (!CGameStateManager::GetInstance()->GetIsPausedGameState())
 	{
-		CScene3D->Update(dElapsedTime);
+		if (!CScene3D->Update(dElapsedTime))
+			return false;
 	}
 
 	return true;
