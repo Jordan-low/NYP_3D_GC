@@ -18,15 +18,18 @@ bool CCollisionManager::SphereSphereCollision(  const glm::vec3 sphereCentreA,
 /**
  @brief Box-Box Collision Test
  */
-bool CCollisionManager::BoxBoxCollision(    const glm::vec3 aMin, 
-                                            const glm::vec3 aMax,
-                                            const glm::vec3 bMin, 
-                                            const glm::vec3 bMax)
+bool CCollisionManager::BoxBoxCollision(const glm::vec3 aMin,
+    const glm::vec3 aMax,
+    const glm::vec3 bMin,
+    const glm::vec3 bMax)
 {
-    // true == collision, false == no collision
-    return !(   aMax.x < bMin.x || aMax.z < bMin.z ||
-                aMax.y < bMin.y || aMax.y < bMin.y ||
-                aMin.x > bMax.x || aMin.z > bMax.z      );
+    return  (aMin.x <= bMax.x && aMax.x >= bMin.x) &&
+        (aMin.y <= bMax.y && aMax.y >= bMin.y) &&
+        (aMin.z <= bMax.z && aMax.z >= bMin.z);
+    //// true == collision, false == no collision
+    //return !(   aMax.x < bMin.x || aMax.z < bMin.z ||
+    //            aMax.y > bMin.y || aMax.y < bMin.y ||
+    //            aMin.x > bMax.x || aMin.z > bMax.z      );
 }
 
 /**

@@ -22,6 +22,8 @@
 // Include CShaderManager
 #include "RenderControl/ShaderManager.h"
 
+#include "Entities/TreeKabak3D.h"
+
 #include "Entities/Hut_Concrete.h"
 #include "CameraEffects/CameraShake.h"
 #include <iostream>
@@ -337,7 +339,9 @@ bool CScene3D::Init(void)
 	// Add the cPlayer3D to the cSolidObjectManager
 	cSolidObjectManager->Add(cPlayer3D);
 
-	for (int i = 0; i < 1; i++)
+	SpawnEnemy(glm::vec3(-50, 0, 50));
+
+	/*for (int i = 0; i < 1; i++)
 	{
 		float posX = Math::RandFloatMinMax(-125, 125);
 		float posZ = Math::RandFloatMinMax(-125, 125);
@@ -356,7 +360,7 @@ bool CScene3D::Init(void)
 		float posX = Math::RandFloatMinMax(-125, 125);
 		float posZ = Math::RandFloatMinMax(-125, 125);
 		SpawnAmmoBox(glm::vec3(posX, 0, posZ));
-	}
+	}*/
 
 	// Initialise the projectile manager
 	cProjectileManager = CProjectileManager::GetInstance();
@@ -441,6 +445,22 @@ bool CScene3D::Init(void)
 
 	// Add the cHut_Concrete to the cSolidObjectManager
 	cSolidObjectManager->Add(cHut_Concrete);
+
+
+	// Initialise the CTreeKabak3D
+	CTreeKabak3D* cTreeKabak3D = new CTreeKabak3D(glm::vec3(0.0f, 0.0f, 0.0f));
+	cTreeKabak3D->SetInstancingMode(true);
+	if (cTreeKabak3D->IsInstancedRendering() == true)
+	{
+		cTreeKabak3D->SetScale(glm::vec3(1.0f));
+		cTreeKabak3D->SetNumOfInstance(100);
+		cTreeKabak3D->SetSpreadDistance(100.0f);
+		cTreeKabak3D->SetShader("Shader3D_Instancing"); // FOR INSTANCED RENDERING
+	}
+	if (cTreeKabak3D->Init() == true)
+		cSolidObjectManager->Add(cTreeKabak3D);
+	else
+		delete cTreeKabak3D;
 
 	// Load the GUI Entities
 	// Store the CGUI_Scene3D singleton instance here
