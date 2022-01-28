@@ -215,6 +215,15 @@
     <ClCompile Include="Source\Scene3D\Entities\TreeKabak3D.cpp">
       <Filter>Scene3D\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene3D\SceneGraph\SceneNode.cpp">
+      <Filter>Scene3D\SceneGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\SceneGraph\SpinTower.cpp">
+      <Filter>Scene3D\SceneGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\SceneGraph\OrbitPlanet.cpp">
+      <Filter>Scene3D\SceneGraph</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -384,6 +393,15 @@
     </ClInclude>
     <ClInclude Include="Source\Scene3D\Entities\TreeKabak3D.h">
       <Filter>Scene3D\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\SceneGraph\SceneNode.h">
+      <Filter>Scene3D\SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\SceneGraph\SpinTower.h">
+      <Filter>Scene3D\SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\SceneGraph\OrbitPlanet.h">
+      <Filter>Scene3D\SceneGraph</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

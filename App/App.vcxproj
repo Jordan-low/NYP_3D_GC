@@ -49,6 +49,9 @@
     <ClCompile Include="Source\Scene3D\Minimap\Minimap.cpp" />
     <ClCompile Include="Source\Scene3D\Physics3D.cpp" />
     <ClCompile Include="Source\Scene3D\Scene3D.cpp" />
+    <ClCompile Include="Source\Scene3D\SceneGraph\OrbitPlanet.cpp" />
+    <ClCompile Include="Source\Scene3D\SceneGraph\SceneNode.cpp" />
+    <ClCompile Include="Source\Scene3D\SceneGraph\SpinTower.cpp" />
     <ClCompile Include="Source\Scene3D\SkyBox\SkyBox.cpp" />
     <ClCompile Include="Source\Scene3D\Terrain\Terrain.cpp" />
     <ClCompile Include="Source\Scene3D\Terrain\Texture.cpp" />
@@ -107,6 +110,9 @@
     <ClInclude Include="Source\Scene3D\Minimap\Minimap.h" />
     <ClInclude Include="Source\Scene3D\Physics3D.h" />
     <ClInclude Include="Source\Scene3D\Scene3D.h" />
+    <ClInclude Include="Source\Scene3D\SceneGraph\OrbitPlanet.h" />
+    <ClInclude Include="Source\Scene3D\SceneGraph\SceneNode.h" />
+    <ClInclude Include="Source\Scene3D\SceneGraph\SpinTower.h" />
     <ClInclude Include="Source\Scene3D\SkyBox\SkyBox.h" />
     <ClInclude Include="Source\Scene3D\Terrain\Terrain.h" />
     <ClInclude Include="Source\Scene3D\Terrain\Texture.h" />
