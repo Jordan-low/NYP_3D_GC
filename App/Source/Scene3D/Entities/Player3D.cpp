@@ -555,6 +555,14 @@ bool CPlayer3D::Update(const double dElapsedTime)
 		break;
 	case PLAYER_STATE::CROUCH:
 		vec3Position.y -= 0.05f;
+		if (totalVelocity > 0.1f)
+			CCamera::GetInstance()->fZoom = Math::Lerp(CCamera::GetInstance()->fZoom, cSettings->FOV * 4.f, (float)dElapsedTime);
+		break;
+	case PLAYER_STATE::SPRINT:
+		CCamera::GetInstance()->fZoom = Math::Lerp(CCamera::GetInstance()->fZoom, cSettings->FOV * 3.f, (float)dElapsedTime);
+		break;
+	case PLAYER_STATE::WALK:
+		CCamera::GetInstance()->fZoom = Math::Lerp(CCamera::GetInstance()->fZoom, cSettings->FOV, (float)dElapsedTime);
 		break;
 	default:
 		break;
