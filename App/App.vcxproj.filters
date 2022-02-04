@@ -233,6 +233,9 @@
     <ClCompile Include="Source\Scene3D\Entities\Building.cpp">
       <Filter>Scene3D\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene3D\Entities\Creature3D.cpp">
+      <Filter>Scene3D\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -419,6 +422,9 @@
       <Filter>Scene3D\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene3D\Entities\Building.h">
+      <Filter>Scene3D\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\Entities\Creature3D.h">
       <Filter>Scene3D\Entities</Filter>
     </ClInclude>
   </ItemGroup>
