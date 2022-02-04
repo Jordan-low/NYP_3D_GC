@@ -14,6 +14,7 @@
 #include "CameraEffects/CrossHair.h"
 // Include CCameraShake
 #include "CameraEffects/CameraShake.h"
+#include "CameraEffects/HealScreen.h"
 #include "Entities/SolidObjectManager.h"
 
 
@@ -111,6 +112,11 @@ bool CGUI_Scene3D::Init(void)
 	CCameraShake* cCameraShake = new CCameraShake();
 	cCameraShake->Init();
 	cCameraEffectsManager->Add("CameraShake", cCameraShake);
+	// Add CameraShake
+	CHealScreen* cHealScreen = new CHealScreen();
+	cHealScreen->Init();
+	cHealScreen->SetShader("Shader_GUI");
+	cCameraEffectsManager->Add("Healscreen", cHealScreen);
 
 	// Load the Minimap
 	cMinimap = CMinimap::GetInstance();

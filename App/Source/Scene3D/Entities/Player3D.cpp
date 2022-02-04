@@ -48,6 +48,7 @@ CPlayer3D::CPlayer3D(void)
 	, addCounterSlideSpeed(-10.f)
 	, totalVelocity(0.f)
 	, isDriving(false)
+	, isHealing(false)
 	, jetPackFuel(0.f)
 	, jetPackSpeed(0.f)
 	, timer(0.f)
@@ -96,6 +97,7 @@ CPlayer3D::CPlayer3D(	const glm::vec3 vec3Position,
 	, addCounterSlideSpeed(-10.f)
 	, totalVelocity(0.f)
 	, isDriving(false)
+	, isHealing(false)
 	, jetPackFuel(0.f)
 	, jetPackSpeed(0.f)
 {
@@ -186,7 +188,8 @@ bool CPlayer3D::Init(void)
 
 	fMovementSpeed = 10.f;
 
-	iHealth = 200;
+	fHealth = 200;
+	fMaxHealth = 200;
 	return true;
 }
 

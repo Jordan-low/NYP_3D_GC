@@ -236,6 +236,8 @@ bool Application::Init(void)
 	CShaderManager::GetInstance()->Add("Shader3D_Instancing", "Shader//Instancing.vs", "Shader//Instancing.fs");
 	CShaderManager::GetInstance()->Add("Shader3D_Terrain", "Shader//Terrain.vs", "Shader//Terrain.fs");
 
+	CShaderManager::GetInstance()->Add("NightVision", "Shader//NightVision.vs", "Shader//NightVision.fs");
+
 	// Initialise the CFPSCounter instance
 	cFPSCounter = CFPSCounter::GetInstance();
 	cFPSCounter->Init();

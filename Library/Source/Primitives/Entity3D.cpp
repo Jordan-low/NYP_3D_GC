@@ -32,7 +32,8 @@ CEntity3D::CEntity3D()
 	, vec3Scale(1.0f)
 	, vec3Vel(glm::vec3(0.f))
 	, fRotationAngle(0.0f)
-	, iHealth(100)
+	, fHealth(100)
+	, fMaxHealth(100)
 	, vec3RotationAxis(1.0f)
 	, vec4Colour(1.0f)
 	, bStatus(false)
@@ -232,16 +233,31 @@ void CEntity3D::RollbackPosition(void)
 /**
  @brief Set Health
  */
-void CEntity3D::SetHealth(int _iHealth)
+void CEntity3D::SetHealth(float _fHealth)
 {
-	iHealth = _iHealth;
+	fHealth = _fHealth;
+}
+
+/**
+ @brief Set Max Health
+ */
+void CEntity3D::SetMaxHealth(float _fMaxHealth)
+{
+	fMaxHealth = _fMaxHealth;
 }
 
 /**
  @brief Get Health
  */
-int CEntity3D::GetHealth(void)
+float CEntity3D::GetHealth(void)
 {
-	return iHealth;
+	return fHealth;
 }
 
+/**
+ @brief Get Max Health
+ */
+float CEntity3D::GetMaxHealth(void)
+{
+	return fMaxHealth;
+}

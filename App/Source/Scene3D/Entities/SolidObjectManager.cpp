@@ -165,7 +165,7 @@ bool CSolidObjectManager::CollisionCheck(CSolidObject* cSolidObject)
  */
 bool CSolidObjectManager::Update(const double dElapsedTime)
 {
-	enemyCount = 0;
+	enemyCount = 1;
 	std::list<CSolidObject*>::iterator it, end;
 	// Update all CSolidObject
 	end = lSolidObject.end();

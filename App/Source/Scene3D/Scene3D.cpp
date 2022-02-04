@@ -25,6 +25,8 @@
 #include "Entities/TreeKabak3D.h"
 
 #include "Entities/Hut_Concrete.h"
+#include "Entities/HangerA.h"
+#include "Entities/Building.h"
 #include "CameraEffects/CameraShake.h"
 #include <iostream>
 
@@ -403,15 +405,15 @@ bool CScene3D::Init(void)
 	cBurstAssaultRifle->Init();
 	cBurstAssaultRifle->SetShader("Shader3D_Model");
 
-	// Assign a cSubmachineGun to the cPlayer3D
-	CSubmachineGun* cSubmachineGun = new CSubmachineGun();
-	// Set the pos, rot, scale of this weapon
-	cSubmachineGun->SetPosition(glm::vec3(0.05f, -0.075f, -0.3f));
-	cSubmachineGun->SetRotation(3.14159f, glm::vec3(0.0f, 1.0f, 0.0f));
-	cSubmachineGun->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
-	//Initialise the instance
-	cSubmachineGun->Init();
-	cSubmachineGun->SetShader("Shader3D_Model");
+	//// Assign a cSubmachineGun to the cPlayer3D
+	//CSubmachineGun* cSubmachineGun = new CSubmachineGun();
+	//// Set the pos, rot, scale of this weapon
+	//cSubmachineGun->SetPosition(glm::vec3(0.05f, -0.075f, -0.3f));
+	//cSubmachineGun->SetRotation(3.14159f, glm::vec3(0.0f, 1.0f, 0.0f));
+	//cSubmachineGun->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
+	////Initialise the instance
+	//cSubmachineGun->Init();
+	//cSubmachineGun->SetShader("Shader3D_Model");
 
 	// Assign a cSubmachineGun to the cPlayer3D
 	CKnife* cKnife = new CKnife();
@@ -452,6 +454,30 @@ bool CScene3D::Init(void)
 	//// Add the cHut_Concrete to the cSolidObjectManager
 	//cSolidObjectManager->Add(cHut_Concrete);
 
+	// Initialise a CHut_Concrete
+	float fCheckHeight = cTerrain->GetHeight(-20.f, 20.f);
+	CHangarA* cHangerA = new CHangarA(glm::vec3(-20.f, fCheckHeight, 20.f));
+	cHangerA->SetShader("Shader3DNoColour");
+	cHangerA->SetLODStatus(true);
+	cHangerA->Init();
+	cHangerA->InitCollider("Shader3D_Line", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+
+	// Add the cHut_Concrete to the cSolidObjectManager
+	cSolidObjectManager->Add(cHangerA);
+
+	for (int i = 1; i < 5; i++)
+	{
+		float fCheckHeight = cTerrain->GetHeight(20.f * i, 20.f);
+		CBuilding* cBuilding = new CBuilding(glm::vec3(20.f * i, fCheckHeight, 20.f));
+		cBuilding->buildingType = (CBuilding::BUILDING_TYPE)Math::RandIntMinMax(0, 1);
+		cBuilding->SetShader("Shader3DNoColour");
+		cBuilding->SetLODStatus(true);
+		cBuilding->Init();
+		cBuilding->InitCollider("Shader3D_Line", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+
+		// Add the cHut_Concrete to the cSolidObjectManager
+		cSolidObjectManager->Add(cBuilding);
+	}
 
 	//// Initialise the CTreeKabak3D
 	//CTreeKabak3D* cTreeKabak3D = new CTreeKabak3D(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -525,9 +551,6 @@ bool CScene3D::Update(const double dElapsedTime)
 
 	// Update the projectiles
 	cProjectileManager->Update(dElapsedTime);
-	
-	// Call the CGUI_Scene3D's update method
-	cGUI_Scene3D->Update(dElapsedTime);
 
 	if (!cPlayer3D->isDriving)
 		ProcessPlayerInputs(dElapsedTime);
@@ -621,15 +644,31 @@ bool CScene3D::Update(const double dElapsedTime)
 		// Reset the key so that it will not repeat until the key is released and pressed again
 		CKeyboardController::GetInstance()->ResetKey(GLFW_KEY_8);
 	}
+	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_F))
+	{
+		bool bStatus = CCameraEffectsManager::GetInstance()->Get("Healscreen")->GetStatus();
+		CCameraEffectsManager::GetInstance()->Get("Healscreen")->SetStatus(!bStatus);
+
+		// Reset the key so that it will not repeat until the key is released and pressed again
+		CKeyboardController::GetInstance()->ResetKey(GLFW_KEY_F);
+	}
 
 	// Post Update the mouse controller
 	cMouseController->PostUpdate();
+
+	cPlayer3D->isHealing = false;
 
 	// Update the Solid Objects
 	cSolidObjectManager->Update(dElapsedTime);
 
 	cSolidObjectManager->CheckForCollision();
 
+	//update player's healing health and heal screen
+	cPlayer3D->SetHealth(CPlayer3D::GetInstance()->GetHealth() + 0.1f * cPlayer3D->isHealing);
+	CCameraEffectsManager::GetInstance()->Get("Healscreen")->SetStatus(cPlayer3D->isHealing);
+
+	// Call the CGUI_Scene3D's update method
+	cGUI_Scene3D->Update(dElapsedTime);
 
 	return true;
 }

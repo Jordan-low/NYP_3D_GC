@@ -96,9 +96,15 @@ public:
 	virtual void RollbackPosition(void);
 
 	// Set Health
-	virtual void SetHealth(int _iHealth);
+	virtual void SetHealth(float _fHealth);
 	// Get Health
-	virtual int GetHealth(void);
+	virtual float GetHealth(void);
+
+	// Set Max Health
+	virtual void SetMaxHealth(float _fHealth);
+	// Get Max Health
+
+	virtual float GetMaxHealth(void);
 
 	// Update this class instance
 	virtual bool Update(const double dElapsedTime) = 0;
@@ -162,5 +168,6 @@ protected:
 	bool bToDelete;
 
 	// Health
-	int iHealth;
+	float fHealth;
+	float fMaxHealth;
 };

@@ -69,6 +69,7 @@ public:
 	PLAYER_STATE activeState;
 
 	bool isDriving;
+	bool isHealing;
 
 	// Initialise this class instance
 	bool Init(void);
