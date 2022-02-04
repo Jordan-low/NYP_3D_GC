@@ -311,6 +311,7 @@ bool CScene3D::Init(void)
 {
 	srand(time(NULL));
 	cSettings = CSettings::GetInstance();
+	savedMouseScrollY = 30;
 
 	// configure global opengl state
 	glEnable(GL_DEPTH_TEST);
@@ -587,8 +588,6 @@ bool CScene3D::Update(const double dElapsedTime)
 		// Get mouse updates
 		cPlayer3D->ProcessRotate((float)cMouseController->GetMouseDeltaX(),
 			(float)cMouseController->GetMouseDeltaY());
-		cCamera->ProcessMouseScroll((float)cMouseController->GetMouseScrollStatus(CMouseController
-			::SCROLL_TYPE::SCROLL_TYPE_YOFFSET));
 	}
 
 	if (!cPlayer3D->isDriving)
@@ -664,6 +663,17 @@ bool CScene3D::Update(const double dElapsedTime)
 		CKeyboardController::GetInstance()->ResetKey(GLFW_KEY_F);
 	}
 
+	//Handle Scroll Wheel Inputs for Camera FOV and Minimap Zoom
+	if (CKeyboardController::GetInstance()->IsKeyDown(GLFW_KEY_LEFT_CONTROL))
+		savedMouseScrollY -= (float)cMouseController->GetMouseScrollStatus(CMouseController::SCROLL_TYPE::SCROLL_TYPE_YOFFSET);
+	else
+		cCamera->ProcessMouseScroll((float)cMouseController->GetMouseScrollStatus(CMouseController::SCROLL_TYPE::SCROLL_TYPE_YOFFSET));
+
+	//Calculate minimap zoom
+	savedMouseScrollY = Math::Clamp(savedMouseScrollY, 10.f, 30.f);
+	float zoom = 0.5 * savedMouseScrollY;
+	CMinimap::GetInstance()->SetMinimapZoom(zoom);
+
 	// Post Update the mouse controller
 	cMouseController->PostUpdate();
 
@@ -714,7 +724,7 @@ void CScene3D::Render(void)
 	cCamera->fYaw += 180.0f;
 	cCamera->fPitch = -90.0f;
 	// We store the player's position into the camera as we want the minimap to focus on the player
-	cCamera->vec3Position = glm::vec3(storePlayerPosition.x, 10.0f, storePlayerPosition.z);
+	cCamera->vec3Position = glm::vec3(storePlayerPosition.x, CMinimap::GetInstance()->GetMinimapZoom(), storePlayerPosition.z);
 	// Recalculate all the camera vectors. 
 	// We disable pitch constrains for this specific case as we want the camera to look straight down
 	cCamera->ProcessMouseMovement(0, 0, false);

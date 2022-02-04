@@ -58,6 +58,10 @@ public:
 	//Change the player current color 
 	void SetPlayerArrowCurrentColor(glm::vec4);
 
+	float GetMinimapZoom();
+
+	void SetMinimapZoom(float);
+
 protected:
 	// Constructor
 	CMinimap(void);
@@ -69,4 +73,6 @@ protected:
 
 	//Color of the mini map
 	glm::vec4 currentColor;
+
+	float minimapZoom;
 };

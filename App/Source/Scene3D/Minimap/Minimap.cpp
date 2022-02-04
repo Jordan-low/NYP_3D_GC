@@ -46,6 +46,8 @@ bool CMinimap::Init(void)
 	// Set screenTexture to 0 in the shader program
 	CShaderManager::GetInstance()->activeShader->setInt("screenTexture", 0);
 
+	minimapZoom = 10.f;
+
 	float maxTheta = 360;
 	const int numSides = 36;
 	const int verticesPerSide = 4;
@@ -271,6 +273,16 @@ void CMinimap::Render(void)
 void CMinimap::SetPlayerArrowCurrentColor(glm::vec4 value)
 {
 	currentColor = value;
+}
+
+float CMinimap::GetMinimapZoom()
+{
+	return minimapZoom;
+}
+
+void CMinimap::SetMinimapZoom(float _minimapZoom)
+{
+	minimapZoom = _minimapZoom;
 }
 
 /**

@@ -178,7 +178,7 @@ bool CCreature3D::Init(void)
 	iMaxNumMovement = 100;
 
 	// Detection distance for player
-	fDetectionDistance = 20.f;
+	fDetectionDistance = 40.f;
 
 	// Init cWaypointManager
 	cWaypointManager = new CWaypointManager;
