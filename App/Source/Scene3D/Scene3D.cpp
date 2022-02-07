@@ -208,35 +208,35 @@ void CScene3D::ProcessPlayerInputs(double dElapsedTime)
 
 void CScene3D::SpawnEnemy(glm::vec3 pos)
 {
-	//// Initialise a CEnemy3D
-	//float fCheckHeight = cTerrain->GetHeight(pos.x, pos.z);
-	//CEnemy3D* cEnemy3D = new CEnemy3D(glm::vec3(pos.x, fCheckHeight, pos.z));
-	//cEnemy3D->SetShader("Shader3D");
-	//cEnemy3D->Init();
-	//cEnemy3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-
-
-	//// Assign a cPistol to the cEnemy3D
-	//CPistol* cEnemyPistol = new CPistol();
-	//// Set the scale of this weapon
-	//cEnemyPistol->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
-	////Initialise the instance
-	//cEnemyPistol->Init();
-	//cEnemyPistol->SetShader("Shader3D_Model");
-	//cEnemy3D->SetWeapon(0, cEnemyPistol);
-
-	//// Add the cStructure3D to the cSolidObjectManager
-	//cSolidObjectManager->Add(cEnemy3D);
-
 	// Initialise a CEnemy3D
 	float fCheckHeight = cTerrain->GetHeight(pos.x, pos.z);
-	CCreature3D* cCreature3D = new CCreature3D(glm::vec3(pos.x, fCheckHeight, pos.z));
-	cCreature3D->SetShader("Shader3D");
-	cCreature3D->Init();
-	cCreature3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	CEnemy3D* cEnemy3D = new CEnemy3D(glm::vec3(pos.x, fCheckHeight, pos.z));
+	cEnemy3D->SetShader("Shader3D");
+	cEnemy3D->Init();
+	cEnemy3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+
+
+	// Assign a cPistol to the cEnemy3D
+	CPistol* cEnemyPistol = new CPistol();
+	// Set the scale of this weapon
+	cEnemyPistol->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
+	//Initialise the instance
+	cEnemyPistol->Init();
+	cEnemyPistol->SetShader("Shader3D_Model");
+	cEnemy3D->SetWeapon(0, cEnemyPistol);
 
 	// Add the cStructure3D to the cSolidObjectManager
-	cSolidObjectManager->Add(cCreature3D);
+	cSolidObjectManager->Add(cEnemy3D);
+
+	//// Initialise a CEnemy3D
+	//float fCheckHeight = cTerrain->GetHeight(pos.x, pos.z);
+	//CCreature3D* cCreature3D = new CCreature3D(glm::vec3(pos.x, fCheckHeight, pos.z));
+	//cCreature3D->SetShader("Shader3D");
+	//cCreature3D->Init();
+	//cCreature3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+
+	//// Add the cStructure3D to the cSolidObjectManager
+	//cSolidObjectManager->Add(cCreature3D);
 }
 
 void CScene3D::SpawnStructure(glm::vec3 pos)
@@ -517,7 +517,6 @@ bool CScene3D::Init(void)
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\Sound_Bell.ogg"), 1, true);
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\Sound_Explosion.ogg"), 2, true);
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\Sound_Jump.ogg"), 3, true);
-
 	return true;
 }
 

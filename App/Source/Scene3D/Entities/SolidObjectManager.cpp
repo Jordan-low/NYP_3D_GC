@@ -13,6 +13,7 @@
 #include "../Entities/Car3D.h"
 
 #include "../CameraEffects/CameraEffectsManager.h"
+#include "../CameraEffects/HitMarker.h"
 
 // Include CCameraEffectsManager
 //#include "../CameraEffects/CameraEffectsManager.h"
@@ -192,6 +193,7 @@ bool CSolidObjectManager::CheckForCollision(void)
 {
 	bool bResult = false;
 	bool isWallRun = false;
+	float hitAngle = 0;
 
 	std::list<CSolidObject*>::iterator it, end;
 	std::list<CSolidObject*>::iterator it_other;
@@ -269,6 +271,8 @@ bool CSolidObjectManager::CheckForCollision(void)
 							(*it_other)->SetStatus(false);
 					}
 
+					glm::vec3 dist = (*it)->GetFront() - (*it_other)->GetFront();
+					hitAngle = atan2f(dist.z, dist.x);
 					bResult = true;
 					cout << "** Collision between Player and an Entity ***" << endl;
 					break;
@@ -359,6 +363,8 @@ bool CSolidObjectManager::CheckForCollision(void)
 						(*it)->SetStatus(false);
 					
 					cout << "** RayBoxCollision between Player and Projectile ***" << endl;
+					glm::vec3 dist = (*it)->GetFront() - (cProjectileManager->vProjectile[i])->GetSource()->GetFront();
+					hitAngle = atan2f(dist.z, dist.x);
 					bResult = true;
 					break;
 				}
@@ -407,6 +413,8 @@ bool CSolidObjectManager::CheckForCollision(void)
 						(*it)->SetStatus(false);
 
 					cout << "** BoxBoxCollision between Player and Projectile ***" << endl;
+					glm::vec3 dist = (*it)->GetFront() - (cProjectileManager->vProjectile[i])->GetSource()->GetFront();
+					hitAngle = atan2f(dist.z, dist.x);
 					bResult = true;
 					break;
 				}
@@ -440,7 +448,8 @@ bool CSolidObjectManager::CheckForCollision(void)
 	
 	if (bResult == true)
 	{
-		//CCameraEffectsManager::GetInstance()->Get("BloodScreen")->SetStatus(true);
+		CCameraEffectsManager::GetInstance()->Get("HitMarker")->SetStatus(true);
+		((CHitMarker*)(CCameraEffectsManager::GetInstance()->Get("HitMarker")))->angle = glm::degrees(hitAngle);
 	}
 
 	return true;

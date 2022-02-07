@@ -15,6 +15,7 @@
 // Include CCameraShake
 #include "CameraEffects/CameraShake.h"
 #include "CameraEffects/HealScreen.h"
+#include "CameraEffects/HitMarker.h"
 #include "Entities/SolidObjectManager.h"
 
 
@@ -112,11 +113,17 @@ bool CGUI_Scene3D::Init(void)
 	CCameraShake* cCameraShake = new CCameraShake();
 	cCameraShake->Init();
 	cCameraEffectsManager->Add("CameraShake", cCameraShake);
-	// Add CameraShake
+	// Add Heal Screen
 	CHealScreen* cHealScreen = new CHealScreen();
 	cHealScreen->Init();
 	cHealScreen->SetShader("Shader_GUI");
 	cCameraEffectsManager->Add("Healscreen", cHealScreen);
+	// Add Hit Marker
+	CHitMarker* cHitMarker = new CHitMarker();
+	cHitMarker->Init();
+	cHitMarker->SetShader("Shader_GUI");
+	cHitMarker->SetStatus(true);
+	cCameraEffectsManager->Add("HitMarker", cHitMarker);
 
 	// Load the Minimap
 	cMinimap = CMinimap::GetInstance();

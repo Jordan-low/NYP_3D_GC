@@ -5,6 +5,7 @@
  */
 
 #include "CameraEffectsManager.h"
+#include "Inputs\KeyboardController.h"
 
 #include <iostream>
 using namespace std;
@@ -154,7 +155,7 @@ CCameraEffects* CCameraEffectsManager::Get(const std::string& _name)
 	// Return the CGameState*
 	return CameraEffectsMap[_name];
 }
-
+float fRotationAngle = 0;
 /**
  @brief Update
  @param dElapsedTime A const double variable contains the time since the last frame

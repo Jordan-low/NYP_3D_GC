@@ -169,16 +169,19 @@ void CCameraEffects::Render(void)
 	if (!bStatus)
 		return;
 
+
 	unsigned int transformLoc;
+
 	// get matrix's uniform location and set matrix
 	transformLoc = glGetUniformLocation(CShaderManager::GetInstance()->activeShader->ID, "transform");
-
+	
 	// Update the shaders with the latest transform
-	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 	unsigned int colorLoc = glGetUniformLocation(CShaderManager::GetInstance()->activeShader->ID, "runtime_color");
 	glUniform4fv(colorLoc, 1, glm::value_ptr(glm::vec4(1.0, 1.0, 1.0, 1.0)));
 
+	
 	// Get the texture to be rendered
 	glBindTexture(GL_TEXTURE_2D, iTextureID);
 
