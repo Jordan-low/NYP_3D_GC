@@ -34,9 +34,10 @@ bool CJupiterPlanet::Create(void)
 	// Initialise a CSceneNode
 	CSceneNode* cSceneNode = new CSceneNode(3);
 	cSceneNode->nodeType = CSceneNode::N_PLANET;
+	cSceneNode->SetLocalScaleMtx(glm::vec3(3,3,3));
 	cSceneNode->SetShader("Shader3D");
-	float fCheckHeight = CTerrain::GetInstance()->GetHeight(0.f, 0.f);
-	cSceneNode->SetWorldTranslateMtx(glm::vec3(0.f, fCheckHeight + 50.f, 0.f));
+	float fCheckHeight = CTerrain::GetInstance()->GetHeight(400.f, 400.f);
+	cSceneNode->SetWorldTranslateMtx(glm::vec3(400.f, fCheckHeight + 200.f, 400.f));
 	cSceneNode->Init();
 	cSceneNode->bContinuousUpdate = true;
 	cSceneNode->SetUpdateRotateMtx(glm::radians(0.1f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -44,6 +45,7 @@ bool CJupiterPlanet::Create(void)
 	// Initialise a child CSceneNode
 	CSceneNode* cSceneNodeChild = new CSceneNode(4);
 	cSceneNodeChild->nodeType = CSceneNode::N_RING;
+	cSceneNodeChild->SetLocalScaleMtx(glm::vec3(3, 3, 3));
 	cSceneNodeChild->SetShader("Shader3D");
 	cSceneNodeChild->Init();
 	cSceneNodeChild->bContinuousUpdate = true;
@@ -53,6 +55,7 @@ bool CJupiterPlanet::Create(void)
 	// Initialise a grandchild CSceneNode
 	CSceneNode* cSceneNodeGrandChild = new CSceneNode(5);
 	cSceneNodeGrandChild->nodeType = CSceneNode::N_BIGRING;
+	cSceneNodeGrandChild->SetLocalScaleMtx(glm::vec3(3, 3, 3));
 	cSceneNodeGrandChild->SetShader("Shader3D");
 	cSceneNodeGrandChild->Init();
 	cSceneNodeGrandChild->bContinuousUpdate = true;

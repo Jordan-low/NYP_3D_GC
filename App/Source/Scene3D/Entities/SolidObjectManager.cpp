@@ -300,7 +300,6 @@ bool CSolidObjectManager::CheckForCollision(void)
 					if (((*it)->GetType() == CSolidObject::TYPE::PLAYER))
 					{
 						(*it)->RollbackPosition();
-						bResult = true;
 
 					}
 					else if ((*it)->GetType() == CSolidObject::TYPE::CAR)
@@ -405,6 +404,10 @@ bool CSolidObjectManager::CheckForCollision(void)
 			{
 				if ((*it)->GetType() == CSolidObject::TYPE::PLAYER)
 				{
+					// If this projectile is fired by the player, then skip it
+					if ((cProjectileManager->vProjectile[i])->GetSource() == (*it))
+						continue;
+
 					(cProjectileManager->vProjectile[i])->SetStatus(false);
 
 					//Damage the player health using the projectile damage
