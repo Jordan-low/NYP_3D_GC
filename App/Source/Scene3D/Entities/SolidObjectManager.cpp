@@ -271,6 +271,7 @@ bool CSolidObjectManager::CheckForCollision(void)
 							(*it_other)->SetStatus(false);
 					}
 
+					//calculate hitmarker angle
 					glm::vec3 dist = (*it)->GetFront() - (*it_other)->GetFront();
 					hitAngle = atan2f(dist.z, dist.x);
 					bResult = true;
