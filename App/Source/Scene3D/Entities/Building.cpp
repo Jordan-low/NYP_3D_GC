@@ -83,7 +83,7 @@ void CBuilding::HangerRound()
 	if (m_bLODStatus == false)
 	{
 		if (LoadModelAndTexture("Models/Buildings/HangerRound.obj",
-			"Models/Hut_Concrete/Hut_Concrete_H.tga",
+			"Image/brick_high.png",
 			VAO, iTextureID, iIndicesSize) == false)
 		{
 			cout << "Unable to load model and texture" << endl;
@@ -92,19 +92,19 @@ void CBuilding::HangerRound()
 	else
 	{
 		if (LoadModelAndTexture("Models/Buildings/HangerRound.obj",
-			"Models/Hut_Concrete/Hut_Concrete_H.tga",
+			"Image/brick_high.png",
 			arrVAO[0], arriTextureID[0], arrIndicesSize[0]) == false)
 		{
 			cout << "Unable to load high LOD model and texture" << endl;
 		}
 		if (LoadModelAndTexture("Models/Buildings/HangerRound.obj",
-			"Models/Hut_Concrete/Hut_Concrete_M.tga",
+			"Image/brick_medium.png",
 			arrVAO[1], arriTextureID[1], arrIndicesSize[1]) == false)
 		{
 			cout << "Unable to load mid LOD model and texture" << endl;
 		}
 		if (LoadModelAndTexture("Models/Buildings/HangerRound.obj",
-			"Models/Hut_Concrete/Hut_Concrete_L.tga",
+			"Image/brick_low.png",
 			arrVAO[2], arriTextureID[2], arrIndicesSize[2]) == false)
 		{
 			cout << "Unable to load low LOD model and texture" << endl;
@@ -117,7 +117,7 @@ void CBuilding::HangerA()
 	if (m_bLODStatus == false)
 	{
 		if (LoadModelAndTexture("Models/Buildings/HangerA.obj",
-			"Models/Hut_Concrete/Hut_Concrete_H.tga",
+			"Image/stonebrick_high.png",
 			VAO, iTextureID, iIndicesSize) == false)
 		{
 			cout << "Unable to load model and texture" << endl;
@@ -126,19 +126,19 @@ void CBuilding::HangerA()
 	else
 	{
 		if (LoadModelAndTexture("Models/Buildings/HangerA.obj",
-			"Models/Hut_Concrete/Hut_Concrete_H.tga",
+			"Image/stonebrick_high.png",
 			arrVAO[0], arriTextureID[0], arrIndicesSize[0]) == false)
 		{
 			cout << "Unable to load high LOD model and texture" << endl;
 		}
 		if (LoadModelAndTexture("Models/Buildings/HangerA.obj",
-			"Models/Hut_Concrete/Hut_Concrete_M.tga",
+			"Image/stonebrick_medium.png",
 			arrVAO[1], arriTextureID[1], arrIndicesSize[1]) == false)
 		{
 			cout << "Unable to load mid LOD model and texture" << endl;
 		}
 		if (LoadModelAndTexture("Models/Buildings/HangerA.obj",
-			"Models/Hut_Concrete/Hut_Concrete_L.tga",
+			"Image/stonebrick_low.png",
 			arrVAO[2], arriTextureID[2], arrIndicesSize[2]) == false)
 		{
 			cout << "Unable to load low LOD model and texture" << endl;

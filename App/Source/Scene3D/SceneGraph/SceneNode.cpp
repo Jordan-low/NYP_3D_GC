@@ -696,8 +696,7 @@ bool CSceneNode::LoadRing()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// load and create a texture 
-	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/UVMap.jpg", false);
-	std::cout << "TEZT: " << iTextureID << std::endl;
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/Scene3D_Structure_01.tga", false);
 	if (iTextureID == 0)
 	{
 		cout << "Unable to load Models/Weapons/map_gunType64_01_AO.png" << endl;
@@ -742,7 +741,7 @@ bool CSceneNode::LoadAsteroid()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// load and create a texture 
-	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/Planet/planet.jpg", false);
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/Scene3D_Structure_01.tga", false);
 	if (iTextureID == 0)
 	{
 		cout << "Unable to load Models/Weapons/map_gunType64_01_AO.png" << endl;

@@ -470,18 +470,7 @@ bool CScene3D::Init(void)
 	// Add the cHut_Concrete to the cSolidObjectManager
 	cSolidObjectManager->Add(cHut_Concrete);
 
-	// Initialise a CHut_Concrete
-	fCheckHeight = cTerrain->GetHeight(-20.f, 20.f);
-	CHangarA* cHangerA = new CHangarA(glm::vec3(-20.f, fCheckHeight, 20.f));
-	cHangerA->SetShader("Shader3DNoColour");
-	cHangerA->SetLODStatus(true);
-	cHangerA->Init();
-	cHangerA->InitCollider("Shader3D_Line", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-
-	// Add the cHut_Concrete to the cSolidObjectManager
-	cSolidObjectManager->Add(cHangerA);
-
-	for (int i = 1; i < 5; i++)
+	for (int i = -2; i < 3; i++)
 	{
 		float fCheckHeight = cTerrain->GetHeight(20.f * i, 20.f);
 		CBuilding* cBuilding = new CBuilding(glm::vec3(20.f * i, fCheckHeight, 20.f));
