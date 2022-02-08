@@ -45,7 +45,7 @@ bool CJupiterPlanet::Create(void)
 	// Initialise a child CSceneNode
 	CSceneNode* cSceneNodeChild = new CSceneNode(4);
 	cSceneNodeChild->nodeType = CSceneNode::N_RING;
-	cSceneNodeChild->SetLocalScaleMtx(glm::vec3(2, 2, 2));
+	cSceneNodeChild->SetLocalScaleMtx(glm::vec3(1.5, 1.5, 1.5));
 	cSceneNodeChild->SetShader("Shader3D");
 	cSceneNodeChild->Init();
 	cSceneNodeChild->bContinuousUpdate = true;
@@ -55,7 +55,7 @@ bool CJupiterPlanet::Create(void)
 	// Initialise a grandchild CSceneNode
 	CSceneNode* cSceneNodeGrandChild = new CSceneNode(5);
 	cSceneNodeGrandChild->nodeType = CSceneNode::N_RING;
-	cSceneNodeGrandChild->SetLocalScaleMtx(glm::vec3(3, 2, 3));
+	cSceneNodeGrandChild->SetLocalScaleMtx(glm::vec3(2.5, 2, 2.5));
 	cSceneNodeGrandChild->SetShader("Shader3D");
 	cSceneNodeGrandChild->Init();
 	cSceneNodeGrandChild->bContinuousUpdate = true;

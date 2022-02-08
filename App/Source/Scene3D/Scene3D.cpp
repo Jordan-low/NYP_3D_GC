@@ -210,35 +210,59 @@ void CScene3D::ProcessPlayerInputs(double dElapsedTime)
 
 void CScene3D::SpawnEnemy(glm::vec3 pos)
 {
-	// Initialise a CEnemy3D
-	float fCheckHeight = cTerrain->GetHeight(pos.x, pos.z);
-	CEnemy3D* cEnemy3D = new CEnemy3D(glm::vec3(pos.x, fCheckHeight, pos.z));
-	cEnemy3D->SetShader("Shader3D");
-	cEnemy3D->Init();
-	cEnemy3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	int random = Math::RandIntMinMax(0, 1);
 
+	switch (random)
+	{
+	case 0:
+	{
+		// Initialise a CEnemy3D
+		float fCheckHeight = cTerrain->GetHeight(pos.x, pos.z);
+		CEnemy3D* cEnemy3D = new CEnemy3D(glm::vec3(pos.x, fCheckHeight, pos.z));
+		cEnemy3D->SetShader("Shader3D");
+		cEnemy3D->Init();
+		cEnemy3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
-	// Assign a cPistol to the cEnemy3D
-	CPistol* cEnemyPistol = new CPistol();
-	// Set the scale of this weapon
-	cEnemyPistol->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
-	//Initialise the instance
-	cEnemyPistol->Init();
-	cEnemyPistol->SetShader("Shader3D_Model");
-	cEnemy3D->SetWeapon(0, cEnemyPistol);
+		// Assign a cPistol to the cEnemy3D
+		CPistol* cEnemyPistol = new CPistol();
+		// Set the scale of this weapon
+		cEnemyPistol->SetScale(glm::vec3(0.75f, 0.75f, 0.75f));
+		//Initialise the instance
+		cEnemyPistol->Init();
+		cEnemyPistol->SetShader("Shader3D_Model");
+		cEnemy3D->SetWeapon(0, cEnemyPistol);
 
-	// Add the cStructure3D to the cSolidObjectManager
-	cSolidObjectManager->Add(cEnemy3D);
+		// Add the cStructure3D to the cSolidObjectManager
+		cSolidObjectManager->Add(cEnemy3D);
+	}
+		break;
+	case 1:
+	{
+		// Initialise a CEnemy3D
+		float fCheckHeight = cTerrain->GetHeight(pos.x, pos.z);
+		CCreature3D* cCreature3D = new CCreature3D(glm::vec3(pos.x, fCheckHeight, pos.z));
+		cCreature3D->SetShader("Shader3D");
+		cCreature3D->Init();
+		cCreature3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
-	//// Initialise a CEnemy3D
-	//float fCheckHeight = cTerrain->GetHeight(pos.x, pos.z);
-	//CCreature3D* cCreature3D = new CCreature3D(glm::vec3(pos.x, fCheckHeight, pos.z));
-	//cCreature3D->SetShader("Shader3D");
-	//cCreature3D->Init();
-	//cCreature3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		// Add the cStructure3D to the cSolidObjectManager
+		cSolidObjectManager->Add(cCreature3D);
+	}
+		break;
+	default:
+	{
+		// Initialise a CEnemy3D
+		float fCheckHeight = cTerrain->GetHeight(pos.x, pos.z);
+		CCreature3D* cCreature3D = new CCreature3D(glm::vec3(pos.x, fCheckHeight, pos.z));
+		cCreature3D->SetShader("Shader3D");
+		cCreature3D->Init();
+		cCreature3D->InitCollider("Shader3D_Line", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
-	//// Add the cStructure3D to the cSolidObjectManager
-	//cSolidObjectManager->Add(cCreature3D);
+		// Add the cStructure3D to the cSolidObjectManager
+		cSolidObjectManager->Add(cCreature3D);
+	}
+	break;
+	}
 }
 
 void CScene3D::SpawnStructure(glm::vec3 pos)
@@ -359,13 +383,12 @@ bool CScene3D::Init(void)
 	// Add the cPlayer3D to the cSolidObjectManager
 	cSolidObjectManager->Add(cPlayer3D);
 
-	SpawnEnemy(glm::vec3(-50, 0, 50));
 	// Initialise a CSpinTower & CJupiterPlanet
 	COrbitPlanet::Create();
 	CJupiterPlanet::Create();
 	CAsteroid::Create();
 
-	/*for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		float posX = Math::RandFloatMinMax(-125, 125);
 		float posZ = Math::RandFloatMinMax(-125, 125);
@@ -384,7 +407,7 @@ bool CScene3D::Init(void)
 		float posX = Math::RandFloatMinMax(-125, 125);
 		float posZ = Math::RandFloatMinMax(-125, 125);
 		SpawnAmmoBox(glm::vec3(posX, 0, posZ));
-	}*/
+	}
 
 	// Initialise the projectile manager
 	cProjectileManager = CProjectileManager::GetInstance();
