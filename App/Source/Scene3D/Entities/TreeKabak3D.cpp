@@ -123,7 +123,7 @@ bool CTreeKabak3D::Init(void)
 	}
 
 	// Load and create a texture 
-	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/UVMap.jpg", false);
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/Tree_Kabak/Kabak_Bark_and_Leaves_v1_S.png", false);
 	if (iTextureID == 0)
 	{
 		cout << "Unable to load Models/UVMap.jpg" << endl;
