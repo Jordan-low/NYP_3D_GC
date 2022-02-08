@@ -46,10 +46,10 @@ bool COrbitPlanet::Create(void)
 	cSceneNodeChild->nodeType = CSceneNode::N_ORBIT;
 	cSceneNodeChild->SetShader("Shader3D");
 	cSceneNodeChild->Init();
-	cSceneNodeChild->SetWorldTranslateMtx(glm::vec3(100, -15, 100));
+	cSceneNodeChild->SetWorldTranslateMtx(glm::vec3(200, 15, 200));
 	cSceneNodeChild->bContinuousUpdate = true;
 	cSceneNodeChild->SetUpdateRotateMtx(glm::radians(0.25f), glm::vec3(0.0f, 1.0f, 0.0f));
-	cSceneNodeChild->SetLocalTranslateMtx(glm::vec3(200, 0, 200));
+	cSceneNodeChild->SetLocalTranslateMtx(glm::vec3(400, 0, 400));
 	cSceneNode->AddChild(cSceneNodeChild);
 
 	// Initialise a grandchild CSceneNode
@@ -57,7 +57,7 @@ bool COrbitPlanet::Create(void)
 	cSceneNodeGrandChild->nodeType = CSceneNode::N_ORBIT;
 	cSceneNodeGrandChild->SetShader("Shader3D");
 	cSceneNodeGrandChild->Init();
-	cSceneNodeGrandChild->SetWorldTranslateMtx(glm::vec3(150, -5.0f, 150));
+	cSceneNodeGrandChild->SetWorldTranslateMtx(glm::vec3(150, 20, 150));
 	cSceneNodeGrandChild->bContinuousUpdate = true;
 	cSceneNodeGrandChild->SetUpdateRotateMtx(glm::radians(0.1f), glm::vec3(0.0f, 1.0f, 0.0f));
 	cSceneNodeGrandChild->SetLocalTranslateMtx(glm::vec3(300, 10, 300));
