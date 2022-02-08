@@ -74,18 +74,6 @@ bool CHitMarker::Update(const double dElapsedTime)
 {
 	model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 	model = glm::translate(model, glm::vec3(0,0,0));
-	// reduce the angle  
-	angle = (int)angle % 360;
-
-	// force it to be the positive remainder, so that 0 <= angle < 360  
-	angle = (int)(angle + 360) % 360;
-
-	// force into the minimum absolute value residue class, so that -180 < angle <= 180  
-	if (angle > 180)
-		angle -= 360;
-
-	if (angle < 90 && angle > 0)
-		angle -= 90;
 
 	model = glm::rotate(model, glm::radians(angle), glm::vec3(0,0,1));
 
