@@ -19,6 +19,16 @@ using namespace std;
 class CSceneNode : public CEntity3D
 {
 public:
+
+	enum NODE_TYPE
+	{
+		N_ORBIT,
+		N_PLANET,
+		N_RING,
+		N_BIGRING,
+		N_ASTEROID,
+		N_TOTAL
+	};
 	// Constructor
 	CSceneNode(void);
 	// Constructor
@@ -101,7 +111,17 @@ public:
 	// Boolean flag to indicate if the updates to the localTransformMtx is continuous
 	bool bContinuousUpdate;
 
+	NODE_TYPE nodeType;
+
 protected:
+
+	bool LoadOrbit();
+	bool LoadPlanet();
+	bool LoadRing();
+	bool LoadBigRing();
+	bool LoadAsteroid();
+	bool LoadEmpty();
+
 	// The world transformation: the transformation from the origin to this child node's location
 	glm::mat4 worldTransformMtx;
 

@@ -108,6 +108,7 @@ bool CGUI_Scene3D::Init(void)
 	CCrossHair* cCrossHair = new CCrossHair();
 	cCrossHair->Init();
 	cCrossHair->SetShader("Shader_GUI");
+	cCrossHair->SetStatus(true);
 	cCameraEffectsManager->Add("CrossHair", cCrossHair);
 	// Add CameraShake
 	CCameraShake* cCameraShake = new CCameraShake();
@@ -122,7 +123,6 @@ bool CGUI_Scene3D::Init(void)
 	CHitMarker* cHitMarker = new CHitMarker();
 	cHitMarker->Init();
 	cHitMarker->SetShader("Shader_GUI");
-	cHitMarker->SetStatus(true);
 	cCameraEffectsManager->Add("HitMarker", cHitMarker);
 
 	// Load the Minimap

@@ -40,7 +40,10 @@ CHitMarker::~CHitMarker(void)
  */
 bool CHitMarker::Init(void)
 {
+	displayTime = 0.0;
+	maxDisplayTime = 2.0;
 	angle = 0;
+	bStatus = false;
 
 	// Call the parent's Init()
 	CCameraEffects::Init();
@@ -55,7 +58,7 @@ bool CHitMarker::Init(void)
 	glBindVertexArray(VAO);
 
 	// Generate the mesh
-	mesh = CMeshBuilder::GenerateQuad(glm::vec4(1, 1, 1, 1), 1.0f, 1.0f);
+	mesh = CMeshBuilder::GenerateQuad(glm::vec4(1, 1, 1, 1), 0.5f, 0.5f);
 
 	// load and create a texture 
 	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/GUI/HitMarker.png", false);
@@ -83,9 +86,18 @@ bool CHitMarker::Update(const double dElapsedTime)
 
 	if (angle < 90 && angle > 0)
 		angle -= 90;
-	std::cout << "fR: " << angle << std::endl;
 
 	model = glm::rotate(model, glm::radians(angle), glm::vec3(0,0,1));
+
+	if (bStatus)
+	{
+		displayTime -= dElapsedTime;
+		if (displayTime <= 0)
+		{
+			bStatus = false;
+			displayTime = maxDisplayTime;
+		}
+	}
 
 	return true;
 }

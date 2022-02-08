@@ -22,4 +22,7 @@ public:
 	bool Update(const double dElapsedTime);
 
 	float angle;
+
+	double displayTime;
+	double maxDisplayTime;
 };

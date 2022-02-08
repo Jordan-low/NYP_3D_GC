@@ -54,6 +54,8 @@
     <ClCompile Include="Source\Scene3D\Minimap\Minimap.cpp" />
     <ClCompile Include="Source\Scene3D\Physics3D.cpp" />
     <ClCompile Include="Source\Scene3D\Scene3D.cpp" />
+    <ClCompile Include="Source\Scene3D\SceneGraph\Asteroid.cpp" />
+    <ClCompile Include="Source\Scene3D\SceneGraph\JupiterPlanet.cpp" />
     <ClCompile Include="Source\Scene3D\SceneGraph\OrbitPlanet.cpp" />
     <ClCompile Include="Source\Scene3D\SceneGraph\SceneNode.cpp" />
     <ClCompile Include="Source\Scene3D\SceneGraph\SpinTower.cpp" />
@@ -120,6 +122,8 @@
     <ClInclude Include="Source\Scene3D\Minimap\Minimap.h" />
     <ClInclude Include="Source\Scene3D\Physics3D.h" />
     <ClInclude Include="Source\Scene3D\Scene3D.h" />
+    <ClInclude Include="Source\Scene3D\SceneGraph\Asteroid.h" />
+    <ClInclude Include="Source\Scene3D\SceneGraph\JupiterPlanet.h" />
     <ClInclude Include="Source\Scene3D\SceneGraph\OrbitPlanet.h" />
     <ClInclude Include="Source\Scene3D\SceneGraph\SceneNode.h" />
     <ClInclude Include="Source\Scene3D\SceneGraph\SpinTower.h" />

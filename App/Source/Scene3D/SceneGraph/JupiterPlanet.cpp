@@ -1,9 +1,9 @@
 /**
- COrbitPlanet
+ CJupiterPlanet
  By: Jordan Low
  Date: Jan 2022
  */
-#include "OrbitPlanet.h"
+#include "JupiterPlanet.h"
 
 // Include CTerrain
 #include "../Terrain/Terrain.h"
@@ -14,14 +14,14 @@ using namespace std;
 /**
  @brief Default Constructor
  */
-COrbitPlanet::COrbitPlanet(void)
+CJupiterPlanet::CJupiterPlanet(void)
 {
 }
 
 /**
  @brief Destructor
  */
-COrbitPlanet::~COrbitPlanet(void)
+CJupiterPlanet::~CJupiterPlanet(void)
 {
 }
 
@@ -29,11 +29,11 @@ COrbitPlanet::~COrbitPlanet(void)
  @brief Create the Spin Tower using this static method
  @return true is successfully created the spin tower, else false
  */
-bool COrbitPlanet::Create(void)
+bool CJupiterPlanet::Create(void)
 {
 	// Initialise a CSceneNode
-	CSceneNode* cSceneNode = new CSceneNode(0);
-	cSceneNode->nodeType = CSceneNode::N_TOTAL;
+	CSceneNode* cSceneNode = new CSceneNode(3);
+	cSceneNode->nodeType = CSceneNode::N_PLANET;
 	cSceneNode->SetShader("Shader3D");
 	float fCheckHeight = CTerrain::GetInstance()->GetHeight(0.f, 0.f);
 	cSceneNode->SetWorldTranslateMtx(glm::vec3(0.f, fCheckHeight + 50.f, 0.f));
@@ -42,25 +42,21 @@ bool COrbitPlanet::Create(void)
 	cSceneNode->SetUpdateRotateMtx(glm::radians(0.1f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	// Initialise a child CSceneNode
-	CSceneNode* cSceneNodeChild = new CSceneNode(1);
-	cSceneNodeChild->nodeType = CSceneNode::N_ORBIT;
+	CSceneNode* cSceneNodeChild = new CSceneNode(4);
+	cSceneNodeChild->nodeType = CSceneNode::N_RING;
 	cSceneNodeChild->SetShader("Shader3D");
 	cSceneNodeChild->Init();
-	cSceneNodeChild->SetWorldTranslateMtx(glm::vec3(100, -15, 100));
 	cSceneNodeChild->bContinuousUpdate = true;
-	cSceneNodeChild->SetUpdateRotateMtx(glm::radians(0.25f), glm::vec3(0.0f, 1.0f, 0.0f));
-	cSceneNodeChild->SetLocalTranslateMtx(glm::vec3(200, 0, 200));
+	cSceneNodeChild->SetUpdateRotateMtx(glm::radians(0.25f), glm::vec3(0.0f, 0.0f, 1.0f));
 	cSceneNode->AddChild(cSceneNodeChild);
 
 	// Initialise a grandchild CSceneNode
-	CSceneNode* cSceneNodeGrandChild = new CSceneNode(2);
-	cSceneNodeGrandChild->nodeType = CSceneNode::N_ORBIT;
+	CSceneNode* cSceneNodeGrandChild = new CSceneNode(5);
+	cSceneNodeGrandChild->nodeType = CSceneNode::N_BIGRING;
 	cSceneNodeGrandChild->SetShader("Shader3D");
 	cSceneNodeGrandChild->Init();
-	cSceneNodeGrandChild->SetWorldTranslateMtx(glm::vec3(150, -5.0f, 150));
 	cSceneNodeGrandChild->bContinuousUpdate = true;
-	cSceneNodeGrandChild->SetUpdateRotateMtx(glm::radians(0.1f), glm::vec3(0.0f, 1.0f, 0.0f));
-	cSceneNodeGrandChild->SetLocalTranslateMtx(glm::vec3(300, 10, 300));
+	cSceneNodeGrandChild->SetUpdateRotateMtx(glm::radians(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
 	cSceneNode->AddChild(cSceneNodeGrandChild);
 	CSolidObjectManager::GetInstance()->Add((CSolidObject*)cSceneNode);
 
@@ -70,7 +66,7 @@ bool COrbitPlanet::Create(void)
 /**
  @brief PrintSelf
  */
-void COrbitPlanet::PrintSelf(void)
+void CJupiterPlanet::PrintSelf(void)
 {
-	cout << "COrbitPlanet::PrintSelf()" << endl;
+	cout << "CJupiterPlanet::PrintSelf()" << endl;
 }

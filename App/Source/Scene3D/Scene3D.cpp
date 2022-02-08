@@ -34,6 +34,8 @@
 // Include CSpinTower
 #include "SceneGraph/SpinTower.h"
 #include "SceneGraph/OrbitPlanet.h"
+#include "SceneGraph/JupiterPlanet.h"
+#include "SceneGraph/Asteroid.h"
 
 using namespace std;
 
@@ -354,13 +356,15 @@ bool CScene3D::Init(void)
 	cPlayer3D->Init();
 	cPlayer3D->InitCollider("Shader3D_Line", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	cPlayer3D->AttachCamera(cCamera);
-
 	// Add the cPlayer3D to the cSolidObjectManager
 	cSolidObjectManager->Add(cPlayer3D);
 
 	SpawnEnemy(glm::vec3(-50, 0, 50));
-	// Initialise a CSpinTower
+	// Initialise a CSpinTower & CJupiterPlanet
 	COrbitPlanet::Create();
+	CJupiterPlanet::Create();
+	CAsteroid::Create();
+
 	/*for (int i = 0; i < 1; i++)
 	{
 		float posX = Math::RandFloatMinMax(-125, 125);
@@ -517,6 +521,8 @@ bool CScene3D::Init(void)
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\Sound_Bell.ogg"), 1, true);
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\Sound_Explosion.ogg"), 2, true);
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\Sound_Jump.ogg"), 3, true);
+
+	CCameraEffectsManager::GetInstance()->Get("HitMarker")->SetStatus(false);
 	return true;
 }
 
@@ -652,14 +658,6 @@ bool CScene3D::Update(const double dElapsedTime)
 
 		// Reset the key so that it will not repeat until the key is released and pressed again
 		CKeyboardController::GetInstance()->ResetKey(GLFW_KEY_8);
-	}
-	if (CKeyboardController::GetInstance()->IsKeyPressed(GLFW_KEY_F))
-	{
-		bool bStatus = CCameraEffectsManager::GetInstance()->Get("Healscreen")->GetStatus();
-		CCameraEffectsManager::GetInstance()->Get("Healscreen")->SetStatus(!bStatus);
-
-		// Reset the key so that it will not repeat until the key is released and pressed again
-		CKeyboardController::GetInstance()->ResetKey(GLFW_KEY_F);
 	}
 
 	//Handle Scroll Wheel Inputs for Camera FOV and Minimap Zoom

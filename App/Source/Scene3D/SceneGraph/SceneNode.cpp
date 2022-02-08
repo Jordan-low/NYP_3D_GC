@@ -91,47 +91,30 @@ bool CSceneNode::Init(void)
 	// Set the type
 	SetType(CEntity3D::TYPE::OTHERS);
 
-	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec2> uvs;
-	std::vector<glm::vec3> normals;
-	std::vector<ModelVertex> vertex_buffer_data;
-	std::vector<GLuint> index_buffer_data;
-
-	std::string file_path = "Models/Planet/planet.obj";
-	bool success = CLoadOBJ::LoadOBJ(file_path.c_str(), vertices, uvs, normals, true);
-	if (!success)
+	bool returnValue = false;
+	switch (nodeType)
 	{
-		cout << "Unable to load Models/Weapons/gun_type64_01.obj" << endl;
-		return false;
-	}
-
-	CLoadOBJ::IndexVBO(vertices, uvs, normals, index_buffer_data, vertex_buffer_data);
-
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &IBO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(ModelVertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
-	iIndicesSize = index_buffer_data.size();
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	// load and create a texture 
-	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/Planet/planet.jpg", false);
-	if (iTextureID == 0)
-	{
-		cout << "Unable to load Models/Weapons/map_gunType64_01_AO.png" << endl;
-		return false;
+	case N_ORBIT:
+		returnValue = LoadOrbit();
+		break;
+	case N_PLANET:
+		returnValue = LoadPlanet();
+		break;
+	case N_RING:
+		returnValue = LoadRing();
+		break;
+	case N_BIGRING:
+		returnValue = LoadBigRing();
+		break;
+	case N_ASTEROID:
+		returnValue = LoadAsteroid();
+		break;
+	default:
+		returnValue = LoadEmpty();
 	}
 
 	vec3Position.y += fHeightOffset;
+	return returnValue;
 }
 
 /**
@@ -589,4 +572,274 @@ void CSceneNode::PrintSelf(const int numTabs)
 		(*it)->PrintSelf((numTabs + 1));
 	}
 	cout << std::string(numTabs, '\t') << "================================" << endl;
+}
+
+bool CSceneNode::LoadOrbit()
+{
+	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec2> uvs;
+	std::vector<glm::vec3> normals;
+	std::vector<ModelVertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+
+	std::string file_path = "Models/Planet/planet.obj";
+	bool success = CLoadOBJ::LoadOBJ(file_path.c_str(), vertices, uvs, normals, true);
+	if (!success)
+	{
+		cout << "Unable to load Models/Weapons/gun_type64_01.obj" << endl;
+		return false;
+	}
+
+	CLoadOBJ::IndexVBO(vertices, uvs, normals, index_buffer_data, vertex_buffer_data);
+
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &IBO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(ModelVertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	iIndicesSize = index_buffer_data.size();
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// load and create a texture 
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/Planet/planet.jpg", false);
+	if (iTextureID == 0)
+	{
+		cout << "Unable to load Models/Weapons/map_gunType64_01_AO.png" << endl;
+		return false;
+	}
+
+	return true;
+}
+
+bool CSceneNode::LoadPlanet()
+{
+	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec2> uvs;
+	std::vector<glm::vec3> normals;
+	std::vector<ModelVertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+
+	std::string file_path = "Models/Planet/sphere.obj";
+	bool success = CLoadOBJ::LoadOBJ(file_path.c_str(), vertices, uvs, normals, true);
+	if (!success)
+	{
+		cout << "Unable to load Models/Weapons/sphere.obj" << endl;
+		return false;
+	}
+
+	CLoadOBJ::IndexVBO(vertices, uvs, normals, index_buffer_data, vertex_buffer_data);
+
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &IBO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(ModelVertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	iIndicesSize = index_buffer_data.size();
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// load and create a texture 
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/Planet/planet.jpg", false);
+	if (iTextureID == 0)
+	{
+		cout << "Unable to load Models/Weapons/map_gunType64_01_AO.png" << endl;
+		return false;
+	}
+
+	return true;
+}
+
+bool CSceneNode::LoadRing()
+{
+	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec2> uvs;
+	std::vector<glm::vec3> normals;
+	std::vector<ModelVertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+
+	std::string file_path = "Models/Planet/ring.obj";
+	bool success = CLoadOBJ::LoadOBJ(file_path.c_str(), vertices, uvs, normals, true);
+	if (!success)
+	{
+		cout << "Unable to load Models/Planet/ring.obj" << endl;
+		return false;
+	}
+
+	CLoadOBJ::IndexVBO(vertices, uvs, normals, index_buffer_data, vertex_buffer_data);
+
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &IBO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(ModelVertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	iIndicesSize = index_buffer_data.size();
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// load and create a texture 
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/Planet/planet.jpg", false);
+	if (iTextureID == 0)
+	{
+		cout << "Unable to load Models/Weapons/map_gunType64_01_AO.png" << endl;
+		return false;
+	}
+
+	return true;
+}
+
+bool CSceneNode::LoadBigRing()
+{
+	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec2> uvs;
+	std::vector<glm::vec3> normals;
+	std::vector<ModelVertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+
+	std::string file_path = "Models/Planet/ring2.obj";
+	bool success = CLoadOBJ::LoadOBJ(file_path.c_str(), vertices, uvs, normals, true);
+	if (!success)
+	{
+		cout << "Unable to load Models/Planet/ring2.obj" << endl;
+		return false;
+	}
+
+	CLoadOBJ::IndexVBO(vertices, uvs, normals, index_buffer_data, vertex_buffer_data);
+
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &IBO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(ModelVertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	iIndicesSize = index_buffer_data.size();
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// load and create a texture 
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/Planet/planet.jpg", false);
+	if (iTextureID == 0)
+	{
+		cout << "Unable to load Models/Weapons/map_gunType64_01_AO.png" << endl;
+		return false;
+	}
+
+	return true;
+}
+
+bool CSceneNode::LoadAsteroid()
+{
+	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec2> uvs;
+	std::vector<glm::vec3> normals;
+	std::vector<ModelVertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+
+	std::string file_path = "Models/Planet/asteroid.obj";
+	bool success = CLoadOBJ::LoadOBJ(file_path.c_str(), vertices, uvs, normals, true);
+	if (!success)
+	{
+		cout << "Unable to load Models/Planet/asteroid.obj" << endl;
+		return false;
+	}
+
+	CLoadOBJ::IndexVBO(vertices, uvs, normals, index_buffer_data, vertex_buffer_data);
+
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &IBO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(ModelVertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	iIndicesSize = index_buffer_data.size();
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// load and create a texture 
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/Planet/planet.jpg", false);
+	if (iTextureID == 0)
+	{
+		cout << "Unable to load Models/Weapons/map_gunType64_01_AO.png" << endl;
+		return false;
+	}
+
+	return true;
+}
+
+bool CSceneNode::LoadEmpty()
+{
+	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec2> uvs;
+	std::vector<glm::vec3> normals;
+	std::vector<ModelVertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+
+	std::string file_path = "Models/Planet/empty.obj";
+	bool success = CLoadOBJ::LoadOBJ(file_path.c_str(), vertices, uvs, normals, true);
+	if (!success)
+	{
+		cout << "Unable to load Models/Planet/empty.obj" << endl;
+		return false;
+	}
+
+	CLoadOBJ::IndexVBO(vertices, uvs, normals, index_buffer_data, vertex_buffer_data);
+
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &IBO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(ModelVertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	iIndicesSize = index_buffer_data.size();
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), (void*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// load and create a texture 
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Models/Planet/planet.jpg", false);
+	if (iTextureID == 0)
+	{
+		cout << "Unable to load Models/Weapons/map_gunType64_01_AO.png" << endl;
+		return false;
+	}
+
+	return true;
 }

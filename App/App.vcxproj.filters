@@ -239,6 +239,12 @@
     <ClCompile Include="Source\Scene3D\CameraEffects\HitMarker.cpp">
       <Filter>Scene3D\CameraEffects</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene3D\SceneGraph\JupiterPlanet.cpp">
+      <Filter>Scene3D\SceneGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene3D\SceneGraph\Asteroid.cpp">
+      <Filter>Scene3D\SceneGraph</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -432,6 +438,12 @@
     </ClInclude>
     <ClInclude Include="Source\Scene3D\CameraEffects\HitMarker.h">
       <Filter>Scene3D\CameraEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\SceneGraph\JupiterPlanet.h">
+      <Filter>Scene3D\SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene3D\SceneGraph\Asteroid.h">
+      <Filter>Scene3D\SceneGraph</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
