@@ -25,7 +25,6 @@ public:
 		N_ORBIT,
 		N_PLANET,
 		N_RING,
-		N_BIGRING,
 		N_ASTEROID,
 		N_TOTAL
 	};
