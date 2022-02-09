@@ -188,8 +188,8 @@ bool CPlayer3D::Init(void)
 
 	fMovementSpeed = 10.f;
 
-	fHealth = 2000;
-	fMaxHealth = 2000;
+	fHealth = 200;
+	fMaxHealth = 200;
 	return true;
 }
 

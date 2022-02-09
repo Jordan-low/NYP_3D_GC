@@ -388,21 +388,21 @@ bool CScene3D::Init(void)
 	CJupiterPlanet::Create();
 	CAsteroid::Create();
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		float posX = Math::RandFloatMinMax(-125, 125);
 		float posZ = Math::RandFloatMinMax(-125, 125);
 		SpawnEnemy(glm::vec3(posX, 0, posZ));
 	}
 	
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		float posX = Math::RandFloatMinMax(-125, 125);
 		float posZ = Math::RandFloatMinMax(-125, 125);
 		SpawnStructure(glm::vec3(posX, 0, posZ));
 	}
 	
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		float posX = Math::RandFloatMinMax(-125, 125);
 		float posZ = Math::RandFloatMinMax(-125, 125);
